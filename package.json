@@ -22,7 +22,7 @@
     "@vue/cli-plugin-unit-mocha": "3.12.1",
     "@vue/cli-service": "3.12.1",
     "@vue/test-utils": "1.0.0-beta.29",
-    "chai": "4.2.15",
+    "chai": "4.3.4",
     "typescript": "3.9.9",
     "vue-template-compiler": "2.6.12"
   }
