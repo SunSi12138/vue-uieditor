@@ -48,6 +48,14 @@ module.exports = {
   chainWebpack: config => {
     console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 
+    // 不编译 layui
+    config.module
+      .rule('js')
+      .test(/\.jsx?$/)
+      .exclude
+      .add(path.resolve(__dirname, './src/vue-uieditor/layui'))
+      .end();
+
     if (process.env.NODE_ENV === 'production') {
       // 为生产环境修改配置...
 
@@ -78,7 +86,7 @@ module.exports = {
       config.module.rule('ts').uses.delete('thread-loader');
       config.module.rule('ts').uses.delete('cache-loader');
 
-      
+
       config.plugins.delete('html');
       config.plugins.delete('preload');
       config.plugins.delete('prefetch');
@@ -87,7 +95,7 @@ module.exports = {
     } else {
       // 为开发环境修改配置...
 
-      
+
       // config.plugins.delete('html');
       // config.plugins.delete('copy');
 
@@ -96,7 +104,7 @@ module.exports = {
       if (fs.existsSync(uieditorFile)) {
         config.plugin('copy-vue-uieditor').use(CopyWebpackPlugin, [
           [{
-            from:  path.resolve(uieditorPath, `./${uieditorName}`),
+            from: path.resolve(uieditorPath, `./${uieditorName}`),
             to: `./${uieditorName}`
           }]
         ]);
