@@ -3,17 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "dev":"npm run serve",
-    "lib": "vue-cli-service build --target lib --name vue-uieditor --dest lib ./src/components/HelloWorld.vue",
+    "serve": "rimraf ./dist && vue-cli-service serve",
+    "build": "rimraf ./lib && vue-cli-service build && npm run lib-file",
+    "dev": "npm run serve",
+    "output":"vue-cli-service inspect --mode production > output.js",
+    "lib": "vue-cli-service build --target lib --name vue-uieditor --dest lib ./src/vue-uieditor/index.ts && npm run lib-file",
+    "lib-file": "cpy ./*/** ../../../../lib/@types --cwd=./lib/@types-build/src/vue-uieditor --parents && cpy ./lib-build ./lib && rimraf ./lib/@types-build",
+    "nodemodule-file": "cpy ./*/** ../node_modules/vue-uieditor --cwd=./lib --parents && cpy ./lib-build ./lib && rimraf ./lib/@types-build",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
     "vue": "2.6.12",
     "vue-class-component": "7.2.6",
     "vue-property-decorator": "8.5.1",
-    "vue-router": "3.5.1"
+    "vue-router": "3.5.1",
+    "vue-template-compiler": "2.6.12"
   },
   "devDependencies": {
     "@types/chai": "4.2.15",
@@ -23,7 +27,8 @@
     "@vue/cli-service": "3.12.1",
     "@vue/test-utils": "1.0.0-beta.29",
     "chai": "4.3.4",
-    "typescript": "3.9.9",
-    "vue-template-compiler": "2.6.12"
+    "cpy-cli": "3.1.1",
+    "rimraf": "3.0.2",
+    "typescript": "3.9.9"
   }
 }
