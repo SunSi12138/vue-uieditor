@@ -5,8 +5,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const uieditorName = 'vue-uieditor';
 const publicPath = './';
 const filename = '[name].[hash].js';
-const assetPath = path.join(uieditorName, './assets');
-const cssPath = path.join(assetPath, 'css');
+const assetPath = path.join(uieditorName, './assets').replace(/\\/g, '/');
+const cssPath = path.join(assetPath, 'css').replace(/\\/g, '/');
 
 // vue.config.js
 module.exports = {
