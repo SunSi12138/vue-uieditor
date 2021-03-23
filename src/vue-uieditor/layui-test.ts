@@ -124,11 +124,25 @@ export function LayuiInit() {
       return false;
     });
 
+    const isDragElement = function(element){
+      return element &&
+       (element.classList.contains('uieditor-drag-item') || element.classList.contains('uieditor-drag-content'))
+    };
+    const findDragElement = function(element){
+      if (isDragElement(element)){
+        return element
+      }
+      return isDragElement(element) ? element : $(element).closest('.uieditor-drag-item,.uieditor-drag-content')[0];
+    };
+
     //select
     jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
-      stopEvent(e);
-      select(e.target, boxOpt);
-      return false;
+      const element = findDragElement(e.toElement || e.target);
+      if (element) {
+        stopEvent(e);
+        select(element, boxOpt);
+        return false;
+      }
     });
 
     let _overBoxTarget;
@@ -165,14 +179,20 @@ export function LayuiInit() {
 
     //overBox
     jEditorJsonContent.on('mouseenter', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
-      stopEvent(e);
-      overBox(e.target, boxOpt);
-      return false;
+      const element = findDragElement(e.toElement || e.target);
+      if (element) {
+        stopEvent(e);
+        overBox(element, boxOpt);
+        return false;
+      }
     });
     jEditorJsonContent.on('mouseleave', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
-      stopEvent(e);
-      unOverBox();
-      return false;
+      const element = findDragElement(e.toElement || e.target);
+      if (element) {
+        stopEvent(e);
+        unOverBox();
+        return false;
+      }
     });
   }
 
