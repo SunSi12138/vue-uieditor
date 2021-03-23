@@ -5,11 +5,11 @@
   "scripts": {
     "serve": "rimraf ./dist && vue-cli-service serve",
     "build": "rimraf ./lib && vue-cli-service build && npm run lib-file",
+    "buildToNM":"npm run build && npm run NM-file",
     "dev": "npm run serve",
     "output": "vue-cli-service inspect --mode production > output.js",
-    "lib": "vue-cli-service build --target lib --name vue-uieditor --dest lib ./src/vue-uieditor/index.ts && npm run lib-file",
     "lib-file": "cpy ./*/** ../../../../lib/@types --cwd=./lib/@types-build/src/vue-uieditor --parents && cpy ./lib-build ./lib && rimraf ./lib/@types-build",
-    "nodemodule-file": "cpy ./*/** ../node_modules/vue-uieditor --cwd=./lib --parents && cpy ./lib-build ./lib && rimraf ./lib/@types-build",
+    "NM-file": "cpy ./*/** ../node_modules/vue-uieditor --cwd=./lib --parents && cpy ./lib-build ./lib && rimraf ./lib/@types-build",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
