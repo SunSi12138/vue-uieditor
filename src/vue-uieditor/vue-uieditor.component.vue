@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 340px; width: 100%">
+  <div style="height: 100%; width: 100%">
     <div class="layui-uieditor">
       <div class="layui-tab layui-tab-card">
         <!-- tool-bar -->

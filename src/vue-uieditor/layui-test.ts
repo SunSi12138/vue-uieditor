@@ -1,10 +1,64 @@
 
 
+// interface JQueryEx<TElement = HTMLElement> extends JQuery<TElement>{
+//   linkdom(callback):void;
+// }
+
+// declare module '@types/jquery/JQuery' {
+//   interface JQuery {
+//     linkdom(callback):void;
+//   }
+// }
+
+// declare namespace JQuery {
+//   function linkdom(callback):void;
+
+// }
+
 declare const layui: any;
 
-export function LayuiInit() {
+export function Layuidestroy($el) {
+  setTimeout(function () {
+    layui.$($el).remove();
+  }, 1);
+  // layui.$($el).html('');
+  // const $ = layui.$;
+  // layui.$('*', $el).add([$el]).each(function () {
+  //   layui.$.event.remove(this);
+  //   // console.log('aaaaa')
+  //   layui.$.removeData(this);
+  //   if (this._vue_uieditor_linkdom) {
+  //     $.each(this._vue_uieditor_linkdom, function (idx, item) {
+  //       item && item();
+  //     });
+  //     this._vue_uieditor_linkdom = null;
+  //   }
+  // });
+}
 
-  function dragStart($: any, jUieditor: any) {
+
+let isJqueryInit = false;
+function jqueryInit($: JQueryStatic) {
+  if (isJqueryInit) return;
+  isJqueryInit = true;
+
+  const _cleanData = $.cleanData;
+  $.cleanData = function (elems) {
+    for (var i = 0, elem; (elem = elems[i]) != null; i++) {
+      try {
+        $(elem).triggerHandler('vue_uieditor_linkdom');
+      } catch (e) { }
+    }
+    _cleanData.apply($, arguments);
+  };
+  ($ as any).fn.linkdom = function (callback) {
+    this.one('vue_uieditor_linkdom', callback);
+  }
+};
+
+export function LayuiInit($el) {
+
+  function dragStart($: JQueryStatic, jUieditor: JQuery) {
     const stopEvent = function (e: any) {
       e.stopPropagation();
       e.preventDefault();
@@ -12,7 +66,7 @@ export function LayuiInit() {
 
     const boxOpt = {
       title: 'test',
-      //0， 没有；1：收起；2：展开
+      //1：收起；2：展开
       collapse: 1,
       menus: [{
         text: '复制',
@@ -35,6 +89,9 @@ export function LayuiInit() {
     const jSelectBox = $('<div class="uieditor-drag-sel-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
     const jOverBox = $('<div class="uieditor-drag-over-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
     const jPosline = $('<div class="uieditor-drag-pos-line ' + hideCls + '" />').appendTo(jEditorJsonContent);
+    (jEditorJsonContent as any).linkdom(function () {
+      // console.log('linkdom jEditorJsonContent')
+    });
 
     /**
      * 获取element的rect
@@ -70,17 +127,17 @@ export function LayuiInit() {
 
     }
 
-    var _selectTarget: any = null;
-    const isSelect = function (target: any) {
-      return target == _selectTarget;
+    var _selectElement: any = null;
+    const isSelect = function (element: any) {
+      return element == _selectElement;
     };
     const unSelect = function () {
-      _selectTarget = null;
+      _selectElement = null;
       jSelectBox.addClass(hideCls);
     };
-    const select = function (target, opt) {
-      if (isSelect(target)) return;
-      _selectTarget = target;
+    const select = function (element, opt) {
+      if (isSelect(element)) return;
+      _selectElement = element;
       unOverBox();
 
       // const jTarget = $(target);
@@ -94,7 +151,7 @@ export function LayuiInit() {
           right += 20;
         });
       }
-      const collapseHtml = !collapse ? '' :
+      const collapseHtml = !element.classList.contains('uieditor-drag-content') ? '' :
         `<i class="container-extand-icon layui-icon ${collapse == 1 ? 'layui-icon-right' : 'layui-icon-down'}"></i>`
       const html = `<div class="title">
         ${collapseHtml}
@@ -102,7 +159,7 @@ export function LayuiInit() {
       </div>${toolbarHtmlList.join('')}`;
       jSelectBox.html(html);
 
-      const rect = _getOffsetRect(target);
+      const rect = _getOffsetRect(element);
       jSelectBox.css({
         top: `${rect.top}px`,
         left: `${rect.left}px`,
@@ -124,12 +181,12 @@ export function LayuiInit() {
       return false;
     });
 
-    const isDragElement = function(element){
+    const isDragElement = function (element) {
       return element &&
-       (element.classList.contains('uieditor-drag-item') || element.classList.contains('uieditor-drag-content'))
+        (element.classList.contains('uieditor-drag-item') || element.classList.contains('uieditor-drag-content'))
     };
-    const findDragElement = function(element){
-      if (isDragElement(element)){
+    const findDragElement = function (element) {
+      if (isDragElement(element)) {
         return element
       }
       return isDragElement(element) ? element : $(element).closest('.uieditor-drag-item,.uieditor-drag-content')[0];
@@ -145,21 +202,21 @@ export function LayuiInit() {
       }
     });
 
-    let _overBoxTarget;
-    const isOverBox = function (target: any) {
-      return target == _overBoxTarget;
+    let _overBoxElement;
+    const isOverBox = function (element: any) {
+      return element == _overBoxElement;
     };
     const unOverBox = function () {
-      _overBoxTarget = null;
+      _overBoxElement = null;
       jOverBox.addClass(hideCls);
     };
-    const overBox = function (target, opt) {
-      if (isOverBox(target) || isSelect(target)) return;
-      _overBoxTarget = target;
+    const overBox = function (element, opt) {
+      if (isOverBox(element) || isSelect(element)) return;
+      _overBoxElement = element;
 
       // const jTarget = $(target);
       const { title, collapse } = opt;
-      const collapseHtml = !collapse ? '' :
+      const collapseHtml = !element.classList.contains('uieditor-drag-content') ? '' :
         `<i class="container-extand-icon layui-icon ${collapse == 1 ? 'layui-icon-right' : 'layui-icon-down'}"></i>`
       const html = `<div class="title">
         ${collapseHtml}
@@ -167,7 +224,7 @@ export function LayuiInit() {
       </div>`;
       jOverBox.html(html);
 
-      const rect = _getOffsetRect(target);
+      const rect = _getOffsetRect(element);
       jOverBox.css({
         top: `${rect.top}px`,
         left: `${rect.left}px`,
@@ -197,14 +254,17 @@ export function LayuiInit() {
   }
 
   layui.config({ base: '../src/lay/modules/' }).use(['tree', 'form', 'layedit', 'element', 'colorpicker', 'slider', 'selectInput'], function () {
+
     var form = layui.form
       , layer = layui.layer
-      , $ = layui.$
+      , $: JQueryStatic = layui.$
       , tree = layui.tree
       , layedit = layui.layedit
       , colorpicker = layui.colorpicker
       , slider = layui.slider
       , selectInput = layui.selectInput;
+
+    jqueryInit($);
 
     $('div[colorpicker]').each(function (idx, el) {
       var jParent = $(el);

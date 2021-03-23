@@ -13,14 +13,19 @@ import './layui/lay/modules/colorpicker.js';
 import './layui/lay/modules/slider.js';
 import './layui/lay/modules/tree.js';
 import './layui/lay/modules/selectInput.js';
-import { LayuiInit } from './layui-test';
+import { Layuidestroy, LayuiInit } from './layui-test';
+
+declare const layui:any;
 
 @Component({
   created(){
     console.warn('created', this);
   },
   mounted(){
-    LayuiInit()
+    LayuiInit(this.$el);
+  },
+  destroyed(){
+    Layuidestroy(this.$el);
   }
 })
 export default class VueUieditor extends Vue {
