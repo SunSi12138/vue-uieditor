@@ -100,7 +100,7 @@ function getMousePos(body, el, e) {
 /** 位置线（上下左右）决定边距 */
 const _posLineAbs = 20;
 /** 位置线厚度 */
-const _posLineThick = 2;
+const _posLineThick = 0;
 /** 位置线 显示距离 */
 const _posLineDistance = 2;
 /** 计算 位置线 */
@@ -156,10 +156,14 @@ function getPosLine(body, el: HTMLElement, ev: MouseEvent) {
     //内容
     type = 'in';
     type2 = 'in';
-    width = rect.width - _posLineThick * 2;
-    top = rect.top + Math.min(20, rect.height / 2);
-    left = rect.left + _posLineThick;
-    height = _posLineThick;
+    // width = rect.width - _posLineThick * 2;
+    // top = rect.top + Math.min(20, rect.height / 2);
+    // left = rect.left + _posLineThick;
+    // height = _posLineThick;
+    width = rect.width;
+    top = rect.top;
+    left = rect.left;
+    height = rect.height;
   } else {
     return null;
   }
@@ -352,7 +356,7 @@ export function LayuiInit($el) {
 
 
     let _dragPosLine, _dragPosLineEl;
-    const posLine = function(el, ev, rect) {
+    const posLine = function (el, ev, rect) {
       if (!el) return;
       rect || (rect = getPosLine(body, el, ev));
       if (!rect) return;
@@ -375,18 +379,24 @@ export function LayuiInit($el) {
           body.scrollTop = rect.top + 10 - clientHeight;
         }
       }
-      $(box).css({
+      const jBox = $(box);
+      jBox.css({
         top: `${rect.top}px`,
         left: `${rect.left}px`,
         width: `${rect.width}px`,
         height: `${rect.height}px`,
       });
+      if ((rect.type == 'in'))
+        jBox.addClass('pos-line-box');
+      else
+        jBox.removeClass('pos-line-box');
       classList.remove(hideCls);
       return box;
     }
-    const unPosLine = function() {
+    const unPosLine = function () {
       // BgLogger.debug('unPosLine', el);
       _dragPosLine = _dragPosLineEl = null;
+      draging = false;
       const box = jPosline[0];
       box.classList.add(hideCls);
     };
@@ -424,7 +434,6 @@ export function LayuiInit($el) {
       let _dragOverEl_pre = null;
       const jWIn = $(window);
       const mousemove = function (e) {
-        console.log('mousemove');
         e.stopPropagation();
         e.preventDefault();
         if (_checkDragStart(el, e)) {
@@ -471,6 +480,7 @@ export function LayuiInit($el) {
               //   _drag.posLine(dragOverEl, e, rectNew);
             }
           } else {
+            // unPosLine();
             // _drag.unPosLine(dragOverEl);
           }
         }
@@ -481,7 +491,11 @@ export function LayuiInit($el) {
       const mouseup = function (e) {
         jWIn.off('mousemove', mousemove);
         jWIn.off('mouseup', mouseup);
+
         unPosLine();
+        el.classList.remove(hideCls);
+        select(el, boxOpt);
+
       };
       jWIn.on('mousemove', mousemove);
       jWIn.on('mouseup', mouseup);

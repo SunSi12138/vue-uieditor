@@ -1,6 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import './layui/css/layui-uieditor.css';
+import './layui/css/layui-uieditor.less';
 import './layui/css/modules/layer/default/layer.css';
 
 import './layui/layui.js';

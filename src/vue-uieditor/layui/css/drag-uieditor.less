@@ -24,11 +24,11 @@
       padding         : 3px;
       cursor          : pointer;
       pointer-events  : visible;
-      top: -24px;
-      height: 16px;
-      width: 16px;
-      font-size: 14px;
-      line-height: 18px;
+      top             : -24px;
+      height          : 16px;
+      width           : 16px;
+      font-size       : 14px;
+      line-height     : 18px;
       overflow        : hidden;
 
       &:last-child {
@@ -62,7 +62,7 @@
       white-space     : nowrap;
 
       >i {
-        cursor: pointer;
+        cursor   : pointer;
         font-size: 12px;
       }
     }
@@ -93,7 +93,7 @@
       white-space     : nowrap;
 
       >i {
-        cursor: pointer;
+        cursor   : pointer;
         font-size: 12px;
       }
     }
@@ -104,15 +104,19 @@
     transition      : top, left 300ms;
     position        : absolute;
     border          : solid #ff0000 2px;
-    background-color: transparent;
+    background-color: #ff0000;
     pointer-events  : none;
+
+    &.pos-line-box {
+      background-color: transparent;
+    }
   }
 
-   /** JSON root节点(第一个)的样式 */
-   .uieditor-drag-root {
+  /** JSON root节点(第一个)的样式 */
+  .uieditor-drag-root {
     min-height: 75%;
-    margin: 28px 10px 10px 10px;
-   }
+    margin    : 28px 10px 10px 10px;
+  }
 
   .uieditor-drag-content {
     &.over::after {
