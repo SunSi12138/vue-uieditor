@@ -48,7 +48,7 @@ module.exports = {
   chainWebpack: config => {
     console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 
-    // 不编译 layui
+    // // 不编译 layui
     config.module
       .rule('js')
       .test(/\.jsx?$/)

@@ -1,17 +1,19 @@
 
 
-declare const layui:any;
+declare const layui: any;
 
 export function LayuiInit() {
 
-  function dragStart($:any, jUieditor:any) {
-    var stopEvent = function (e:any) {
+  function dragStart($: any, jUieditor: any) {
+    const stopEvent = function (e: any) {
       e.stopPropagation();
       e.preventDefault();
     };
 
-    var opt = {
+    const boxOpt = {
       title: 'test',
+      //0， 没有；1：收起；2：展开
+      collapse: 1,
       menus: [{
         text: '复制',
         icon: 'layui-icon-file-b',
@@ -28,17 +30,17 @@ export function LayuiInit() {
     };
 
 
-    var hideCls = 'uieditor-drag-hide';
-    var jEditorJsonContent = jUieditor.find('.editor-json-content').first();
-    var jSelectBox = $('<div class="uieditor-drag-sel-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
-    var jOverBox = $('<div class="uieditor-drag-over-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
-    var jPosline = $('<div class="uieditor-drag-pos-line ' + hideCls + '" />').appendTo(jEditorJsonContent);
+    const hideCls = 'uieditor-drag-hide';
+    const jEditorJsonContent = jUieditor.find('.editor-json-content').first();
+    const jSelectBox = $('<div class="uieditor-drag-sel-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
+    const jOverBox = $('<div class="uieditor-drag-over-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
+    const jPosline = $('<div class="uieditor-drag-pos-line ' + hideCls + '" />').appendTo(jEditorJsonContent);
 
     /**
      * 获取element的rect
      * @param target 
      */
-    var _getOffsetRect = function (target:any) {
+    const _getOffsetRect = function (target: any) {
 
       const body = jEditorJsonContent[0];
 
@@ -68,36 +70,39 @@ export function LayuiInit() {
 
     }
 
-    var _selectTarget:any = null;
-    var isSelect = function (target:any) {
+    var _selectTarget: any = null;
+    const isSelect = function (target: any) {
       return target == _selectTarget;
     };
-
-    var unSelect = function(){
+    const unSelect = function () {
       _selectTarget = null;
       jSelectBox.addClass(hideCls);
     };
-    var select = function (target) {
+    const select = function (target, opt) {
       if (isSelect(target)) return;
       _selectTarget = target;
+      unOverBox();
 
-      var jTarget = $(target);
-      var title = opt.title;
-      var menus = opt.menus;
-      var toolbarHtmlList = [];
-      var right = 0;
-      menus.forEach(function (item, index) {
-        toolbarHtmlList.push(`<a href="javascript:void(0);" title="${item.text}" class="select-toolbar layui-icon ${item.icon}"
+      // const jTarget = $(target);
+      const { title, collapse, menus } = opt;
+      const toolbarHtmlList = [];
+      let right = 0;
+      if (menus && menus.length > 0) {
+        menus.slice().reverse().forEach(function (item, index) {
+          toolbarHtmlList.push(`<a href="javascript:void(0);" title="${item.text}" class="select-toolbar layui-icon ${item.icon}"
         tIndex="${index}" style="right:${right}px" />`);
-        right += 20;
-      });
-      var html = `<div class="title">
-        <i id="collapse" class="container-extand-icon layui-icon layui-icon-right"></i>
+          right += 20;
+        });
+      }
+      const collapseHtml = !collapse ? '' :
+        `<i class="container-extand-icon layui-icon ${collapse == 1 ? 'layui-icon-right' : 'layui-icon-down'}"></i>`
+      const html = `<div class="title">
+        ${collapseHtml}
         ${title}
       </div>${toolbarHtmlList.join('')}`;
       jSelectBox.html(html);
 
-      var rect = _getOffsetRect(target);
+      const rect = _getOffsetRect(target);
       jSelectBox.css({
         top: `${rect.top}px`,
         left: `${rect.left}px`,
@@ -108,23 +113,67 @@ export function LayuiInit() {
 
     };
 
+    // select menu click
     jSelectBox.on('click', '>a', function (e) {
       stopEvent(e);
       var jo = $(e);
       var index = ~~jo.attr('tIndex');
       if (index >= 0) {
-        opt.menus[index].click();
+        boxOpt.menus[index].click();
       }
       return false;
     });
 
-
+    //select
     jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
       stopEvent(e);
-      select(e.target);
+      select(e.target, boxOpt);
       return false;
     });
 
+    let _overBoxTarget;
+    const isOverBox = function (target: any) {
+      return target == _overBoxTarget;
+    };
+    const unOverBox = function () {
+      _overBoxTarget = null;
+      jOverBox.addClass(hideCls);
+    };
+    const overBox = function (target, opt) {
+      if (isOverBox(target) || isSelect(target)) return;
+      _overBoxTarget = target;
+
+      // const jTarget = $(target);
+      const { title, collapse } = opt;
+      const collapseHtml = !collapse ? '' :
+        `<i class="container-extand-icon layui-icon ${collapse == 1 ? 'layui-icon-right' : 'layui-icon-down'}"></i>`
+      const html = `<div class="title">
+        ${collapseHtml}
+        ${title}
+      </div>`;
+      jOverBox.html(html);
+
+      const rect = _getOffsetRect(target);
+      jOverBox.css({
+        top: `${rect.top}px`,
+        left: `${rect.left}px`,
+        width: `${rect.width}px`,
+        height: `${rect.height}px`,
+      });
+      jOverBox.removeClass(hideCls);
+    };
+
+    //overBox
+    jEditorJsonContent.on('mouseenter', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
+      stopEvent(e);
+      overBox(e.target, boxOpt);
+      return false;
+    });
+    jEditorJsonContent.on('mouseleave', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
+      stopEvent(e);
+      unOverBox();
+      return false;
+    });
   }
 
   layui.config({ base: '../src/lay/modules/' }).use(['tree', 'form', 'layedit', 'element', 'colorpicker', 'slider', 'selectInput'], function () {
@@ -137,32 +186,32 @@ export function LayuiInit() {
       , slider = layui.slider
       , selectInput = layui.selectInput;
 
-    $('div[colorpicker]').each(function(idx, el){
+    $('div[colorpicker]').each(function (idx, el) {
       var jParent = $(el);
       var jColor = jParent.children('div');
-          console.warn("jParent", el, jParent.children(), jColor)
-             //表单赋值
+      console.warn("jParent", el, jParent.children(), jColor)
+      //表单赋值
       colorpicker.render({
         elem: jColor[0]
-        ,color: '#1c97f5'
-        ,done: function(color){
+        , color: '#1c97f5'
+        , done: function (color) {
           console.warn("jParent.find('input')'", jParent, jParent.find('input'))
           jParent.find('input').first().val(color);
         }
       });
     });
 
-        //表单赋值
-slider.render({
-  elem: '[slider]'
-  , range: false
-  , step:1
-  , min:1
-  , max:24
-  ,change: function(value){
-    console.warn('slider', value)
-  }
-});
+    //表单赋值
+    slider.render({
+      elem: '[slider]'
+      , range: false
+      , step: 1
+      , min: 1
+      , max: 24
+      , change: function (value) {
+        console.warn('slider', value)
+      }
+    });
 
     dragStart($, $('.layui-uieditor').first());
     console.warn('element', layui.element);
@@ -345,7 +394,7 @@ slider.render({
       }]
     }];
 
-    let index =0;
+    let index = 0;
     tree.render({
       elem: '#tree1'
       , data: data1
