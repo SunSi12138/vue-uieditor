@@ -46,6 +46,127 @@ function linkDom(dom, callback) {
   jo.one('vue_uieditor_linkdom', callback);
 }
 
+
+/**
+ * 获取element的rect
+ * @param target 
+ */
+function getOffsetRect(body, target: any) {
+
+  const doc = target.ownerDocument;
+  const docElem = doc.documentElement;
+  const win = doc.defaultView;
+  const offsetTop = win.pageYOffset - docElem.clientTop;
+  const offsetLeft = win.pageXOffset - docElem.clientLeft;
+
+  const bodyRect = body.getBoundingClientRect();
+  const bodyTop = bodyRect.top + offsetTop - body.scrollTop;
+  const bodyLeft = bodyRect.left + offsetLeft - body.scrollLeft;
+
+  const rect = target.getBoundingClientRect();
+  const top = rect.top + offsetTop - bodyTop;
+  const bottom = rect.bottom + offsetTop - bodyTop;
+  const left = rect.left + offsetLeft - bodyLeft;
+  const right = rect.right + offsetLeft - bodyLeft;
+  const width = right - left;
+  const height = bottom - top;
+
+  return {
+    top, bottom, left, right,
+    width, height
+  };
+
+}
+
+/**
+ * 根据事件，获取当前鼠标位置
+ * @param e 
+ */
+function getMousePos(body, el, e) {
+  const bodyRect = body.getBoundingClientRect();
+  const doc = el.ownerDocument;
+  const docElem = doc.documentElement;
+  const win = doc.defaultView;
+  const offsetTop = win.pageYOffset - docElem.clientTop;
+  const offsetLeft = win.pageXOffset - docElem.clientLeft;
+
+  const bodyTop = bodyRect.top + offsetTop - body.scrollTop;
+  const bodyLeft = bodyRect.left + offsetLeft - body.scrollLeft;
+
+  return { x: e.pageX - bodyLeft, y: e.pageY - bodyTop };
+}
+
+
+/** 位置线（上下左右）决定边距 */
+const _posLineAbs = 20;
+/** 位置线厚度 */
+const _posLineThick = 2;
+/** 位置线 显示距离 */
+const _posLineDistance = 2;
+/** 计算 位置线 */
+function getPosLine(body, el: HTMLElement, ev: MouseEvent) {
+  const mousePos = getMousePos(body, el, ev);
+  const rect = getOffsetRect(body, el);
+  const yAbs = Math.min(_posLineAbs, rect.height / 3);
+  const xAbs = Math.min(_posLineAbs, rect.width / 3);
+  let top = 0, left = 0, width = 0, height = 0, type, type2;
+  const tmPos = _posLineThick + _posLineDistance;
+  // if (el.classList.contains('uieditor-drag-content')) {
+  //   //内容
+  //   type = 'in';
+  //   type2 = 'in';
+  //   width = rect.width - _posLineThick * 2;
+  //   top = rect.top + Math.min(20, rect.height / 2);
+  //   left = rect.left + _posLineThick;
+  //   height = _posLineThick;
+  // } else
+  if (mousePos.y < rect.top + yAbs) {
+    //上
+    type = 'top';
+    type2 = 'before';
+    width = rect.width;
+    top = rect.top - tmPos;
+    left = rect.left;
+    height = _posLineThick;
+  } else if (mousePos.y > rect.bottom - yAbs) {
+    //下
+    type = 'bottom';
+    type2 = 'after';
+    width = rect.width;
+    top = rect.bottom + tmPos;
+    left = rect.left;
+    height = _posLineThick;
+  } else if (mousePos.x < rect.left + xAbs) {
+    //左
+    type = 'left';
+    type2 = 'before';
+    width = _posLineThick;
+    top = rect.top;
+    left = rect.left - tmPos;
+    height = rect.height;
+  } else if (mousePos.x > rect.right - xAbs) {
+    //左
+    type = 'right';
+    type2 = 'after';
+    width = _posLineThick;
+    top = rect.top;
+    left = rect.right + tmPos;
+    height = rect.height;
+  } else if (el.classList.contains('uieditor-drag-content')) {
+    //内容
+    type = 'in';
+    type2 = 'in';
+    width = rect.width - _posLineThick * 2;
+    top = rect.top + Math.min(20, rect.height / 2);
+    left = rect.left + _posLineThick;
+    height = _posLineThick;
+  } else {
+    return null;
+  }
+  return { top, left, width, height, type, type2 };
+}
+
+
 export function LayuiInit($el) {
 
   const form = layui.form
@@ -89,45 +210,13 @@ export function LayuiInit($el) {
     const jSelectBox = $('<div class="uieditor-drag-sel-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
     const jOverBox = $('<div class="uieditor-drag-over-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
     const jPosline = $('<div class="uieditor-drag-pos-line ' + hideCls + '" />').appendTo(jEditorJsonContent);
+    const body = jEditorJsonContent[0];
 
     linkDom(jEditorJsonContent, function () {
       console.log('clear jEditorJsonContent');
     });
 
-    /**
-     * 获取element的rect
-     * @param target 
-     */
-    const _getOffsetRect = function (target: any) {
-
-      const body = jEditorJsonContent[0];
-
-
-      const doc = target.ownerDocument;
-      const docElem = doc.documentElement;
-      const win = doc.defaultView;
-      const offsetTop = win.pageYOffset - docElem.clientTop;
-      const offsetLeft = win.pageXOffset - docElem.clientLeft;
-
-      const bodyRect = body.getBoundingClientRect();
-      const bodyTop = bodyRect.top + offsetTop - body.scrollTop;
-      const bodyLeft = bodyRect.left + offsetLeft - body.scrollLeft;
-
-      const rect = target.getBoundingClientRect();
-      const top = rect.top + offsetTop - bodyTop;
-      const bottom = rect.bottom + offsetTop - bodyTop;
-      const left = rect.left + offsetLeft - bodyLeft;
-      const right = rect.right + offsetLeft - bodyLeft;
-      const width = right - left;
-      const height = bottom - top;
-
-      return {
-        top, bottom, left, right,
-        width, height
-      };
-
-    }
-
+    //#region select
 
     var _selectElement: any = null;
     const isSelect = function (element: any) {
@@ -161,7 +250,7 @@ export function LayuiInit($el) {
       </div>${toolbarHtmlList.join('')}`;
       jSelectBox.html(html);
 
-      const rect = _getOffsetRect(element);
+      const rect = getOffsetRect(body, element);
       jSelectBox.css({
         top: `${rect.top}px`,
         left: `${rect.left}px`,
@@ -204,6 +293,10 @@ export function LayuiInit($el) {
       }
     });
 
+    //#endregion select
+
+    //#region overBox
+
     let _overBoxElement;
     const isOverBox = function (element: any) {
       return element == _overBoxElement;
@@ -213,7 +306,11 @@ export function LayuiInit($el) {
       jOverBox.addClass(hideCls);
     };
     const overBox = function (element, opt) {
-      if (isOverBox(element) || isSelect(element)) return;
+      if (isOverBox(element)) return;
+      if (isSelect(element)) {
+        unOverBox();
+        return;
+      }
       _overBoxElement = element;
 
       // const jTarget = $(target);
@@ -226,7 +323,7 @@ export function LayuiInit($el) {
       </div>`;
       jOverBox.html(html);
 
-      const rect = _getOffsetRect(element);
+      const rect = getOffsetRect(body, element);
       jOverBox.css({
         top: `${rect.top}px`,
         left: `${rect.left}px`,
@@ -248,6 +345,151 @@ export function LayuiInit($el) {
     jEditorJsonContent.on('mouseleave', function (e) {
       unOverBox();
     });
+
+    //#endregion overBox
+
+    //#region posLine
+
+
+    let _dragPosLine, _dragPosLineEl;
+    const posLine = function(el, ev, rect) {
+      if (!el) return;
+      rect || (rect = getPosLine(body, el, ev));
+      if (!rect) return;
+      // BgLogger.debug('posLine', el, rect);
+      // _option.setContext(el, '_dragPosLine_pre', _option.getContext(el, '_dragPosLine'));
+      _dragPosLine = rect;
+      _dragPosLineEl = el;
+      const box = jPosline[0];
+      const classList = box.classList;
+      if (!classList.contains('uieditor-drag-pos-line')) {
+        classList.add('uieditor-drag-pos-line')
+      }
+      const top = rect.top;
+      if (top > 0 && top < body.scrollTop) {
+        body.scrollTop = top;
+      } else {
+        const clientHeight = body.clientHeight;
+        let maxY = body.scrollTop + clientHeight;
+        if (rect.top > maxY) {
+          body.scrollTop = rect.top + 10 - clientHeight;
+        }
+      }
+      $(box).css({
+        top: `${rect.top}px`,
+        left: `${rect.left}px`,
+        width: `${rect.width}px`,
+        height: `${rect.height}px`,
+      });
+      classList.remove(hideCls);
+      return box;
+    }
+    const unPosLine = function() {
+      // BgLogger.debug('unPosLine', el);
+      _dragPosLine = _dragPosLineEl = null;
+      const box = jPosline[0];
+      box.classList.add(hideCls);
+    };
+
+
+    let draging = false;
+    let dragPos = null;
+    let dragEl = null;
+    function _checkDragStart(el, ev) {
+      if (!dragEl || dragEl != el || !dragPos) return false;
+      if (draging) return true;
+      const pos = getMousePos(body, el, ev);
+      const start = _checkDragPos(pos, dragPos);
+      if (start) {
+        draging = true;
+        dragPos = null;
+      }
+      return start;
+    }
+    //移位xx位置后开始拖动
+    const _dragAbs = 5;
+    function _checkDragPos(pos1, pos2) {
+      return Math.abs(pos1.x - pos2.x) >= _dragAbs
+        || Math.abs(pos1.y - pos2.y) >= _dragAbs;
+    }
+
+    jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
+      const el = findDragElement(e.toElement || e.target);
+      if (!el) return;
+
+      dragPos = getMousePos(body, el, e);
+      dragEl = el;
+
+      let _dragPosLine_pre = null;
+      let _dragOverEl_pre = null;
+      const jWIn = $(window);
+      const mousemove = function (e) {
+        console.log('mousemove');
+        e.stopPropagation();
+        e.preventDefault();
+        if (_checkDragStart(el, e)) {
+          try {
+            el.classList.add(hideCls);
+            unSelect();
+          } finally {
+            return false;
+          }
+        }
+        if (draging) {
+          const dragOverEl = _overBoxElement;
+          if (dragOverEl) {
+            const dragOverEl_pre = _dragOverEl_pre;
+            let change = dragOverEl_pre != dragOverEl;
+
+            const rectNew = getPosLine(body, dragOverEl, e);
+            if (!change) {
+              const rectPre = _dragPosLine_pre;
+              change = !rectNew || !rectPre || rectPre.type2 != rectNew.type2;
+            }
+
+            if (change) {
+              _dragOverEl_pre = dragOverEl;
+              _dragPosLine_pre = rectNew;
+              posLine(dragOverEl, e, rectNew);
+              // const overOpt = _option.get(dragOverEl)
+              // let onDragover1 = overOpt.dragover;
+              // // BgLogger.debug('onDragover1')
+              // if (onDragover1) {
+              //   // BgLogger.debug('onDragover1 bbbb')
+              //   if (onDragover1(_makeEvent({
+              //     fromEl: _option.getContext(el, '_dragEl'),
+              //     pos: rectNew,
+              //     toEl: dragOverEl, binding, vnode, ev: e
+              //   })) === false) {
+              //     // BgLogger.debug('onDragover1 false', rectNew && rectNew.type2)
+              //     _drag.unPosLine(dragOverEl);
+              //   } else {
+              //     // BgLogger.debug('onDragover1 true', rectNew && rectNew.type2)
+              //     _drag.posLine(dragOverEl, e, rectNew);
+              //   }
+              // } else
+              //   _drag.posLine(dragOverEl, e, rectNew);
+            }
+          } else {
+            // _drag.unPosLine(dragOverEl);
+          }
+        }
+
+        return false;
+      };
+
+      const mouseup = function (e) {
+        jWIn.off('mousemove', mousemove);
+        jWIn.off('mouseup', mouseup);
+        unPosLine();
+      };
+      jWIn.on('mousemove', mousemove);
+      jWIn.on('mouseup', mouseup);
+
+    });
+
+    //#endregion posLine
+
 
   }
 
