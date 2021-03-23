@@ -74,7 +74,6 @@
               <div class="left">
                 <div class="left-content">
                   <form
-                    id="form-attr-search"
                     class="layui-form uieditor-searchform"
                     action=""
                     lay-filter="first"
@@ -181,7 +180,6 @@
                       <!-- 属性 -->
                       <div class="layui-tab-item layui-show">
                         <form
-                          id="form-attr-search"
                           class="layui-form uieditor-searchform"
                           action=""
                           lay-filter="first"
@@ -208,7 +206,6 @@
                             </h2>
                             <div class="layui-colla-content layui-show">
                               <form
-                                id="form1"
                                 class="layui-form layui-form-pane1 uieditor-form"
                                 action=""
                                 lay-filter="first"
@@ -376,7 +373,6 @@
                             </h2>
                             <div class="layui-colla-content layui-show">
                               <form
-                                id="form1"
                                 class="layui-form layui-form-pane1 uieditor-form"
                                 action=""
                                 lay-filter="first"
@@ -871,7 +867,6 @@
                             <!-- 事件内容 -->
                             <div class="layui-colla-content layui-show">
                               <form
-                                id="form1"
                                 class="layui-form layui-form-pane1 uieditor-form"
                                 action=""
                                 lay-filter="first"

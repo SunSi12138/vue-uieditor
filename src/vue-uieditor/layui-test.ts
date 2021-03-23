@@ -1,21 +1,6 @@
 
-
-// interface JQueryEx<TElement = HTMLElement> extends JQuery<TElement>{
-//   linkdom(callback):void;
-// }
-
-// declare module '@types/jquery/JQuery' {
-//   interface JQuery {
-//     linkdom(callback):void;
-//   }
-// }
-
-// declare namespace JQuery {
-//   function linkdom(callback):void;
-
-// }
-
 declare const layui: any;
+let $: JQueryStatic;
 
 export function Layuidestroy($el) {
   setTimeout(function () {
@@ -36,11 +21,12 @@ export function Layuidestroy($el) {
   // });
 }
 
-
 let isJqueryInit = false;
-function jqueryInit($: JQueryStatic) {
+function jqueryInit() {
   if (isJqueryInit) return;
   isJqueryInit = true;
+
+  $ = layui.$;
 
   const _cleanData = $.cleanData;
   $.cleanData = function (elems) {
@@ -51,14 +37,28 @@ function jqueryInit($: JQueryStatic) {
     }
     _cleanData.apply($, arguments);
   };
-  ($ as any).fn.linkdom = function (callback) {
-    this.one('vue_uieditor_linkdom', callback);
-  }
 };
+
+//dom销毁时处理内容
+function linkDom(dom, callback) {
+  if (!dom) return;
+  const jo: any = dom instanceof $ ? dom : $(dom);
+  jo.one('vue_uieditor_linkdom', callback);
+}
 
 export function LayuiInit($el) {
 
-  function dragStart($: JQueryStatic, jUieditor: JQuery) {
+  const form = layui.form
+    , layer = layui.layer
+    , tree = layui.tree
+    , layedit = layui.layedit
+    , colorpicker = layui.colorpicker
+    , slider = layui.slider
+    , selectInput = layui.selectInput;
+
+  jqueryInit();
+
+  function dragStart(jUieditor: JQuery) {
     const stopEvent = function (e: any) {
       e.stopPropagation();
       e.preventDefault();
@@ -89,8 +89,9 @@ export function LayuiInit($el) {
     const jSelectBox = $('<div class="uieditor-drag-sel-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
     const jOverBox = $('<div class="uieditor-drag-over-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
     const jPosline = $('<div class="uieditor-drag-pos-line ' + hideCls + '" />').appendTo(jEditorJsonContent);
-    (jEditorJsonContent as any).linkdom(function () {
-      // console.log('linkdom jEditorJsonContent')
+
+    linkDom(jEditorJsonContent, function () {
+      console.log('clear jEditorJsonContent');
     });
 
     /**
@@ -126,6 +127,7 @@ export function LayuiInit($el) {
       };
 
     }
+
 
     var _selectElement: any = null;
     const isSelect = function (element: any) {
@@ -235,7 +237,7 @@ export function LayuiInit($el) {
     };
 
     //overBox
-    jEditorJsonContent.on('mouseenter', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
+    jEditorJsonContent.on('mouseover', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
       const element = findDragElement(e.toElement || e.target);
       if (element) {
         stopEvent(e);
@@ -243,28 +245,14 @@ export function LayuiInit($el) {
         return false;
       }
     });
-    jEditorJsonContent.on('mouseleave', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
-      const element = findDragElement(e.toElement || e.target);
-      if (element) {
-        stopEvent(e);
-        unOverBox();
-        return false;
-      }
+    jEditorJsonContent.on('mouseleave', function (e) {
+      unOverBox();
     });
+
   }
 
   layui.config({ base: '../src/lay/modules/' }).use(['tree', 'form', 'layedit', 'element', 'colorpicker', 'slider', 'selectInput'], function () {
 
-    var form = layui.form
-      , layer = layui.layer
-      , $: JQueryStatic = layui.$
-      , tree = layui.tree
-      , layedit = layui.layedit
-      , colorpicker = layui.colorpicker
-      , slider = layui.slider
-      , selectInput = layui.selectInput;
-
-    jqueryInit($);
 
     $('div[colorpicker]').each(function (idx, el) {
       var jParent = $(el);
@@ -293,7 +281,7 @@ export function LayuiInit($el) {
       }
     });
 
-    dragStart($, $('.layui-uieditor').first());
+    dragStart($('.layui-uieditor').first());
     console.warn('element', layui.element);
     selectInput.render({
       elem: '#selectInput1',
