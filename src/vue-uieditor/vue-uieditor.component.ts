@@ -14,7 +14,7 @@ import './layui/lay/modules/slider.js';
 import './layui/lay/modules/tree.js';
 import './layui/lay/modules/selectInput.js';
 import { Layuidestroy, LayuiInit } from './layui-test';
-import { UEVue, UEVueComponent, UEVueLife, UEVueProp } from './base/vue-extends';
+import { UEVue, UEVueComponent, UEVueEvent, UEVueLife, UEVueProp } from './base/vue-extends';
 
 declare const layui:any;
 
@@ -47,5 +47,10 @@ export default class VueUieditor extends UEVue {
   @UEVueLife('destroyed')
   private _destroyed1(){
     console.warn('destroyed 1111', this);
-  } 
+  }
+
+  @UEVueEvent('click', false, (el)=>{ console.warn('el', el); return el})
+  private _click1(){
+    console.warn('click 1111', this);
+  }
 }

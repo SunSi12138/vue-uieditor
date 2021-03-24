@@ -3,9 +3,7 @@ declare const layui: any;
 let $: JQueryStatic;
 
 export function Layuidestroy($el) {
-  setTimeout(function () {
-    layui.$($el).remove();
-  }, 1);
+  layui.$($el).remove();
   // layui.$($el).html('');
   // const $ = layui.$;
   // layui.$('*', $el).add([$el]).each(function () {

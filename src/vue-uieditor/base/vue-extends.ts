@@ -167,6 +167,15 @@ export function UEVueWatch<T = UEVue>(path: string | ((this: T) => any), options
   };
 }
 
+function _each(list: any[], fn) {
+  if (!list) return;
+  for (var len = list.length, i = 0; i < len; i++) {
+    const item = list[i];
+    const res = fn(item, i, list);
+    if (res === false) break;
+  }
+}
+
 export type UEVueLifeName = 'beforeCreate' | 'created' | 'beforeMount' | 'mounted' |
   'beforeDestroy' | 'destroyed' | 'beforeUpdate' | 'updated' |
   'activated' | 'deactivated' | 'beforeRouteEnter' | 'beforeRouteUpdate' | 'beforeRouteLeave';
@@ -176,6 +185,28 @@ function _setLife(target: any, lifeName: UEVueLifeName, fn: any, after?: boolean
     [lifeName]: fn
   }, after);
 }
+
+function _setLifeEx(target: any, lifeNames: UEVueLifeName[], fn: Function, after?: boolean) {
+  const fnList = [];
+  _setLife(target, 'created', function () {
+    const fnDefList = [];
+    _each(lifeNames, function (life, idx) {
+      if (!life) return;
+      const fnDef = function (fnItem) {
+        fnList[idx] = fnItem;
+      };
+      fnDefList[idx] = fnDef;
+    });
+    fn.apply(this, fnDefList);
+  });
+  _each(lifeNames, function (life, idx) {
+    if (!life) return;
+    _setLife(target, life, function () {
+      fnList[idx]?.apply(this, arguments);
+    }, after);
+  });
+}
+
 
 
 /**
@@ -198,20 +229,20 @@ export function UEVueLife(lifeName: UEVueLifeName, after?: boolean): PropertyDec
  * @param once 是否只触发一次
  * @param el 是否绑定到el
  */
-export function UEVueEvent<T = Vue>(event: string, once?: boolean, el?: ((this: T, el: HTMLElement) => HTMLElement | Document | Window) | boolean): PropertyDecorator;
+export function UEVueEvent<T = UEVue>(event: string, once?: boolean, el?: ((this: T, el: HTMLElement) => HTMLElement | Document | Window) | boolean): PropertyDecorator;
 /**
  * 
  * @param event 事件名称
  * @param p 选项
  * @param el 是否绑定到el
  */
-export function UEVueEvent<T = Vue>(event: string, p?: {
+export function UEVueEvent<T = UEVue>(event: string, p?: {
   /** 是否只触发一次，默认为false */
   once?: boolean;
   /** 是否路由activated才触发, 如果有el参数默认为true 否则为 false */
   activated?: boolean;
 }, el?: ((this: T, el: HTMLElement) => HTMLElement | Document | Window) | boolean): PropertyDecorator;
-export function UEVueEvent<T = Vue>(event: string, p: boolean | {
+export function UEVueEvent<T = UEVue>(event: string, p: boolean | {
   /** 是否只触发一次，默认为false */
   once?: boolean;
   /** 是否路由activated才触发, 如果有el参数默认为true 否则为 false */
@@ -241,24 +272,24 @@ export function UEVueEvent<T = Vue>(event: string, p: boolean | {
       };
 
     } else {
-      (function () {
+      _setLifeEx(target, ['created', 'updated', 'mounted', 'destroyed'], function (created, updated, mouated, destroyed) {
         let isEnd = false;
         let lastEl;
         const targetFn = target[propKey];
         let $this = this;
-        lifeObj.created = function () {
-          this._ue_event_activated = true;
+        created(function () {
+          $this._ue_event_activated = true;
           $this = this;
-        };
+        });
         let fn = function () {
           if (isEnd) return;
           if (once) isEnd = true;
-          if (activated && !this._ue_event_activated) return;
-          if ($this._ue_event_destroyed) return;
+          if (activated && !$this._ue_event_activated) return;
+          if (isdestroyed) return;
           targetFn.apply($this, arguments);
         };
         const upFn = function () {
-          if ($this._ue_event_destroyed) return;
+          if (isdestroyed) return;
           let $el = $this.$el;
           if (typeof el === fnType)
             $el = el['call']($this, $el);
@@ -269,22 +300,24 @@ export function UEVueEvent<T = Vue>(event: string, p: boolean | {
           if (!$el) return;
           $el.addEventListener(event, fn);
         };
-        lifeObj.updated = function () {
-          if ($this._ue_event_timeId) return;
-          $this._ue_event_timeId = setTimeout(function () {
-            $this._ue_event_timeId = null;
+        var timeId;
+        updated(function () {
+          if (timeId) return;
+          timeId = setTimeout(function () {
+            timeId = null;
             upFn();
           }, 50);
-        };
-        lifeObj.mouated = upFn;
-        lifeObj.destroyed = () => {
-          $this._ue_event_destroyed = true;
+        });
+        mouated(upFn);
+        var isdestroyed = false;
+        destroyed(() => {
+          isdestroyed = true;
           if (lastEl) {
             lastEl.removeEventListener(event, fn)
             lastEl = null;
           }
-        };
-      })();
+        });
+      });
     }
     _setMixin(target, lifeObj);
   };
