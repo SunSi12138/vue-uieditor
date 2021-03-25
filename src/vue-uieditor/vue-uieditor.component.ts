@@ -14,7 +14,7 @@ export default class VueUieditor extends UEVue {
   private _mounted1() {
     LayuiInit(this.$el);
     console.warn('this', this, ...[1,2,3]);
-    UECompiler.babelInit().then(function(){
+    UECompiler.init().then(function(){
       const fn = UECompiler.babelTransformToFunEx(['name', 'id'], 'return {name, id}');
       console.warn('babelTransformToFunEx', fn('user1', '1111'), fn);
     });

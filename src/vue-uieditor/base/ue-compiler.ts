@@ -249,7 +249,7 @@ export class UECompiler {
   }
 
   /**
-   * Html 转成 Json，注意先使用 BabelInit 初始化
+   * Html 转成 Json，注意先使用 UECompiler 初始化
    * @param html 
    */
   static htmlToJson(html: string) {
@@ -273,7 +273,7 @@ export class UECompiler {
   }
 
   /**
-   * Json 转成 Html，注意先使用 BabelInit 初始化
+   * Json 转成 Html，注意先使用 UECompiler 初始化
    * @param html 
    */
   static jsonToHtml(json: any) {
@@ -288,12 +288,16 @@ export class UECompiler {
   /**
    * 初始babel环境
    */
-  static async babelInit() {
-    return Promise.all([initBabel(), initHtmlBind(), initJsonToXml()]);
+  static async init(p?: { bable?: boolean }) {
+    const { bable } = p || {};
+    const list = [initHtmlBind(), initJsonToXml()];
+    if (bable !== false)
+      list.push(initBabel());
+    return Promise.all(list);
   }
 
   /**
-   * 使用 babel 编译，注意先使用 BabelInit 初始化
+   * 使用 babel 编译，注意先使用 UECompiler 初始化
    * @param script 脚本内容
    * @param opt babel 参数
    */
@@ -309,7 +313,7 @@ ${script}
   }
 
   /**
-   * 使用 babel 编译，返回一个fun name与code，注意先使用 BabelInit 初始化
+   * 使用 babel 编译，返回一个fun name与code，注意先使用 UECompiler 初始化
    * @param script 脚本内容
    * @param hasRet 是否有返回值
    * @param opt babel 参数
@@ -328,7 +332,7 @@ ${script}
   }
 
   /**
-   * 使用 babel 编译，返回一个fun name与code，注意先使用 BabelInit 初始化
+   * 使用 babel 编译，返回一个fun name与code，注意先使用 UECompiler 初始化
    * @param args 新方法的参数名称，如：['name', 'id']
    * @param script 脚本内容
    * @param opt babel 参数
@@ -341,7 +345,7 @@ ${script}
   }
 
   /**
-   * 使用 babel 编译，不用 BabelInit 初始化，直接可以使用
+   * 使用 babel 编译，不用 UECompiler 初始化，直接可以使用
    * @param strcipt 脚本内容
    * @param opt babel 参数
    */
@@ -372,7 +376,7 @@ function htmlHandle(type, props, ...children) {
 let _htmlBind;
 async function initHtmlBind() {
   if (_htmlBind) return _htmlBind;
-  let htmFn: any = await import(/* webpackChunkName: "ui-designer-babel-standalone" */ 'htm');
+  let htmFn: any = await import(/* webpackChunkName: "ui-editor-other-tool" */ 'htm');
   htmFn = checkDefault(htmFn);
   _htmlBind = htmFn.bind(htmlHandle);
   return _htmlBind;
@@ -381,7 +385,7 @@ async function initHtmlBind() {
 let _jsonxml;
 async function initJsonToXml() {
   if (_jsonxml) return _jsonxml;
-  _jsonxml = await import(/* webpackChunkName: "ui-designer-babel-standalone" */ 'jsontoxml');
+  _jsonxml = await import(/* webpackChunkName: "ui-editor-other-tool" */ 'jsontoxml');
   _jsonxml = checkDefault(_jsonxml);
   return _jsonxml;
 }
@@ -513,21 +517,21 @@ function checkDefault(p) {
 /** 初始化 babel */
 async function initBabel() {
   if (Babel) return Babel;
-  Babel = await import(/* webpackChunkName: "ui-designer-babel-standalone" */ '@babel/standalone/babel.min.js');
+  Babel = await import(/* webpackChunkName: "ui-editor-babel-standalone" */ '@babel/standalone/babel.min.js');
   Babel = checkDefault(Babel);
   Babel.disableScriptTags();
 
   // //支持 async/await 转换到 promise
-  // let topromises = await import(/* webpackChunkName: "ui-designer-babel-standalone" */ 'babel-plugin-async-to-promises');
+  // let topromises = await import(/* webpackChunkName: "ui-editor-babel-standalone" */ 'babel-plugin-async-to-promises');
   // topromises = checkDefault(topromises);
   // Babel.registerPlugin('babel-plugin-async-to-promises', topromises);
 
   //支持表达式：user?.role?.name
-  // let chaining = await import(/* webpackChunkName: "ui-designer-babel-standalone" */ '@babel/plugin-proposal-optional-chaining');
+  // let chaining = await import(/* webpackChunkName: "ui-editor-babel-standalone" */ '@babel/plugin-proposal-optional-chaining');
   // chaining = checkDefault(chaining);
   // Babel.registerPlugin('plugin-proposal-optional-chaining', chaining);
 
-  // let destructuring = await import(/* webpackChunkName: "ui-designer-babel-standalone" */ '@babel/plugin-transform-destructuring');
+  // let destructuring = await import(/* webpackChunkName: "ui-editor-babel-standalone" */ '@babel/plugin-transform-destructuring');
   // destructuring = checkDefault(destructuring);
   // Babel.registerPlugin('plugin-transform-destructuring', destructuring);
 

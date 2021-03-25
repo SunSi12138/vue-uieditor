@@ -23,6 +23,8 @@ export interface UEOption {
   contextmenus?(p: { render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[];
   /** 添加全局变量，object对象 */
   global?(): UEObject;
+  /** 是否开启 babel 在线编译（要加载babel-standalone js），默认为 true */
+  babel?: boolean;
 }
 
 export type UETransferExtend = {
