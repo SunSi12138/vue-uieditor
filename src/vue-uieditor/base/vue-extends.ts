@@ -1,3 +1,4 @@
+import _ from "lodash";
 import Vue, { ComponentOptions, PropOptions, WatchOptions } from "vue";
 import Component from "vue-class-component";
 import { VueClass } from 'vue-class-component/lib/declarations';
@@ -9,7 +10,7 @@ Component.registerHooks([
   'beforeRouteUpdate' // for vue-router 2.2+
 ]);
 
-export type UEVueMixin<V extends Vue> = ComponentOptions<Vue> | typeof Vue;
+export type UEVueMixin<V extends Vue = Vue> = ComponentOptions<Vue> | typeof Vue;
 export interface UEVueComponentOptions<V extends Vue> extends ComponentOptions<V> {
 }
 
@@ -190,7 +191,7 @@ function _setLifeEx(target: any, lifeNames: UEVueLifeName[], fn: Function, after
   const fnList = [];
   _setLife(target, 'created', function () {
     const fnDefList = [];
-    _each(lifeNames, function (life, idx) {
+    _.forEach(lifeNames, function (life, idx) {
       if (!life) return;
       const fnDef = function (fnItem) {
         fnList[idx] = fnItem;
@@ -199,7 +200,7 @@ function _setLifeEx(target: any, lifeNames: UEVueLifeName[], fn: Function, after
     });
     fn.apply(this, fnDefList);
   });
-  _each(lifeNames, function (life, idx) {
+  _.forEach(lifeNames, function (life, idx) {
     if (!life) return;
     _setLife(target, life, function () {
       fnList[idx]?.apply(this, arguments);

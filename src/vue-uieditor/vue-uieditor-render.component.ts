@@ -12,7 +12,7 @@ export default class VueUieditorRender extends UEVue {
   @UEVueProp()
   private params: string;
 
-  vueRender = { render() { } };
+  vueRender = null;// { render() { } };
 
   @UEVueLife('created')
   private _created1() {
