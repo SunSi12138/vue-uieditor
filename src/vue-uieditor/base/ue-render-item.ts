@@ -8,8 +8,8 @@ export interface UERenderItem {
     props?: any;
     /** 子节点 */
     children?: UERenderItem[];
-    /** 是否组件，如果false不创建组件 */
-    isComponent?: boolean;
+    /** 是否创建此节点，默认为 true */
+    isRender?: boolean;
     /** 获取父节点 */
     parent?(): UERenderItem;
 }
