@@ -2,7 +2,6 @@ import _ from "lodash";
 import Vue from "vue";
 import { UEHelper } from "./ue-helper";
 import { UERenderItem } from "./ue-render-item";
-// import * as compiler from 'vue-template-compiler';
 
 function _escape(str: string, addTry?: boolean) {
 
@@ -140,7 +139,7 @@ export class UECompiler {
   static isEqual(p1, p2): boolean {
     return _.isEqualWith(p1, p2, function (item1, item2) {
       if (_.isFunction(item1) && _.isFunction(item2))
-        return true;// item1.toString() == item2.toString();
+        return true;
     });
   }
 
@@ -151,7 +150,6 @@ export class UECompiler {
         //escape将\n \r \b之类转义正常内容
         return `|ue-render-bing|-- ${escape(value)} --|ue-render-bing|`
       } else if (_bEvent.test(key)) {
-        // return new Function(`${value}`).toString();
         return `|ue-render-event|-- ${escape(value)} --|ue-render-event|`
       } else {
         return value;
@@ -484,25 +482,19 @@ const babelOpt = {
     ["env",
       {
         "targets": {
-          // "browsers": ["last 1 chrome version"]
           "browsers": ["ie >= 11"]
-          // "browsers": ["defaults", "not ie 11", "not ie_mob 11"]
         },
         "forceAllTransforms": false,
         "shippedProposals": false,
         "useBuiltIns": false,
-        // "useBuiltIns": "usage",
         "corejs": "3.6",
         "spec": false,
         "loose": false,
         "bugfixes": true
       }
     ], "es2015"],
-  "plugins": [
-    // "babel-plugin-async-to-promises",
-    //  "plugin-proposal-optional-chaining"
-  ],
-  "sourceType": 'script'//"module", 'script', 'unambiguous'
+  "plugins": [],
+  "sourceType": 'script'
 };
 
 /** babel 实例 */
@@ -520,20 +512,6 @@ async function initBabel() {
   Babel = await import(/* webpackChunkName: "ui-editor-babel-standalone" */ '@babel/standalone/babel.min.js');
   Babel = checkDefault(Babel);
   Babel.disableScriptTags();
-
-  // //支持 async/await 转换到 promise
-  // let topromises = await import(/* webpackChunkName: "ui-editor-babel-standalone" */ 'babel-plugin-async-to-promises');
-  // topromises = checkDefault(topromises);
-  // Babel.registerPlugin('babel-plugin-async-to-promises', topromises);
-
-  //支持表达式：user?.role?.name
-  // let chaining = await import(/* webpackChunkName: "ui-editor-babel-standalone" */ '@babel/plugin-proposal-optional-chaining');
-  // chaining = checkDefault(chaining);
-  // Babel.registerPlugin('plugin-proposal-optional-chaining', chaining);
-
-  // let destructuring = await import(/* webpackChunkName: "ui-editor-babel-standalone" */ '@babel/plugin-transform-destructuring');
-  // destructuring = checkDefault(destructuring);
-  // Babel.registerPlugin('plugin-transform-destructuring', destructuring);
 
   return Babel;
 }
