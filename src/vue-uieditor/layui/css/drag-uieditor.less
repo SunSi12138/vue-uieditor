@@ -7,29 +7,29 @@
 
   /** 选择box */
   .uieditor-drag-sel-box {
-    position        : absolute;
-    border          : solid #2d8cf0 2px;
+    position: absolute;
+    border: solid #2d8cf0 2px;
     background-color: transparent;
-    min-width       : 100px;
-    min-height      : 12px;
-    pointer-events  : none;
+    min-width: 100px;
+    min-height: 12px;
+    pointer-events: none;
 
     .select-toolbar {
-      display         : block !important;
-      z-index         : 9990;
-      position        : absolute;
+      display: block !important;
+      z-index: 9990;
+      position: absolute;
       background-color: rgba(45, 140, 240, 1) !important;
-      color           : #fff;
-      text-align      : center;
-      padding         : 3px;
-      cursor          : pointer;
-      pointer-events  : visible;
-      top             : -24px;
-      height          : 16px;
-      width           : 16px;
-      font-size       : 14px;
-      line-height     : 18px;
-      overflow        : hidden;
+      color: #fff;
+      text-align: center;
+      padding: 3px;
+      cursor: pointer;
+      pointer-events: visible;
+      top: -24px;
+      height: 16px;
+      width: 16px;
+      font-size: 14px;
+      line-height: 18px;
+      overflow: hidden;
 
       &:last-child {
         border-radius: 2px 0 0 0;
@@ -46,23 +46,23 @@
 
     .title {
       background-color: #2d8cf0 !important;
-      pointer-events  : visible;
-      display         : block !important;
-      top             : -20px !important;
-      position        : absolute;
-      height          : 20px;
-      left            : -2px;
-      padding         : 0 4px;
-      border-radius   : 2px;
-      color           : white;
-      font-size       : 12px;
-      z-index         : 9990;
-      display         : none;
-      line-height     : 1.5;
-      white-space     : nowrap;
+      pointer-events: visible;
+      display: block !important;
+      top: -20px !important;
+      position: absolute;
+      height: 20px;
+      left: -2px;
+      padding: 0 4px;
+      border-radius: 2px;
+      color: white;
+      font-size: 12px;
+      z-index: 9990;
+      display: none;
+      line-height: 1.5;
+      white-space: nowrap;
 
       >i {
-        cursor   : pointer;
+        cursor: pointer;
         font-size: 12px;
       }
     }
@@ -70,30 +70,30 @@
 
   /** 拖动到box */
   .uieditor-drag-over-box {
-    position        : absolute;
-    border          : dashed orange 1px;
+    position: absolute;
+    border: dashed orange 1px;
     background-color: transparent;
-    pointer-events  : none;
+    pointer-events: none;
 
     .title {
       background-color: orange !important;
-      pointer-events  : visible;
-      display         : block !important;
-      top             : -20px !important;
-      position        : absolute;
-      height          : 20px;
-      left            : -2px;
-      padding         : 0 4px;
-      border-radius   : 2px;
-      color           : white;
-      font-size       : 12px;
-      z-index         : 1;
-      display         : none;
-      line-height     : 1.5;
-      white-space     : nowrap;
+      pointer-events: visible;
+      display: block !important;
+      top: -20px !important;
+      position: absolute;
+      height: 20px;
+      left: -2px;
+      padding: 0 4px;
+      border-radius: 2px;
+      color: white;
+      font-size: 12px;
+      z-index: 1;
+      display: none;
+      line-height: 1.5;
+      white-space: nowrap;
 
       >i {
-        cursor   : pointer;
+        cursor: pointer;
         font-size: 12px;
       }
     }
@@ -101,11 +101,11 @@
 
   /** 拖动位置线 */
   .uieditor-drag-pos-line {
-    transition      : top, left 300ms;
-    position        : absolute;
-    border          : solid #ff0000 2px;
+    transition: top, left 300ms;
+    position: absolute;
+    border: solid #ff0000 2px;
     background-color: #ff0000;
-    pointer-events  : none;
+    pointer-events: none;
 
     &.pos-line-box {
       background-color: transparent;
@@ -115,22 +115,22 @@
   /** JSON root节点(第一个)的样式 */
   .uieditor-drag-root {
     min-height: 75%;
-    margin    : 28px 10px 10px 10px;
+    margin: 28px 10px 10px 10px;
   }
 
   .uieditor-drag-content {
     &.over::after {
-      content   : '';
-      clear     : both;
-      display   : block;
-      position  : absolute;
-      left      : 0;
-      right     : 0;
-      bottom    : 0;
-      top       : 0;
+      content: '';
+      clear: both;
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
       visibility: visible;
-      height    : 100%;
-      z-index   : 10;
+      height: 100%;
+      z-index: 10;
     }
   }
 
@@ -141,7 +141,7 @@
 
   /** 改起 */
   .uieditor-drag-collapse {
-    height  : 40px !important;
+    height: 40px !important;
     overflow: hidden;
   }
 
@@ -150,24 +150,31 @@
     position: relative;
 
     &::after {
-      content   : '';
-      clear     : both;
-      display   : block;
-      position  : absolute;
-      left      : 0;
-      right     : 0;
-      bottom    : 0;
-      top       : 0;
+      content: '';
+      clear: both;
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
       visibility: visible;
-      height    : 100%;
-      z-index   : 10;
+      height: 100%;
+      z-index: 10;
     }
 
     &.inline {
-      display    : inline-block;
-      min-height : 30px;
+      display: inline-block;
+      min-height: 30px;
       line-height: 30px;
     }
+  }
+
+  .empty-component {
+    background-color: rgba(0, 0, 0, .8);
+    color: #fff;
+    padding: 0 12px;
+    margin-right: 4px
   }
 
 }

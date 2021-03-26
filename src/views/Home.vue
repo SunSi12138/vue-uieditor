@@ -9,34 +9,52 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
-import { UEOption } from '../vue-uieditor/base/ue-base';
-import { UERenderItem } from '../vue-uieditor/base/ue-render-item';
+import { Component, Vue } from "vue-property-decorator";
+import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import { UEOption } from "../vue-uieditor/base/ue-base";
+import { UERenderItem } from "../vue-uieditor/base/ue-render-item";
+import { UEVue, UEVueComponent, UEVueLife } from "../vue-uieditor/base/vue-extends";
 
-@Component({
+@UEVueComponent({
   components: {
     HelloWorld,
   },
 })
-export default class Home extends Vue {
-  options:UEOption = {
-    transfer:{},
-    transferBefore(render){
+export default class Home extends UEVue {
+  options: UEOption = {
+    transfer: {
+    },
+    transferBefore(render) {
       return render;
     },
-    transferAfter(render){
+    transferAfter(render) {
       return render;
-    }
+    },
   };
 
-  json:UERenderItem = {
-    type:'div',
-    children:[{
-      type:'span',
-      children:['test']
-    }]
+  json: UERenderItem = {
+    type: "div",
+    children: [
+      {
+        type: "span",
+        children: ["test"],
+      },
+    ],
   };
-  
+
+  @UEVueLife("mounted")
+  private _mounted1() {
+    setTimeout(() => {
+      this.json = {
+        type: "div",
+        children: [
+          {
+            type: "span",
+            children: [`test:${new Date().valueOf()}`],
+          },
+        ],
+      };
+    }, 3000);
+  }
 }
 </script>

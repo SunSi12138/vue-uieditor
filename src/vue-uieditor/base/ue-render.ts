@@ -3,6 +3,21 @@ import { UETransferExtend, UETransfer, UEOption } from './ue-base';
 import _ from 'lodash';
 
 
+function _findRender(renders: UERenderItem[], isFn: any) {
+  let findItem;
+  _.forEach(renders, function (item) {
+    if (isFn(item)) {
+      findItem = item;
+      return false;
+    }
+    if (item.children) {
+      findItem = _findRender(item.children as any, isFn);
+      if(findItem) return false;
+    }
+  });
+  return findItem;
+}
+
 export class UERender {
   /**
    * 将元数据转为vue 元数据
@@ -95,6 +110,10 @@ export class UERender {
     });
     (extend as any).render = null;
     return rList;
+  }
+
+  static findRender(renders: UERenderItem[], p: any): UERenderItem {
+    return _findRender(renders, _.iteratee(p));
   }
 
   static getVueBindName(name: string): string {

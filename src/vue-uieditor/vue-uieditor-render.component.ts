@@ -1,18 +1,29 @@
 
-import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueInject, UEVueMixin, UEMergeMixin } from './base/vue-extends';
-import { UEService } from './base/ue-service';
 import _ from 'lodash';
-import { UEHelper } from './base/ue-helper';
+import { UEOption, UETransferExtend } from './base/ue-base';
 import { UECompiler } from './base/ue-compiler';
-import { UETransferExtend, UEOption } from './base/ue-base';
-import Vue from 'vue';
+import { UEHelper } from './base/ue-helper';
 import { UERender } from './base/ue-render';
 import { UERenderItem } from './base/ue-render-item';
+import { UEService } from './base/ue-service';
+import { UEMergeMixin, UEVue, UEVueComponent, UEVueInject, UEVueLife, UEVueMixin, UEVueProp, UEVueWatch } from './base/vue-extends';
 
 const _defaultGlobalExtend = {
   UEHelper,
   UECompiler
 };
+
+function _defaultOptions() {
+  return {
+    transfer: {},
+    transferBefore(render) {
+      return render;
+    },
+    transferAfter(render) {
+      return render;
+    }
+  };
+}
 
 @UEVueComponent({})
 export default class VueUieditorRender extends UEVue {
@@ -46,10 +57,15 @@ export default class VueUieditorRender extends UEVue {
     return _.assign({}, route.query, this.query);
   }
 
+  @UEVueWatch('json')
+  @UEVueWatch('options')
+  /** 刷新 */
+  refresh() {
+    this._makeVueRender();
+  }
 
   @UEVueLife('created')
   private _created1() {
-    console.warn('editor render', this, this.service);
     this._makeVueRender();
   }
 
@@ -84,7 +100,7 @@ export default class VueUieditorRender extends UEVue {
     const json: UERenderItem = _.isString(this.json) ? JSON.parse(this.json) : this.json;
     const editing = this.editing === true;
     const preview = this.preview === true;
-    const options = this.options;
+    const options = _.assign(_defaultOptions(), this.options);
 
     const data = {};
     let mixinExBefore = {};
@@ -98,7 +114,7 @@ export default class VueUieditorRender extends UEVue {
 
       previewOpt = preview && (function () {
         let opt = null;
-        const previewItem = _.find(json?.children as UERenderItem[], { type: 'preview-opt' });
+        const previewItem = UERender.findRender([json], { type: 'preview-opt' });
         if (previewItem) opt = _.first(previewItem.children);
         if (opt) {
           const babelContent = UECompiler.babelTransform(`function __ue_vue_def_ctx(){ return ${opt}; }`);
@@ -109,7 +125,8 @@ export default class VueUieditorRender extends UEVue {
       })();
 
       const service = editing ? this.service : null;
-      let transferExt: UETransferExtend = {
+      let transferExt: any = {};
+      _.assign(transferExt, {
         data,
         editing,
         service,
@@ -120,15 +137,15 @@ export default class VueUieditorRender extends UEVue {
           else
             mixinEx = UEMergeMixin(mixinEx, newMixin);
         },
-        get options(){ return options; },
-        getProp: _getProp,
-        setProp: _setProp,
-        getPropValue: _getVuePropValue,
-        setPropValue: _setProp,
-        getPropText: _getVuePropText,
-        removeProp: _removeProp,
-        closest(find) { return _closest.call(this, this.render, find); },
-      };
+        get options() { return options; },
+        getProp: _getProp.bind(transferExt),
+        setProp: _setProp.bind(transferExt),
+        getPropValue: _getVuePropValue.bind(transferExt),
+        setPropValue: _setProp.bind(transferExt),
+        getPropText: _getVuePropText.bind(transferExt),
+        removeProp: _removeProp.bind(transferExt),
+        closest(find) { return _closest.call(transferExt, transferExt.render, find); },
+      } as UETransferExtend);
 
 
 

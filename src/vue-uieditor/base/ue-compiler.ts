@@ -333,13 +333,17 @@ ${script}
    * 使用 babel 编译，返回一个fun name与code，注意先使用 UECompiler 初始化
    * @param args 新方法的参数名称，如：['name', 'id']
    * @param script 脚本内容
+   * @param withThis with(this)
    * @param opt babel 参数
    * @example babelTransformToFunEx(['name', 'id'], 'return {name, id}')()
    */
-  static babelTransformToFunEx(args: string[], script: string, opt?: any): Function {
+  static babelTransformToFunEx(args: string[], script: string, withThis?: boolean, opt?: any): Function {
     const cp = UECompiler.babelTransformToFun(script, false, opt);
     args || (args = []);
-    return new Function(...args, `${cp.code}; return ${cp.fnName}();`);
+    if (withThis)
+      return new Function(...args, `with(this) { ${cp.code}; return ${cp.fnName}(); }`);
+    else
+      return new Function(...args, `${cp.code}; return ${cp.fnName}();`);
   }
 
   /**
