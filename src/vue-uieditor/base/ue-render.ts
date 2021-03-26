@@ -36,37 +36,35 @@ function _getTransferEditor(transfer: UETransfer) {
  * 合并参数
  * @param options 
  */
-function _mergeMetarenderOption(options: UEOption, newOptions: UEOption): UEOption {
+function _mergeDefaultOption(options: UEOption): UEOption {
+  const newOptions = _defautlOption();
   options = _.cloneDeep(options);
-  newOptions = _.cloneDeep(newOptions);
-  let keys = _.keys(newOptions);
+  let keys = _.keys(options);
   _.forEach(keys, function (key) {
     switch (key) {
       case 'mixins':
-        options.mixins = (options.mixins || []).concat(newOptions.mixins || [])
+        newOptions.mixins = (newOptions.mixins || []).concat(options.mixins || [])
         break;
       case 'transfer':
-        options.transfer = _.assign({}, options.transfer, newOptions.transfer);
+        newOptions.transfer = _.assign({}, newOptions.transfer, options.transfer);
         break;
       case 'transferBefore':
       case 'transferAfter':
-        let transferEvent = options[key];
-        options[key] = function (render, extend) {
+        let transferEvent = newOptions[key];
+        newOptions[key] = function (render, extend) {
           render = transferEvent ? transferEvent(render, extend) : render;
-          render = newOptions[key](render, extend);
+          render = options[key](render, extend);
           return render;
         };
         break;
       default:
-        options[key] = newOptions[key];
+        newOptions[key] = options[key];
         break;
     }
   });
-  return options;
+  return newOptions;
 }
 
-
-const _initOptKey = '_ue_opt_inited';
 
 export class UERender {
   /**
@@ -163,19 +161,16 @@ export class UERender {
     return rList;
   }
 
-  static NewOption(options: UEOption): UEOption {
-    if (options[_initOptKey]) return options;
-    options = _mergeMetarenderOption(_defautlOption(), options);
-    options[_initOptKey] = true;
-
-    let editor = _getTransferEditor(options.transfer);
-    (options as any).editor = Object.assign({}, editor, options.editor);
-    // let transferC = _mergeDefafultEditor(options.editor, options);
-    // if (!_.isEmpty(transferC)) {
-    //   BgMetaOptionAddTransfer(options, transferC);
-    // }
+  static AddTransfer(options: UEOption, transfer: UETransfer): UEOption {
+    let editor = _getTransferEditor(transfer);
+    (options as any).editor = _.assign({}, editor, options.editor);
 
     return options;
+  }
+
+  static NewOption(options: UEOption): UEOption {
+    options = _mergeDefaultOption(options);
+    return UERender.AddTransfer(options, options.transfer);
   }
 
   static NewTransfer(transfer: UETransfer): UETransfer {
