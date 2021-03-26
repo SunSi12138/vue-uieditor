@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { UEContextmenuItem } from "./ue-contextmenu-item";
 import { UERenderItem } from "./ue-render-item";
 import { UEService } from "./ue-service";
@@ -155,11 +154,11 @@ export interface UETransferEditorAttrs {
   [key: string]: UETransferEditorAttrsItem
 }
 
-
 export interface UETransferEditor {
   /** 显示名称, 支持环境变量, 如:%label% */
   text?: string;
-  textFormat?(editor: UETransferEditor, attrs: UETransferEditorAttrs, hasKey?: boolean): string;
+  /** 格式化 text */
+  textFormat?(editor: UETransferEditor, attrs: UETransferEditorAttrs): string;
   /** 名称 */
   name?: string;
   placeholder?: string;
@@ -170,7 +169,7 @@ export interface UETransferEditor {
   group?: string;
   /** 分组顺序 */
   groupOrder?: number;
-  /** 是否容器组件，默认为 false */
+  /** 是否容器组件（可以插入子节点），默认为 false */
   container?: boolean;
   /** 是否基础组件，编辑时作为独立组件，内容不能拖动，默认：true */
   base?: boolean;
@@ -178,7 +177,7 @@ export interface UETransferEditor {
   empty?: string;
   /** 是否可以收起，容器时默认为 true */
   collapse?: boolean;
-  /** 设计时v-model生效 */
+  /** 编辑时v-model生效（可能找不到内容会出错），默认为 false */
   editUseModel?: boolean;
   /** 编辑时临时添加样式 */
   className?: string | ((p: { render: UERenderItem, editor: UETransferEditor, attrs: UETransferEditorAttrs }) => string);
@@ -190,11 +189,9 @@ export interface UETransferEditor {
   show?: boolean;
   /** 编辑时是否强制显示为inline */
   inline?: boolean;
-  /** 编辑时render内容 */
-  render?: UERenderItem;
-  /** 复制 */
+  /** 处理是否可以复制 */
   coping?: (p: { render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }) => boolean;
-  /** 处理是否可以插入组件到内容 */
+  /** 处理是否可以插入组件到内容，容器时才会生产 */
   contenting?: (p: { dragContent: UERenderItem; dragEditor: UETransferEditor; service: UEService; }) => boolean;
   /** 拖动时处理，返回true|false，决定是否可以拖动到目标 */
   moving?: (p: {
@@ -210,7 +207,10 @@ export interface UETransferEditor {
     /** 本render的editort */
     dragEditor: UETransferEditor; service: UEService;
   }) => boolean;
-  transferAttr?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; editing: boolean; service: UEService; }) => void;
+  /**
+   * 编辑渲染时转换 render, 如果返回空不渲染
+   */
+  transfer?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; editing: boolean; service: UEService; }) => UERenderItem;
   contextmenu?: (render: UERenderItem, attrs: UETransferEditorAttrs, editor: UETransferEditor, service: UEService) => any[];
   /** 隐藏attr，如: ['class'] */
   hideAttrs?: string[];
@@ -222,9 +222,12 @@ export interface UETransferEditor {
 
 
 export interface UETransferItem {
-  props?: UEObject;
-  editor?: UETransferEditor;
+  /** 组件名称 */
   type?: string;
+  /** 默认属性 */
+  props?: UEObject;
+  /** 编辑器配置 */
+  editor?: UETransferEditor;
   /**
    * 渲染时转换 render, 如果返回空不渲染
    */
