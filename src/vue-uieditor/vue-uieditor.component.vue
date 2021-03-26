@@ -216,7 +216,7 @@
                                   <div
                                     class="layui-input-block attr-bind attr-code"
                                   >
-                                    <span class="layui-badge layui-bg-orange"
+                                    <span class="layui-badge layui-bg-gray"
                                       >v</span
                                     >
                                     <input
@@ -237,7 +237,7 @@
                                   <div
                                     class="layui-input-block attr-bind attr-code"
                                   >
-                                    <span class="layui-badge layui-bg-orange"
+                                    <span class="layui-badge layui-bg-gray"
                                       >v</span
                                     >
                                     <input
@@ -258,7 +258,7 @@
                                   <div
                                     class="layui-input-block attr-bind attr-code"
                                   >
-                                    <span class="layui-badge layui-bg-orange"
+                                    <span class="layui-badge layui-bg-gray"
                                       >v</span
                                     >
                                     <input
@@ -282,7 +282,7 @@
                                       >
                                       <div class="layui-input-block attr-bind">
                                         <span
-                                          class="layui-badge layui-bg-orange"
+                                          class="layui-badge layui-bg-gray"
                                           >v</span
                                         >
                                         <input
@@ -324,7 +324,7 @@
                                       <div
                                         class="layui-input-block attr-bind attr-code"
                                       >
-                                        <span class="layui-badge layui-bg-gray"
+                                        <span class="layui-badge layui-bg-blue"
                                           >：</span
                                         >
                                         <input
@@ -345,7 +345,7 @@
                                       <div
                                         class="layui-input-block attr-bind attr-code"
                                       >
-                                        <span class="layui-badge layui-bg-gray"
+                                        <span class="layui-badge layui-bg-blue"
                                           >：</span
                                         >
                                         <input
@@ -390,7 +390,7 @@
                                       <div
                                         class="layui-input-block attr-bind attr-code"
                                       >
-                                        <span class="layui-badge layui-bg-blue"
+                                        <span class="layui-badge layui-bg-blue-active"
                                           >：</span
                                         >
                                         <input
@@ -411,7 +411,7 @@
                                       <div
                                         class="layui-input-block attr-bind attr-code"
                                       >
-                                        <span class="layui-badge layui-bg-gray"
+                                        <span class="layui-badge layui-bg-blue"
                                           >：</span
                                         >
                                         <input
@@ -436,7 +436,7 @@
                                       <div
                                         class="layui-input-block attr-bind attr-code"
                                       >
-                                        <span class="layui-badge layui-bg-blue"
+                                        <span class="layui-badge layui-bg-blue-active"
                                           >@</span
                                         >
                                         <input
@@ -468,7 +468,7 @@
                                       <div
                                         class="layui-input-block attr-bind attr-code"
                                       >
-                                        <span class="layui-badge layui-bg-blue"
+                                        <span class="layui-badge layui-bg-blue-active"
                                           >：</span
                                         >
                                         <div id="selectInput1"></div>
@@ -511,7 +511,7 @@
                                         >行内表单</label
                                       >
                                       <div class="layui-input-block attr-bind">
-                                        <span class="layui-badge layui-bg-blue"
+                                        <span class="layui-badge layui-bg-blue-active"
                                           >：</span
                                         >
                                         <select
@@ -879,7 +879,7 @@
                                   <div
                                     class="layui-input-block attr-bind attr-code"
                                   >
-                                    <span class="layui-badge layui-bg-orange"
+                                    <span class="layui-badge layui-bg-gray"
                                       >@</span
                                     >
                                     <input
@@ -902,7 +902,7 @@
                                   <div
                                     class="layui-input-block attr-bind attr-code"
                                   >
-                                    <span class="layui-badge layui-bg-orange"
+                                    <span class="layui-badge layui-bg-gray"
                                       >@</span
                                     >
                                     <input

@@ -552,13 +552,13 @@ export function LayuiInit($el) {
 
     var jUieditor = $('.layui-uieditor');
 
-    jUieditor.on('click', '.layui-bg-blue,.layui-bg-gray', function (e) {
+    jUieditor.on('click', '.layui-bg-blue,.layui-bg-blue-active', function (e) {
       var jo = $(e.target);
-      if (jo.hasClass('layui-bg-gray')) {
+      if (jo.hasClass('layui-bg-blue-active')) {
         jo.addClass('layui-bg-blue');
-        jo.removeClass('layui-bg-gray');
+        jo.removeClass('layui-bg-blue-active');
       } else {
-        jo.addClass('layui-bg-gray');
+        jo.addClass('layui-bg-blue-active');
         jo.removeClass('layui-bg-blue');
       }
     });
