@@ -31,12 +31,13 @@ export type UETransferExtend = {
   data?: UEObject;
   /** 编辑中 */
   editing?: boolean;
+  service?:UEService;
   editor?: UETransferEditor;
   /** 当前 render */
   readonly render?: UERenderItem;
   /** 全局变量 */
   global?: any;
-  readonly option?: UEOption;
+  readonly options?: UEOption;
   /**
    * 添加 mixin
    * @param mixin 
@@ -78,14 +79,6 @@ export type UETransferExtend = {
    * @param find 查找条件，默认上一级节点 
    */
   closest(find: (render: UERenderItem) => boolean): UERenderItem;
-  /**
-   * 在当前render环境，执行内容，返回方法名称(调用: $this['方法名称']())
-   * @param content 脚本内容
-   * @param once 只执行一次
-   * @param isEval 是否马上执行
-   * @param owner 将方法定义到owner, 默认 $this
-   */
-  makeEval(content: string, once?: boolean, isEval?: boolean, owner?: string): string;
 }
 
 type RenderProp = {

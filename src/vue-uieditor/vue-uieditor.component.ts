@@ -6,10 +6,16 @@ import { UEVue, UEVueComponent, UEVueEvent, UEVueLife, UEVueProp, UEVueProvide }
 import './layui-import';
 import { UECompiler } from './base/ue-compiler';
 import { UEService } from './base/ue-service';
+import { UEOption } from './base/ue-base';
 
 @UEVueComponent({})
 export default class VueUieditor extends UEVue {
-  @UEVueProp() private msg!: string;
+
+  @UEVueProp()
+  private options!: UEOption;
+
+  @UEVueProp()
+  private json!: UEOption;
 
   private _service: UEService;
   get service(): UEService {
@@ -17,9 +23,15 @@ export default class VueUieditor extends UEVue {
     return this._service;
   }
   @UEVueProvide('service')
-  private _pUiEditor() {
+  private _pService() {
     return this.service;
   }
+  @UEVueProvide('uieditor')
+  private _pUiEditor() {
+    return this;
+  }
+
+
 
   @UEVueLife('mounted')
   private _mounted1() {

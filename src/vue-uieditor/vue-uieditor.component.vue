@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%; width: 100%">
-    <vue-uieditor-render />
+    <vue-uieditor-render :options="options" :json="json" editing />
     <div class="layui-uieditor">
       <div class="layui-tab layui-tab-card">
         <!-- tool-bar -->

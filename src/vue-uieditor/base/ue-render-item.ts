@@ -7,7 +7,7 @@ export interface UERenderItem {
     /** 属性 */
     props?: any;
     /** 子节点 */
-    children?: UERenderItem[];
+    children?: (UERenderItem | string)[];
     /** 是否创建此节点，默认为 true */
     isRender?: boolean;
     /** 获取父节点 */

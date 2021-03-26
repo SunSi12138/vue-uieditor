@@ -1,10 +1,9 @@
 import { UERenderItem } from './ue-render-item';
-import { UETransferExtend, UETransfer } from './ue-base';
+import { UETransferExtend, UETransfer, UEOption } from './ue-base';
 import _ from 'lodash';
 
 
 export class UERender {
-
   /**
    * 将元数据转为vue 元数据
    * @param renders 
@@ -12,10 +11,10 @@ export class UERender {
    */
   static JsonToVueRender(renders: UERenderItem[], extend: UETransferExtend, parentRender?: UERenderItem): UERenderItem[] {
 
-    const transfer: UETransfer = extend.option.transfer;
+    const transfer: UETransfer = extend.options.transfer;
 
     let rList = [];
-    let option = extend.option;
+    let options = extend.options;
     _.forEach(renders, function (render) {
       (extend as any).render = null;
 
@@ -59,14 +58,14 @@ export class UERender {
 
       const resetRender = function () {
         isStr = _.isString(render);
-        if (isStr)
+        if (!isStr)
           render.parent = parent;
         else if (!render || render.isRender === false)
           return false;
         (extend as any).render = render;
       };
 
-      render = option.transferBefore(render, extend);
+      render = options.transferBefore(render, extend);
       if (resetRender() === false) return;
 
       // let type = render.type;
@@ -81,8 +80,10 @@ export class UERender {
         }
       }
 
-      render = option.transferAfter(render, extend);
+      render = options.transferAfter(render, extend);
       if (resetRender() === false) return;
+
+      rList.push(render);
 
       if (_.size(render.children) > 0) {
         let children = render.children;

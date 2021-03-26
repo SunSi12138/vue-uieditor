@@ -14,6 +14,10 @@ export type UEVueMixin<V extends Vue = Vue> = ComponentOptions<Vue> | typeof Vue
 export interface UEVueComponentOptions<V extends Vue> extends ComponentOptions<V> {
 }
 
+export function UEMergeMixin<V extends Vue = Vue>(mixin1: UEVueMixin<V>, mixin2: UEVueMixin<V>): UEVueMixin<V> {
+  return Vue['util'].mergeOptions(mixin1 || {}, mixin2 || {});
+}
+
 export function UEVueComponent<V extends Vue>(options: UEVueComponentOptions<V> & ThisType<V>): <VC extends VueClass<V>>(target: VC) => VC {
   return function (target: Function) {
     const prototype = target.prototype;
@@ -40,9 +44,9 @@ function _getMinxinKey(after?: boolean) {
 //   return target[key] || {};
 // }
 
-function _setMixin<V extends Vue>(target: any, mixin: UEVueMixin<V>, after?: boolean): UEVueMixin<V>[] {
+function _setMixin<V extends Vue>(target: any, mixin: UEVueMixin<V>, after?: boolean): UEVueMixin<V> {
   const key = _getMinxinKey(after);
-  const newMixin = target[key] = Vue['util'].mergeOptions(target[key] || {}, mixin);
+  const newMixin = target[key] = UEMergeMixin(target[key] || {}, mixin);
   return newMixin;
 }
 
@@ -324,6 +328,7 @@ export function UEVueEvent<T = UEVue>(event: string, p: boolean | {
   };
 }
 
+const _defalutValue = '_ue_defaultValue_def_';
 
 export class UEVue extends Vue {
 
@@ -354,23 +359,39 @@ export class UEVue extends Vue {
   readonly beforeRouteUpdate: void;
   readonly beforeRouteLeave: void;
 
+  
+  @UEVueProp({ type: [String, Number, Boolean, Array], default: _defalutValue })
+  private value: string;
+
+  get $isDefaultValue(): any {
+      return this.value === _defalutValue;
+  }
+
+  /** 获取或设置值 */
+  get $value(): any {
+      return this.$isDefaultValue ? undefined : this.value;
+  }
+
+  set $value(value: any) {
+      this.$emit('input', value);
+  }
+
+
   get $isDestroyed(): boolean {
-    return this._isDestroyed;
+    return this['_isDestroyed'];
   }
 
   get $isBeingDestroyed(): boolean {
-    return this._isBeingDestroyed;
+    return this['_isBeingDestroyed'];
   }
 
   get $isMounted(): boolean {
-    return this._isMounted;
+    return this['_isMounted'];
   }
 
   get $isRouteActived(): boolean {
-    return this._inactive !== true;
+    return this['_inactive'] !== true;
   }
-
-  [key: string]: any;
 
 }
 
