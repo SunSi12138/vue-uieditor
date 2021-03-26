@@ -27,7 +27,7 @@ export class UERender {
       isStr || (render.parent = parent);
 
       (extend as any).render = render;
-      extend.editor = render['editor'];
+      (extend as any).editor = render['editor'];
       if (extend.editing) {
         if (extend.editor && extend.editor.show === false) return;
         //编辑时，让非必要绑定失效

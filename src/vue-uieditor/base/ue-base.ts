@@ -30,9 +30,9 @@ export type UETransferExtend = {
   /** Vue 初始化数据 */
   data?: UEObject;
   /** 编辑中 */
-  editing?: boolean;
-  service?:UEService;
-  editor?: UETransferEditor;
+  readonly editing?: boolean;
+  readonly service?:UEService;
+  readonly editor?: UETransferEditor;
   /** 当前 render */
   readonly render?: UERenderItem;
   /** 全局变量 */

@@ -1,12 +1,11 @@
-import { Component, Prop, Vue } from 'vue-property-decorator';
-
-import { Layuidestroy, LayuiInit } from './layui-test';
-import { UEVue, UEVueComponent, UEVueEvent, UEVueLife, UEVueProp, UEVueProvide } from './base/vue-extends';
-
-import './layui-import';
+import { UEOption } from './base/ue-base';
 import { UECompiler } from './base/ue-compiler';
 import { UEService } from './base/ue-service';
-import { UEOption } from './base/ue-base';
+import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueProvide } from './base/vue-extends';
+import './layui-import';
+import { Layuidestroy, LayuiInit } from './layui-test';
+
+
 
 @UEVueComponent({})
 export default class VueUieditor extends UEVue {
