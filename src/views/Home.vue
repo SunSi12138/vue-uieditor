@@ -13,7 +13,12 @@ import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
 import { UEOption } from "../vue-uieditor/base/ue-base";
 import { UERenderItem } from "../vue-uieditor/base/ue-render-item";
-import { UEVue, UEVueComponent, UEVueLife } from "../vue-uieditor/base/vue-extends";
+import {
+  UEVue,
+  UEVueComponent,
+  UEVueLife,
+} from "../vue-uieditor/base/vue-extends";
+import { UERender } from "../vue-uieditor/base/ue-render";
 
 @UEVueComponent({
   components: {
@@ -21,16 +26,15 @@ import { UEVue, UEVueComponent, UEVueLife } from "../vue-uieditor/base/vue-exten
   },
 })
 export default class Home extends UEVue {
-  options: UEOption = {
-    transfer: {
-    },
+  options: UEOption = UERender.NewOption({
+    transfer: {},
     transferBefore(render) {
       return render;
     },
     transferAfter(render) {
       return render;
     },
-  };
+  });
 
   json: UERenderItem = {
     type: "div",

@@ -102,6 +102,8 @@ export default class VueUieditorRender extends UEVue {
     const preview = this.preview === true;
     const options = _.assign(_defaultOptions(), this.options);
 
+    if (options?.mixins) vueDef.mixins = vueDef.mixins.concat(options.mixins);
+
     const data = {};
     let mixinExBefore = {};
     let mixinEx = {};
@@ -246,7 +248,7 @@ export default class VueUieditorRender extends UEVue {
         },
         $uieditorRender() { return $uieditorRender; },
         $this() { return this; },
-        $uieditorOption() { return options; },
+        $uieditorOptions() { return options; },
         $query() {
           return previewOpt ?
             _.assign({}, $uieditorRender.$query, previewOpt.query)

@@ -1,10 +1,11 @@
 import { UETransfer } from '../base/ue-base';
 import _ from 'lodash';
+import { UERender } from '../base/ue-render';
 
 const groupOrder = 2;
 const group = '公用组件库/基础组件';
 
-export const BaseTransfer: UETransfer = {
+export const BaseTransfer: UETransfer = UERender.NewTransfer({
   'uieditor-div': {
     type: 'div',
     "editor": {
@@ -188,4 +189,4 @@ export const BaseTransfer: UETransfer = {
       }
     }
   }
-};
+});

@@ -11,7 +11,7 @@ export interface UEOption {
   /** render 转换器 */
   transfer?: UETransfer;
   /** 编辑器设置 */
-  editor?: { [type: string]: UETransferEditor };
+  readonly editor?: { [type: string]: UETransferEditor };
   /** render 转换 之前 */
   transferBefore?: (render: UERenderItem, extend?: UETransferExtend) => UERenderItem;
   /** render 转换 之后 */
@@ -91,7 +91,7 @@ type RenderProp = {
 
 export interface UETransferEditorAttrsItem {
   /** 名称 */
-  name?: string;
+  readonly name?: string;
   /** 显示名称 */
   text?: string;
   /** 默认值 */
@@ -111,8 +111,8 @@ export interface UETransferEditorAttrsItem {
   groupOrder?: number;
   /** 顺序 */
   order?: number;
-  /** 是否显示属性，默认：false */
-  hide?: boolean;
+  /** 是否显示属性，默认：true */
+  show?: boolean;
   /** 是否事件，默认：false */
   event?: boolean;
   /** 是否在编辑时生效，默认：false */
@@ -120,7 +120,7 @@ export interface UETransferEditorAttrsItem {
   /** 此属性只使用于编辑器，即最终结果没有此属性 */
   editorOlny?: boolean;
   /** 显示类型，默认：text，custom为自定义（弹出对话框） */
-  type?: 'text' | 'slider' | 'textarea' | 'select' | 'radiogroup' | 'select-only' | 'boolean' | 'icon' | 'custom';
+  type?: 'text' | 'slider' | 'textarea' | 'select' | 'radiogroup' | 'select-only' | 'boolean' | 'custom';
   /** 数据源, string[] | {text:string;value:string;} */
   datas?: any[] | ((p: { attr: UETransferEditorAttrsItem; attrs: UETransferEditorAttrs; service: UEService }) => any[]);
   /** 是否为bind属性，默认为 false */
@@ -149,7 +149,7 @@ export interface UETransferEditor {
   /** 格式化 text */
   textFormat?(editor: UETransferEditor, attrs: UETransferEditorAttrs): string;
   /** 名称 */
-  name?: string;
+  readonly name?: string;
   placeholder?: string;
   icon?: string;
   /** 排序，默认：99 */
