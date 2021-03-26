@@ -354,5 +354,23 @@ export class UEVue extends Vue {
   readonly beforeRouteUpdate: void;
   readonly beforeRouteLeave: void;
 
+  get $isDestroyed(): boolean {
+    return this._isDestroyed;
+  }
+
+  get $isBeingDestroyed(): boolean {
+    return this._isBeingDestroyed;
+  }
+
+  get $isMounted(): boolean {
+    return this._isMounted;
+  }
+
+  get $isRouteActived(): boolean {
+    return this._inactive !== true;
+  }
+
+  [key: string]: any;
+
 }
 

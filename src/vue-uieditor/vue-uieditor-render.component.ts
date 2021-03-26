@@ -1,5 +1,6 @@
 
-import { UEVue, UEVueComponent, UEVueLife, UEVueProp } from './base/vue-extends';
+import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueInject } from './base/vue-extends';
+import { UEService } from './base/ue-service';
 
 @UEVueComponent({})
 export default class VueUieditorRender extends UEVue {
@@ -15,11 +16,18 @@ export default class VueUieditorRender extends UEVue {
   @UEVueProp(Boolean)
   private editing!: boolean;
 
+  @UEVueInject('service')
+  service: UEService;
+
+  // get service(): UEService {
+  //   return this.uieditor?.service;
+  // }
+
   vueRender = null;// { render() { } };
 
   @UEVueLife('created')
   private _created1() {
-    console.warn('render', this);
+    console.warn('render', this, this.service);
   }
 
 

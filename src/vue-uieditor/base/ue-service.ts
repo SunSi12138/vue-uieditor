@@ -1,7 +1,9 @@
 import { UEVue } from "./vue-extends";
 
 export class UEService {
-  constructor(public $cp: UEVue) {
+  
+  constructor(public readonly $uieditor: UEVue) {
 
   }
+
 }

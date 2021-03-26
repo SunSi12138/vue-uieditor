@@ -27,17 +27,16 @@ export interface UEOption {
 }
 
 export type UETransferExtend = {
-  /** 初始化vue data 数据 */
+  /** Vue 初始化数据 */
   data?: UEObject;
   /** 编辑中 */
   editing?: boolean;
   editor?: UETransferEditor;
   /** 当前 render */
   readonly render?: UERenderItem;
+  /** 全局变量 */
   global?: any;
   readonly option?: UEOption;
-  /** 扩展 data */
-  extendData(data: UEObject);
   /**
    * 添加 mixin
    * @param mixin 
@@ -97,7 +96,6 @@ type RenderProp = {
   value?: any;
 };
 
-
 export interface UETransferEditorAttrsItem {
   /** 名称 */
   name?: string;
@@ -126,22 +124,20 @@ export interface UETransferEditorAttrsItem {
   event?: boolean;
   /** 是否在编辑时生效，默认：false */
   effect?: boolean;
-  /** 只使用于 editor */
+  /** 此属性只使用于编辑器，即最终结果没有此属性 */
   editorOlny?: boolean;
   /** 显示类型，默认：text，custom为自定义（弹出对话框） */
   type?: 'text' | 'slider' | 'textarea' | 'select' | 'radiogroup' | 'select-only' | 'boolean' | 'icon' | 'custom';
   /** 数据源, string[] | {text:string;value:string;} */
   datas?: any[] | ((p: { attr: UETransferEditorAttrsItem; attrs: UETransferEditorAttrs; service: UEService }) => any[]);
-  /** 是否为bind属性 */
+  /** 是否为bind属性，默认为 false */
   bind?: boolean;
+  /** 是否允许编辑bind属性, 默认 true */
+  enabledBind?: boolean;
   /** 编辑是否使用bind，默认: false */
   editorBind?: boolean;
   /** 是否支持 codeEditor, 不是全部属性支持，默认为: true */
   codeEditor?: boolean;
-  /** 是否允许编辑bind属性, 默认 false */
-  enabledBind?: boolean;
-  /** 内容是不增加 export default */
-  exportDefault?: boolean;
   /** 是否默认vue-def 内容，只在vue-def使用, 默认：false */
   isVueDef?: boolean;
   /** 点击时处理，返回false中断，type为custom时生效 */
