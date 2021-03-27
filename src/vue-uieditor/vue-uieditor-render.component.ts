@@ -154,7 +154,6 @@ export default class VueUieditorRender extends UEVue {
 
 
       let renderList;
-      debugger
       try {
         renderList = UERender.JsonToVueRender([json], transferExt);
       } catch (e) {
@@ -222,7 +221,6 @@ export default class VueUieditorRender extends UEVue {
 
     vueDef.render = compiled.render;
     vueDef.staticRenderFns = compiled.staticRenderFns;
-    debugger
     this.vueRender = vueDef;
   }
 
