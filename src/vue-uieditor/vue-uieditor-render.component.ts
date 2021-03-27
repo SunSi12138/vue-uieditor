@@ -65,7 +65,9 @@ export default class VueUieditorRender extends UEVue {
   }
 
   @UEVueLife('created')
-  private _created1() {
+  private async _created1() {
+    const options = this.options || {};
+    await UECompiler.init({ bable: options.babel !== false })
     this._makeVueRender();
   }
 

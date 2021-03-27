@@ -18,7 +18,9 @@ export default class VueUieditor extends UEVue {
 
   private _service: UEService;
   get service(): UEService {
-    if (!this.$isBeingDestroyed && !this._service) this._service = new UEService(this);
+    if (!this.$isBeingDestroyed && !this._service) {
+      this._service = new UEService(this);
+    }
     return this._service;
   }
   @UEVueProvide('service')
@@ -31,15 +33,17 @@ export default class VueUieditor extends UEVue {
   }
 
 
+  @UEVueLife('created')
+  private async _created1() {
+    const options = this.options || {};
+    await UECompiler.init({ bable: options.babel !== false })
+  }
+
+
 
   @UEVueLife('mounted')
   private _mounted1() {
     LayuiInit(this.$el);
-    console.warn('this', this, ...[1, 2, 3]);
-    UECompiler.init().then(function () {
-      const fn = UECompiler.babelTransformToFunEx(['name', 'id'], 'return {name, id}');
-      console.warn('babelTransformToFunEx', fn('user1', '1111'), fn);
-    });
   }
 
   @UEVueLife('destroyed')
