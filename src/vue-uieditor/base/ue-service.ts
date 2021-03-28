@@ -2,7 +2,7 @@ import { UEVue } from "./vue-extends";
 import { UERenderItem } from './ue-render-item';
 import _ from 'lodash';
 import { UEHelper } from './ue-helper';
-import { UEOption, UETransferEditor, UETransferEditorAttrs } from './ue-base';
+import { UEOption, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem } from './ue-base';
 import { UERender } from './ue-render';
 
 
@@ -32,6 +32,51 @@ export class UEService {
     this.$uieditor?.$on(event, callback)
   }
 
+  /** 历史记录 */
+  history = {
+    list: [],
+    curList: [],
+    pos: -1,
+    max: 0,
+    canNext: false,
+    canPre: false,
+    _cacle: () => {
+      let history = this.history;
+      history.canNext = history.pos < history.max;
+      history.canPre = history.pos > 0;
+    },
+    add: (item) => {
+      let history = this.history;
+      let pos = ++history.pos;
+      history.max = pos;
+      history.list[pos] = _.cloneDeep(item);
+      history.curList[pos] = this.current.id;
+      history._cacle();
+    },
+    next: async () => {
+      let history = this.history;
+      if (!history.canNext) return;
+      let list = history.list;
+      let pos = ++history.pos;
+      this._editJson = _.cloneDeep(list[pos]);
+      history._cacle();
+      await this.refresh();
+      // this.setCurrent('');
+    },
+    pre: async () => {
+      let history = this.history;
+      if (!history.canPre) return;
+      let pos = history.pos;
+      let list = history.list;
+      history.pos = --pos;
+      history._cacle();
+      this._editJson = _.cloneDeep(list[pos]);
+      await this.refresh();
+      // this.setCurrent('');
+    }
+  };
+
+
   /** 当前处理内容 */
   current = {
     /** 当前选中Id */
@@ -40,6 +85,14 @@ export class UEService {
     parentId: '',
     /** 根Id */
     rootId: '',
+    /** 面包屑 */
+    breadcrumbs: [],
+    /** 是否属性栏 */
+    refreshAttr: false,
+    /** 编辑中的属性栏 */
+    attrs:null,
+    /** 编辑中的editor内容 */
+    editor:null,
     /** 用于显示的vue mixin */
     mixin: null,
     /** 计算后用于显示的JSON */
@@ -56,10 +109,18 @@ export class UEService {
   }
 
   setJson(json: UERenderItem): Promise<any> {
+    return this._setJson(json, false);
+  }
+
+  private _setJson(json: UERenderItem, formHistory: boolean): Promise<any> {
     return new Promise((resolve) => {
       json = _.cloneDeep(json);
       if (json.type != _editorType) {
         json = _makeWrapRootDiv(json);
+      }
+
+      if (!formHistory) {
+        this.history.add(json);
       }
 
       //初始化render，初始化Id, attrs等
@@ -124,6 +185,167 @@ export class UEService {
   }
 
   /**
+   * 获取当前render
+   */
+  getCurRender() {
+    return this.getRenderItem(this.current.id)
+  }
+
+  /**
+   * 获取父节点
+   * @param render 
+   * @param all 是否所有内容，否则根据draggable设置查找父节点，默认为：true 
+   */
+  getParentRenderItem(render: UERenderItem, all = true): UERenderItem {
+    if (!render) return null;
+    let id = render.editorId;
+    if (id) {
+      let pId = render.editorPId;
+      if (!pId) return null;
+      let pRender = this.getRenderItem(pId)
+      if (all) {
+        return pRender;
+      } else {
+        let editor = render.editor;
+        if (editor && !editor.draggable)
+          return this.getParentRenderItem(pRender, all);
+        else
+          return pRender;
+      }
+    }
+    return null;
+  }
+
+  getParentRenderByType(render: UERenderItem, type: string) {
+    return this.closest(render, function (render) {
+      return render.type == type;
+    });
+  }
+
+  closest(render: UERenderItem, fn: (render: UERenderItem) => boolean) {
+    if (!render) return null;
+    let id = render.editorId
+    if (id) {
+      if (fn(render)) return render;
+      let pId = render.editorPId
+      let pRender = this.getRenderItem(pId);
+      return this.closest(pRender, fn);
+    }
+    return null;
+  }
+
+  /**
+   * 刷新导向栏
+   * @param render 
+   */
+  refresBreadcrumbs(render: UERenderItem) {
+    let breadcrumbs = [];
+    this._makeBreadcrumbs(render, breadcrumbs);
+    if (breadcrumbs.length > 0) {
+      let first = _.first(breadcrumbs);
+      first.canOpt = false;
+      first.text = "Root";
+      _.last(breadcrumbs).canOpt = false;
+    }
+    this.current.breadcrumbs = breadcrumbs;
+  }
+
+  private _makeBreadcrumbs(render: UERenderItem, outList: any[]) {
+    if (!render) return;
+    let editor = render.editor
+    let pId = render.editorPId
+    const pRender = this.getRenderItem(pId);
+    if (editor && editor.draggable) {
+      const pEditor = pRender.editor
+      outList.unshift({
+        text: (editor.textFormat && editor.textFormat(editor, render.attrs)) || editor.text,
+        id: render.editorId,
+        pId,
+        canOpt: true,
+      });
+    }
+    if (pRender)
+      this._makeBreadcrumbs(pRender, outList);
+  }
+
+  /**
+   * 修改 render type(类型)
+   * @param render 
+   * @param type 
+   */
+   changeRenderType(render: UERenderItem, type: string) {
+    let current = this.current;
+    let parentId = current.parentId || render.editorPId || current.rootId;
+    let pRender = this.getRenderItem(parentId);
+    if (!pRender) return;
+    let children = pRender.children;
+    if (!children) children = (pRender.children = []);
+    let index = children.indexOf(render);
+    let newRender:UERenderItem = this.createRender(type, parentId);
+    let id = newRender.editorId;
+    const attrs = render.attrs;
+    newRender.props = _.assign({}, newRender.props, {
+      'v-model':attrs['v-model'].value,
+      'ref':attrs['ref'].value
+    });
+    children.splice(index, 0, newRender);
+    this.$emit('on-change-type', { service: this, parent: pRender, render: newRender, oldRender: render });
+    this.delCur(false, true);
+
+    this.current.refreshAttr = true;
+    this.refresh().then(() => {
+      this.setCurrent(id);
+    });
+  }
+
+  /**
+   * 获取 当前render的属性配置
+   * @param render 如果空，为当前render
+   */
+  getCurAttrs(render?: UERenderItem):UETransferEditorAttrs {
+    if (!render)
+      render = this.getRenderItem(this.current.id);
+    return render?.attrs
+  }
+
+  /**
+   * 设置 当前render的属性配置(属性栏)
+   * @param render 如果空，为当前render
+   */
+  setCurAttrs(render?: UERenderItem) {
+    if (!render) render = this.getRenderItem(this.current.id);
+    if (render) {
+      _setRenderAttrs(render, render.editor, true, this);
+      this.refresh();
+      this.refresBreadcrumbs(render);
+    }
+  }
+
+  /**
+   * 根据id， 设置render属性
+   * @param id 
+   * @param attr 
+   */
+  setAttr(id: string, attr: UETransferEditorAttrsItem) {
+    let render = this.getRenderItem(id);
+    const editor = render.editor
+
+    let name = attr.name;
+    if (!render || !name) return;
+    if (name == '_meta_type') {
+      this.changeRenderType(render, attr.value);
+      return;
+    }
+    let attrs = render.attrs
+    if (attrs[name])
+      _.assign(attrs[name], attr);
+    if (!attr.effect || !!attr.demoValue) return;
+    _setRenderAttrs(render, render.editor, true, this);
+    this.refresh();
+    this.refresBreadcrumbs(render);
+  }
+
+  /**
    * 返回编辑最终render，保存时用
    * @param editing 是否编辑中的render， 默认：false
    * @param id 返回指定render内容
@@ -149,7 +371,79 @@ export class UEService {
     return render;
   }
 
-}
+
+  private _isRrefreshing;
+  /**
+   * 刷新编辑内容
+   * @param formHistory 
+   */
+  async refresh(): Promise<any> {
+    if (this._isRrefreshing) return
+    this._isRrefreshing = true;
+    await this._setJson(this._editJson, true);
+    this._isRrefreshing = false;
+  }
+
+
+  _currentTimeId;
+  /**
+   * 设置（选择）当前render
+   * @param render 
+   */
+  setCurrent(render: UERenderItem)
+  /**
+   * 根据id，设置（选择）当前render
+   * @param id 
+   */
+  setCurrent(id: string)
+  setCurrent(id: any) {
+    if (!id)
+      id = '';
+    else if (!_.isString(id)) {
+      id = (id as UERenderItem).editorId || '';
+    }
+    // if (!id) return;
+    const current = this.current;
+    const render = this.getRenderItem(id);
+
+    let change = current.id !== id;
+    let editor = render.editor;
+    const parentId = render.editorPId;
+    const pRender = this.getParentRenderItem(render);
+    const pEditor = pRender?.editor
+    current.parentId = parentId;
+    current.id = id;
+
+    if (change) {
+      const $uieditor = this.$uieditor;
+      if (this._currentTimeId) clearTimeout(this._currentTimeId);
+      current.refreshAttr = true;
+      this._currentTimeId = setTimeout(async () => {
+        current.refreshAttr = true;
+
+        if (render) {
+          current.attrs = this.getCurAttrs(render);
+          current.editor = render.editor;
+        } else {
+          current.attrs = {};
+          current.editor = {};
+        }
+        this._currentTimeId = null;
+        $uieditor.$nextTick(async () => {
+          current.refreshAttr = false;
+          await $uieditor.$nextTick();
+          this.$emit('on-select', { service: this, render, parent: pRender, editor: current.attrs, attrs: current.attrs });
+        });
+      }, 50);
+    }
+
+    this.refresBreadcrumbs(render);
+    // this.$logger.debug('setCurrent', current.id)
+  }
+
+
+
+} //end UEService
 
 
 /**
@@ -440,12 +734,12 @@ function _makeEditorContentId(id: string) {
  * 生成编辑后最终render结果，清除编辑器所需的内容
  * @param renderList 
  */
- function _makeResultJson(renderList: UERenderItem[], editing?: boolean, service?: UEService) {
+function _makeResultJson(renderList: UERenderItem[], editing?: boolean, service?: UEService) {
   _.forEach(renderList, function (item) {
     if (_.isString(item)) return;
     _setRenderAttrs(item, item.editor, editing, service);
 
-    const dItem:any = item;
+    const dItem: any = item;
     delete dItem.editorId;
     delete dItem.editorPId;
     delete dItem.attrs;
