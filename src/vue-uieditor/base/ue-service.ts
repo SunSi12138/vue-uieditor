@@ -8,7 +8,7 @@ import { UERender } from './ue-render';
 
 const _editorType = 'uieditor-div';
 
-function _makeEditorDiv(json?: UERenderItem) {
+function _makeWrapRootDiv(json?: UERenderItem) {
   return {
     "type": _editorType,
     "children": json ? [json] : []
@@ -47,22 +47,32 @@ export class UEService {
   };
 
   /** 编辑中的JSON */
-  editJson:UERenderItem;
+  private _editJson: UERenderItem;
 
-  rootRender:UERenderItem;
+
+  /** 编辑中的 root JSON */
+  get rootRender(): UERenderItem {
+    return this.current.json;
+  }
 
   setJson(json: UERenderItem): Promise<any> {
     return new Promise((resolve) => {
       json = _.cloneDeep(json);
-      if (json.type != _editorType)
-        json = _makeEditorDiv(json);
+      if (json.type != _editorType) {
+        json = _makeWrapRootDiv(json);
+      }
 
+      //初始化render，初始化Id, attrs等
+      _initRender([json], null, this.options?.editor, this);
 
-      _initRenderEditor([json], null, this.options?.editor, this);
-      this.current.rootId = json.editorId;
-      this.editJson = _.cloneDeep(json);
+      //创建修改结果用json，包涵 id, editor等信息
+      this._editJson = _.cloneDeep(json);
 
-      let rootRender = this.rootRender = _getEditorRender(json);
+      //返回可编辑的render， 添加只有编辑时用的信息内容，class、拖动、编辑事件等
+      //这份数据只用于编辑的内存数据，不能用于保存
+      let rootRender = _getEditorRender(json);
+
+      this.current.rootId = rootRender.editorId;
 
       let editorid = rootRender.editorId;
       rootRender.props || (rootRender.props = {});
@@ -108,16 +118,47 @@ export class UEService {
     });
   }
 
+  getRenderItem(id: string, context?: UERenderItem): UERenderItem {
+    context || (context = this._editJson);
+    return !context ? null : UERender.findRender([context], { editorId: id });
+  }
+
+  /**
+   * 返回编辑最终render，保存时用
+   * @param editing 是否编辑中的render， 默认：false
+   * @param id 返回指定render内容
+   */
+  getJson(editing?: boolean, id?: string);
+  /**
+   * 返回编辑最终render，保存时用
+   * @param editing 是否编辑中的render， 默认：false
+   * @param render 返回指定render内容
+   */
+  getJson(editing?: boolean, render?: UERenderItem);
+  getJson(editing, p?: any) {
+    if (!this._editJson) return {};
+    let render;
+    if (!p)
+      render = this._editJson;
+    else
+      render = _.isString(p) ? this.getRenderItem(p) : p;
+    render = _.cloneDeep(render);
+    _makeResultJson([render], editing, this);
+    if (render.type == _editorType && render.children.length == 1)
+      render = render.children[0] as any;
+    return render;
+  }
+
 }
 
 
 /**
- * 初始化编辑render
+ * 初始化编辑render，初始化Id, attrs等
  * @param renderList 
  * @param parent 
  * @param editorOpt 
  */
-function _initRenderEditor(renderList: UERenderItem[], parent: UERenderItem, editorOpt: { [type: string]: UETransferEditor; }, service: UEService) {
+function _initRender(renderList: UERenderItem[], parent: UERenderItem, editorOpt: { [type: string]: UETransferEditor; }, service: UEService) {
   _.forEach(renderList, function (item) {
     if (_.isString(item)) return;
     const isInit = _initRenderAttrs(item, editorOpt, service);
@@ -125,7 +166,7 @@ function _initRenderEditor(renderList: UERenderItem[], parent: UERenderItem, edi
       (item as any).editorId = _getId();
     }
     if (parent) (item as any).editorPId = parent.editorId;
-    if (item.children) _initRenderEditor(item.children as any, item, editorOpt, service);
+    if (item.children) _initRender(item.children as any, item, editorOpt, service);
   });
 }
 
@@ -290,10 +331,11 @@ function _setRenderAttrs(render: UERenderItem, editor: UETransferEditor, editing
 }
 
 /**
- * 返回可编辑的render， 可以拖动等
+ * 返回可编辑的render， 添加只有编辑时用的信息内容，class、拖动、编辑事件等
+ * 这份数据只用于编辑的内存数据，不能用于保存
  * @param render 
  */
- function _getEditorRender(render: UERenderItem): UERenderItem {
+function _getEditorRender(render: UERenderItem): UERenderItem {
   if (_.isObject(render)) {
     let editor = render.editor;
     if (editor && editor.container) {
@@ -322,7 +364,7 @@ function _setCollapse(attrs: UETransferEditorAttrs, value: 'false' | 'true') {
  * @param renderList 
  * @param parentRender 
  */
- function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem): UERenderItem[] {
+function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem): UERenderItem[] {
 
   const pEditor = parentRender.editor;
   let dragChildren = _.map(renderList, function (item) {
@@ -348,7 +390,7 @@ function _setCollapse(attrs: UETransferEditorAttrs, value: 'false' | 'true') {
       id = renderId;
     } else {
       id = _makeEditorContentId(renderId);
-        let emptyCls = !render.children || render.children as any == 0 ? ' uieditor-drag-empty' : '';
+      let emptyCls = !render.children || render.children as any == 0 ? ' uieditor-drag-empty' : '';
       if (select) {
         render.props['tabindex'] = '-1';
       }
@@ -391,4 +433,24 @@ function _setCollapse(attrs: UETransferEditorAttrs, value: 'false' | 'true') {
 
 function _makeEditorContentId(id: string) {
   return [id, 'content'].join('-');
+}
+
+
+/**
+ * 生成编辑后最终render结果，清除编辑器所需的内容
+ * @param renderList 
+ */
+ function _makeResultJson(renderList: UERenderItem[], editing?: boolean, service?: UEService) {
+  _.forEach(renderList, function (item) {
+    if (_.isString(item)) return;
+    _setRenderAttrs(item, item.editor, editing, service);
+
+    const dItem:any = item;
+    delete dItem.editorId;
+    delete dItem.editorPId;
+    delete dItem.attrs;
+    delete dItem.editor;
+
+    if (item.children) _makeResultJson(item.children as any, editing, service);
+  });
 }
