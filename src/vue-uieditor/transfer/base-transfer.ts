@@ -5,7 +5,7 @@ import { UERender } from '../base/ue-render';
 const groupOrder = 2;
 const group = '公用组件库/基础组件';
 
-export const BaseTransfer: UETransfer = UERender.NewTransfer({
+export const BaseTransfer: UETransfer = UERender.DefineTransfer({
   'uieditor-div': {
     type: 'div',
     "editor": {
@@ -44,8 +44,6 @@ export const BaseTransfer: UETransfer = UERender.NewTransfer({
       inline: true,
       attrs: {
         src: {
-          group: '组件',
-          groupOrder: 1,
           enabledBind: true,
           order: 0,
           value: './modules/bingo_ui_designer/assets/images/demo.png',
@@ -66,8 +64,6 @@ export const BaseTransfer: UETransfer = UERender.NewTransfer({
       empty: 'iframe',
       attrs: {
         'src,frameborder:0,height:100%,width:100%,scrolling:yes': {
-          group: '组件',
-          groupOrder: 1,
           enabledBind: true,
           order: 0
         }
@@ -92,8 +88,6 @@ export const BaseTransfer: UETransfer = UERender.NewTransfer({
       attrs: {
         text: {
           effect: true, enabledBind: true,
-          group: "组件",
-          groupOrder: 1,
           value: "文本内容",
           order: 0
         },
@@ -119,8 +113,6 @@ export const BaseTransfer: UETransfer = UERender.NewTransfer({
       attrs: {
         text: {
           effect: true, enabledBind: true,
-          group: "组件",
-          groupOrder: 1,
           value: "超链接",
           order: 0
         },
@@ -161,24 +153,18 @@ export const BaseTransfer: UETransfer = UERender.NewTransfer({
       // empty: 'Html',
       attrs: {
         content: {
-          group: '组件',
-          groupOrder: 0,
           effect: true,
           language: 'html',
           enabledBind: true,
           value: "<span>html</span>"
         },
         type: {
-          group: '组件',
-          groupOrder: 0,
           effect: true,
           type: 'select-only',
           datas: ['div', 'span'],
           value: "div"
         },
         preview: {
-          group: '组件',
-          groupOrder: 0,
           text: '预览',
           effect: true,
           bind: false,

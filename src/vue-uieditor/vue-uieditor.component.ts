@@ -1,7 +1,7 @@
 import { UEOption } from './base/ue-base';
 import { UECompiler } from './base/ue-compiler';
 import { UEService } from './base/ue-service';
-import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueProvide } from './base/vue-extends';
+import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueProvide, UEVueWatch } from './base/vue-extends';
 import './layui-import';
 import { Layuidestroy, LayuiInit } from './layui-test';
 
@@ -16,10 +16,17 @@ export default class VueUieditor extends UEVue {
   @UEVueProp()
   private json!: UEOption;
 
+  @UEVueWatch('options')
+  private _wOptions(options) {
+    if (this.service) {
+      (this.service as any).options = options;
+    }
+  }
+
   private _service: UEService;
   get service(): UEService {
     if (!this.$isBeingDestroyed && !this._service) {
-      this._service = new UEService(this);
+      this._service = new UEService(this, this.options);
     }
     return this._service;
   }

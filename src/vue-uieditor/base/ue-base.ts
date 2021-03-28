@@ -31,7 +31,7 @@ export type UETransferExtend = {
   data?: UEObject;
   /** 编辑中 */
   readonly editing?: boolean;
-  readonly service?:UEService;
+  readonly service?: UEService;
   readonly editor?: UETransferEditor;
   /** 当前 render */
   readonly render?: UERenderItem;
@@ -92,6 +92,8 @@ type RenderProp = {
 export interface UETransferEditorAttrsItem {
   /** 名称 */
   readonly name?: string;
+  /** 是否自定义属性，属性栏自定义的属性，可删除的属性 */
+  readonly cust?: boolean;
   /** 显示名称 */
   text?: string;
   /** 默认值 */
@@ -197,9 +199,9 @@ export interface UETransferEditor {
     dragEditor: UETransferEditor; service: UEService;
   }) => boolean;
   /**
-   * 编辑渲染时转换 render, 如果返回空不渲染
+   * 编辑渲染时转换 render 和 attr
    */
-  transfer?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; editing: boolean; service: UEService; }) => UERenderItem;
+  transferAttr?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; editing: boolean; service: UEService; }) => void;
   contextmenu?: (render: UERenderItem, attrs: UETransferEditorAttrs, editor: UETransferEditor, service: UEService) => any[];
   /** 隐藏attr，如: ['class'] */
   hideAttrs?: string[];

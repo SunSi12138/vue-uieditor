@@ -3,7 +3,6 @@ import { UETransferExtend, UETransfer, UEOption, UETransferEditor, UETransferEdi
 import _ from 'lodash';
 import { UEMergeMixin } from './vue-extends';
 
-
 function _findRender(renders: UERenderItem[], isFn: any) {
   let findItem;
   _.forEach(renders, function (item) {
@@ -16,6 +15,7 @@ function _findRender(renders: UERenderItem[], isFn: any) {
       if (findItem) return false;
     }
   });
+
   return findItem;
 }
 
@@ -37,32 +37,23 @@ function _getTransferEditor(transfer: UETransfer) {
  * @param options 
  */
 function _mergeDefaultOption(options: UEOption): UEOption {
-  const newOptions = _defautlOption();
-  options = _.cloneDeep(options);
-  let keys = _.keys(options);
-  _.forEach(keys, function (key) {
-    switch (key) {
-      case 'mixins':
-        newOptions.mixins = (newOptions.mixins || []).concat(options.mixins || [])
-        break;
-      case 'transfer':
-        newOptions.transfer = _.assign({}, newOptions.transfer, options.transfer);
-        break;
-      case 'transferBefore':
-      case 'transferAfter':
-        let transferEvent = newOptions[key];
-        newOptions[key] = function (render, extend) {
-          render = transferEvent ? transferEvent(render, extend) : render;
-          render = options[key](render, extend);
-          return render;
-        };
-        break;
-      default:
-        newOptions[key] = options[key];
-        break;
+  const defaultOptions = _defautlOption();
+  const transferBefore = options.transferBefore;
+  const transferAfter = options.transferAfter;
+  return _.assign({}, options, {
+    mixins: (defaultOptions.mixins || []).concat(options.mixins || []),
+    transfer: _.assign({}, defaultOptions.transfer, options.transfer),
+    transferBefore(render, extend) {
+      render = defaultOptions.transferBefore(render, extend);
+      render = transferBefore.call(options, render, extend);
+      return render;
+    },
+    transferAfter(render, extend) {
+      render = defaultOptions.transferAfter(render, extend);
+      render = transferAfter.call(options, render, extend);
+      return render;
     }
   });
-  return newOptions;
 }
 
 
@@ -161,6 +152,11 @@ export class UERender {
     return rList;
   }
 
+  /**
+   * 添加新的 transfer 到 options，传入参数会被亏染
+   * @param options 
+   * @param transfer 
+   */
   static AddTransfer(options: UEOption, transfer: UETransfer): UEOption {
     let editor = _getTransferEditor(transfer);
     (options as any).editor = _.assign({}, editor, options.editor);
@@ -168,39 +164,81 @@ export class UERender {
     return options;
   }
 
-  static NewOption(options: UEOption): UEOption {
+  /**
+   * 定义 options，传入参数会被亏染
+   * @param options 
+   */
+  static DefineOption(options: UEOption): UEOption {
     options = _mergeDefaultOption(options);
     return UERender.AddTransfer(options, options.transfer);
   }
 
-  static NewTransfer(transfer: UETransfer): UETransfer {
-    transfer = _.cloneDeep(transfer);
+  /**
+   * 定义 transfer，传入参数会被亏染
+   * @param transfer 
+   */
+  static DefineTransfer(transfer: UETransfer): UETransfer {
     _.forEach(transfer, function (transferItem, type) {
       if (transferItem.editor) {
-        const item = transferItem.editor;
-        let emptyEditor = !item.empty ? null : _emptyEditor(type, item.empty);
-        let editor: UETransferEditor = _.assign({}, _defaultEditor(type), emptyEditor, item);
-
-        if (!editor.text) editor.text = type;
-        if (!editor.placeholder) editor.placeholder = editor.text;
-        let attrs = editor.attrs;
-        let hideAttrs = editor.hideAttrs;
-        let hideAttrGroups = editor.hideAttrGroups;
-        _.forEach(attrs, function (attr, name) {
-          attr = attrs[name] = _.assign({}, _defaultEditorAttrItem(name), attr);
-          if (!attr.text) attr.text = name;
-          if (!attr.placeholder) attr.placeholder = attr.text;
-          if ((hideAttrs && hideAttrs.indexOf(name) >= 0)
-            || hideAttrGroups && hideAttrGroups.indexOf(attr.group) >= 0) {
-            attr.show = false;
-          }
-        });
-
-        transferItem.editor = editor;
+        transferItem.editor = UERender.DefineTransferEditor(type, transferItem.editor);
       }
-
     });
     return transfer;
+  }
+
+  /**
+   * 定义 transfer.editor，传入参数会被亏染
+   * @param type 
+   * @param editor 
+   */
+  static DefineTransferEditor(type: string, editor: UETransferEditor): UETransferEditor {
+    let emptyEditor = !editor.empty ? null : _emptyEditor(type, editor.empty);
+    editor = _.assign({}, _defaultEditor(type), emptyEditor, editor);
+    if (!editor.text) editor.text = type;
+    if (!editor.placeholder) editor.placeholder = editor.text;
+
+    let attrs = editor.attrs;
+    _.forEach(attrs, function (attr, name) {
+      attrs[name] = UERender.DefineTransferEditorAttr(name, attr, editor);
+    });
+
+    return editor;
+  };
+
+  /**
+   * 定义 transfer.editor.attr，传入参数会被亏染
+   * @param name 
+   * @param attr 
+   * @param editor 
+   */
+  static DefineTransferEditorAttr(name: string, attr: UETransferEditorAttrsItem, editor: UETransferEditor): UETransferEditorAttrsItem {
+
+    let hideAttrs = editor.hideAttrs;
+    let hideAttrGroups = editor.hideAttrGroups;
+    attr = _.assign({}, _defaultEditorAttrItem(name), attr);
+    if (!attr.text) attr.text = name;
+    if (!attr.placeholder) attr.placeholder = attr.text;
+    if ((hideAttrs && hideAttrs.indexOf(name) >= 0)
+      || hideAttrGroups && hideAttrGroups.indexOf(attr.group) >= 0) {
+      attr.show = false;
+    }
+    return attr;
+  };
+
+  /**
+   * 新建一个自定义attr
+   * @param name 
+   * @param attr 
+   * @param editor 
+   */
+  static NewCustAttr(name: string, attr: UETransferEditorAttrsItem, editor: UETransferEditor): UETransferEditorAttrsItem {
+    return UERender.DefineTransferEditorAttr(name, _.assign({
+      order: 990,
+      enabledBind: true,
+      cust: true,
+      group: _defaultAttrGroup,
+      groupOrder: _defaultAttrGroupOrder,
+    } as UETransferEditorAttrsItem), editor);
   }
 
   static findRender(renders: UERenderItem[], p: any): UERenderItem {
@@ -288,7 +326,7 @@ function _defaultEditor(name: string): UETransferEditor {
     attrs: {
       '_meta_type': { group: 'Vue', editorOlny: true, show: false, text: 'type', effect: true, groupOrder: -50, order: -50, desc: '更改类型，注意：只保留v-model与ref内容' },
       '_editor_collapse': { group: 'Vue', order: 999, show: false, value: 'false', editorOlny: true, desc: "editor内部使用" },
-      'v-show': { group: 'Vue', groupOrder: 102, order: 102 },
+      'v-show': { group: 'Vue', order: 102 },
       'v-if': { group: 'Vue', order: 103 },
       'v-for': { group: 'Vue', order: 104 },
       'v-model': { group: 'Vue', order: 105 },
@@ -303,13 +341,15 @@ function _defaultEditor(name: string): UETransferEditor {
   }
 };
 
+const _defaultAttrGroup = '组件属性';
+const _defaultAttrGroupOrder = 0;
 
 function _defaultEditorAttrItem(name: string): UETransferEditorAttrsItem {
   return {
     name,
     value: '',
-    group: '其他',
-    groupOrder: 99,
+    group: _defaultAttrGroup,
+    groupOrder: _defaultAttrGroupOrder,
     show: true,
     enabledBind: false,
     order: 99,
