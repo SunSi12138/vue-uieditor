@@ -1,6 +1,5 @@
 <template>
   <div style="height: 100%; width: 100%">
-    <vue-uieditor-render :options="options" :json="json" editing />
     <div class="layui-uieditor">
       <div class="layui-tab layui-tab-card">
         <!-- tool-bar -->
@@ -139,6 +138,13 @@
                       </span>
                     </div>
                     <div class="editor-json-content">
+                      <vue-uieditor-render
+                        v-if="current"
+                        :options="options"
+                        :json="current.json"
+                        :mixin="current.mixin"
+                        editing
+                      />
                       <div class="uieditor-drag-content uieditor-drag-root">
                         <div class="uieditor-drag-item test-item">item1</div>
                         <div class="uieditor-drag-item test-item-inline">
@@ -281,8 +287,7 @@
                                         >v-model</label
                                       >
                                       <div class="layui-input-block attr-bind">
-                                        <span
-                                          class="layui-badge layui-bg-gray"
+                                        <span class="layui-badge layui-bg-gray"
                                           >v</span
                                         >
                                         <input
@@ -390,7 +395,8 @@
                                       <div
                                         class="layui-input-block attr-bind attr-code"
                                       >
-                                        <span class="layui-badge layui-bg-blue-active"
+                                        <span
+                                          class="layui-badge layui-bg-blue-active"
                                           >：</span
                                         >
                                         <input
@@ -436,7 +442,8 @@
                                       <div
                                         class="layui-input-block attr-bind attr-code"
                                       >
-                                        <span class="layui-badge layui-bg-blue-active"
+                                        <span
+                                          class="layui-badge layui-bg-blue-active"
                                           >@</span
                                         >
                                         <input
@@ -468,7 +475,8 @@
                                       <div
                                         class="layui-input-block attr-bind attr-code"
                                       >
-                                        <span class="layui-badge layui-bg-blue-active"
+                                        <span
+                                          class="layui-badge layui-bg-blue-active"
                                           >：</span
                                         >
                                         <div id="selectInput1"></div>
@@ -511,7 +519,8 @@
                                         >行内表单</label
                                       >
                                       <div class="layui-input-block attr-bind">
-                                        <span class="layui-badge layui-bg-blue-active"
+                                        <span
+                                          class="layui-badge layui-bg-blue-active"
                                           >：</span
                                         >
                                         <select

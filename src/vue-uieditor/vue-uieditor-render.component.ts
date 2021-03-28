@@ -31,6 +31,9 @@ export default class VueUieditorRender extends UEVue {
   private json!: string;
 
   @UEVueProp()
+  private mixin!: string;
+
+  @UEVueProp()
   private query!: string;
 
   @UEVueProp()

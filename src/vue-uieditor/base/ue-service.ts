@@ -24,6 +24,14 @@ export class UEService {
   constructor(public readonly $uieditor: UEVue, public readonly options: UEOption) {
   }
 
+  _destroy(){
+    const _this:any = this;
+    _this.current = _this.history =
+     _this.options = _this.rootRender =
+     _this.$uieditor  =
+     _this._editJson = null;
+  }
+
   $emit(event: string, ...arg: any[]) {
     this.$uieditor?.$emit(event, ...arg);
   }
@@ -90,9 +98,9 @@ export class UEService {
     /** 是否属性栏 */
     refreshAttr: false,
     /** 编辑中的属性栏 */
-    attrs:null,
+    attrs: null,
     /** 编辑中的editor内容 */
-    editor:null,
+    editor: null,
     /** 用于显示的vue mixin */
     mixin: null,
     /** 计算后用于显示的JSON */
@@ -164,13 +172,15 @@ export class UEService {
             }
           },
           computed: {
-            '$uieditor'() {
-              return _this;
+            $uieditor() {
+              return _this.$uieditor;
             },
-            service() { return _this; }
+            $service() {
+              return _this;
+            }
           },
           beforeDestroy() {
-            this.current = _this = null;
+            _this = null;
             rootRender = json = null;
           },
         },
@@ -269,11 +279,27 @@ export class UEService {
   }
 
   /**
+   * 根据component创建render
+   * @param type 
+   * @param parentId 
+   */
+  private createRender(type, parentId): UERenderItem {
+    let render = {
+      type,
+      editorId: _getId(),
+      editorPId: parentId
+    } as UERenderItem;
+    // let editor = this.options.editor[type];
+    return render;
+  }
+
+
+  /**
    * 修改 render type(类型)
    * @param render 
    * @param type 
    */
-   changeRenderType(render: UERenderItem, type: string) {
+  changeRenderType(render: UERenderItem, type: string) {
     let current = this.current;
     let parentId = current.parentId || render.editorPId || current.rootId;
     let pRender = this.getRenderItem(parentId);
@@ -281,12 +307,12 @@ export class UEService {
     let children = pRender.children;
     if (!children) children = (pRender.children = []);
     let index = children.indexOf(render);
-    let newRender:UERenderItem = this.createRender(type, parentId);
+    let newRender: UERenderItem = this.createRender(type, parentId);
     let id = newRender.editorId;
     const attrs = render.attrs;
     newRender.props = _.assign({}, newRender.props, {
-      'v-model':attrs['v-model'].value,
-      'ref':attrs['ref'].value
+      'v-model': attrs['v-model'].value,
+      'ref': attrs['ref'].value
     });
     children.splice(index, 0, newRender);
     this.$emit('on-change-type', { service: this, parent: pRender, render: newRender, oldRender: render });
@@ -298,11 +324,58 @@ export class UEService {
     });
   }
 
+
+  /**
+   * 
+   * @param cnf 是否要确认
+   * @param norefresh 是否刷新
+   */
+  delCur(cnf?: boolean, norefresh?: boolean) {
+    if (cnf == false) {
+      this.deleteWidget(this.current.parentId, this.current.id, norefresh);
+      return;
+    }
+    // this.$confirm('确定要删除吗？', (r) => {
+    //   if (!r) return;
+    //   this.deleteWidget(this.current.parentId, this.current.id, norefresh);
+    // });
+  }
+
+  /** norefresh 是否刷新 */
+  deleteWidget(parentId: string, id: string, norefresh?: boolean) {
+    let pRender = this.getRenderItem(parentId);
+    if (!pRender) return;
+    let children = pRender.children;
+    if (!children) children = (pRender.children = []);
+    if (id) {
+      let render = this.getRenderItem(id);
+      if (render) {
+        let index = children.indexOf(render);
+        if (index >= 0) {
+          let curId;
+          if (children.length > 1) {
+            let max = children.length - 1;
+            let selRender = children[(index == max) ? index - 1 : index + 1] as UERenderItem;
+            curId = selRender && selRender.editorId || '';
+          } else
+            curId = pRender.editorId
+          children.splice(index, 1);
+          if (!norefresh) {
+            this.current.refreshAttr = true;
+            this.refresh().then(() => { curId && this.setCurrent(curId); });
+          }
+          this.$emit('on-delete', { service: this, parent: pRender, render });
+        }
+      }
+    }
+  }
+
+
   /**
    * 获取 当前render的属性配置
    * @param render 如果空，为当前render
    */
-  getCurAttrs(render?: UERenderItem):UETransferEditorAttrs {
+  getCurAttrs(render?: UERenderItem): UETransferEditorAttrs {
     if (!render)
       render = this.getRenderItem(this.current.id);
     return render?.attrs

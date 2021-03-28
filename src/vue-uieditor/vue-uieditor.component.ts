@@ -19,7 +19,9 @@ export default class VueUieditor extends UEVue {
   @UEVueWatch('options')
   private _wOptions(options) {
     if (this.service) {
+      const json = this.service.getJson();
       (this.service as any).options = options;
+      this.service.setJson(json);
     }
   }
 
@@ -39,22 +41,21 @@ export default class VueUieditor extends UEVue {
     return this;
   }
 
-
-  @UEVueLife('created')
-  private async _created1() {
-    const options = this.options || {};
-    await UECompiler.init({ bable: options.babel !== false })
-  }
-
-
+  current = null;
 
   @UEVueLife('mounted')
-  private _mounted1() {
+  private async _mounted1() {
+    const options = this.options || {};
+    await UECompiler.init({ bable: options.babel !== false });
+    const service = this.service;
+    await service.setJson(this.json);
+    this.current = service.current;
     LayuiInit(this.$el);
   }
 
   @UEVueLife('destroyed')
   private _destroyed1() {
+    this._service?._destroy();
     this._service = null;
     Layuidestroy(this.$el);
   }
