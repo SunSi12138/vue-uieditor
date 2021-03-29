@@ -50,17 +50,19 @@ export default class Home extends UEVue {
 
   @UEVueLife("mounted")
   private _mounted1() {
-    // setTimeout(() => {
-    //   this.json = {
-    //     type: "div",
-    //     children: [
-    //       {
-    //         type: "span",
-    //         children: [`test:${new Date().valueOf()}`],
-    //       },
-    //     ],
-    //   };
-    // }, 3000);
+    setTimeout(() => {
+      this.json = {
+        type: "uieditor-div",
+        children: [
+          {
+            type: "uieditor-text",
+            props: {
+              text: "test1-" + new Date().valueOf(),
+            },
+          },
+        ],
+      };
+    }, 3000);
   }
 }
 </script>

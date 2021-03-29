@@ -24,10 +24,17 @@ export default class VueUieditor extends UEVue {
 
   @UEVueWatch('optionEx')
   private _wOptions(options) {
-    console.warn('optionEx', options)
     if (this.service) {
       const json = this.service.getJson();
       (this.service as any).options = options;
+      this.service.setJson(json);
+    }
+  }
+
+  @UEVueWatch('json')
+  private _wJson(json) {
+    console.warn('json', json)
+    if (this.service) {
       this.service.setJson(json);
     }
   }

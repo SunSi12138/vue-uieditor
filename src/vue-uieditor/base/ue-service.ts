@@ -107,6 +107,21 @@ export class UEService {
     json: null,
   };
 
+  private _resetCurrent() {
+    if (!this.current.json) return;
+    _.assign(this.current, {
+      id: '',
+      parentId: '',
+      rootId: '',
+      breadcrumbs: [],
+      refreshAttr: false,
+      attrs: null,
+      editor: null,
+      mixin: null,
+      json: null
+    });
+  }
+
   /** 编辑中的JSON */
   private _editJson: UERenderItem;
 
@@ -117,6 +132,7 @@ export class UEService {
   }
 
   setJson(json: UERenderItem): Promise<any> {
+    this._resetCurrent();
     return this._setJson(json, false);
   }
 
