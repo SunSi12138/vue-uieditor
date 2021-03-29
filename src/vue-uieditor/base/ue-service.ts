@@ -1,9 +1,10 @@
-import { UEVue } from "./vue-extends";
+import { UEVue, UEVueMixin } from "./vue-extends";
 import { UERenderItem } from './ue-render-item';
 import _ from 'lodash';
 import { UEHelper } from './ue-helper';
 import { UEOption, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem } from './ue-base';
 import { UERender } from './ue-render';
+import { Layuidestroy } from '../layui-test';
 
 
 const _editorType = 'uieditor-div';
@@ -197,8 +198,11 @@ export class UEService {
         beforeDestroy() {
           _this = null;
           rootRender = json = null;
+        },
+        destroyed(){
+          Layuidestroy(this.$el);
         }
-      };
+      } as UEVueMixin;
     });
   }
 

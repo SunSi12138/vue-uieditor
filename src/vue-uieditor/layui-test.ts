@@ -2,6 +2,51 @@
 declare const layui: any;
 let $: JQueryStatic;
 
+interface UEDragEvent {
+  fromEl: HTMLElement;
+  toEl?: HTMLElement;
+  ev?: MouseEvent;
+  pos?: {
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+    type: 'top' | 'bottom' | 'left' | 'right' | 'in';
+    type2: 'before' | 'after' | 'in';
+  };
+}
+
+interface UEDragOptions {
+  /** 数据上下文，使用多个drag使用相同的上下文（内存） */
+  context?(): any;
+  body?(): HTMLElement;
+  /** 只接取 */
+  pullOnly?: boolean;
+  current?(e: UEDragEvent): boolean;
+  /** 是否使用选择 */
+  useSelct?: boolean;
+  select?(e: UEDragEvent): boolean | void;
+  dragstart?(e: UEDragEvent): boolean | void;
+  dragover?(e: UEDragEvent): boolean | void;
+  drop?(e: UEDragEvent): boolean | void;
+  control?(e: UEDragEvent): {
+    title?: {
+      show?: boolean;
+      text?: string;
+      isCollapse?: boolean;
+      collapse?(e: MouseEvent): void;
+    };
+    toolbars?: {
+      text?: string;
+      icon?: string;
+      color?: string;
+      show?: boolean;
+      click?(item: any, e: MouseEvent): void;
+      [key: string]: any;
+    }[];
+  };
+}
+
 export function Layuidestroy($el) {
   layui.$($el).remove();
   // layui.$($el).html('');
@@ -168,6 +213,359 @@ function getPosLine(body, el: HTMLElement, ev: MouseEvent) {
   return { top, left, width, height, type, type2 };
 }
 
+export function DragStart($el, options: UEDragOptions) {
+  const jUieditor = $($el);
+
+  const stopEvent = function (e: any) {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  const boxOpt = {
+    title: 'test',
+    //1：收起；2：展开
+    collapse: 1,
+    menus: [{
+      text: '复制',
+      icon: 'layui-icon-file-b',
+      click() {
+        console.warn('复制');
+      }
+    }, {
+      text: '删除',
+      icon: 'layui-icon-close',
+      click() {
+        console.warn('删除');
+      }
+    }]
+  };
+
+
+  const hideCls = 'uieditor-drag-hide';
+  const jEditorJsonContent = jUieditor.find('.editor-json-content').first();
+  const jSelectBox = $('<div class="uieditor-drag-sel-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
+  const jOverBox = $('<div class="uieditor-drag-over-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
+  const jPosline = $('<div class="uieditor-drag-pos-line ' + hideCls + '" />').appendTo(jEditorJsonContent);
+  const body = jEditorJsonContent[0];
+
+  linkDom(jEditorJsonContent, function () {
+    console.log('clear jEditorJsonContent');
+  });
+
+  //#region select
+
+  var _selectElement: any = null;
+  var _selectTimeId;
+  const isSelect = function (element: any) {
+    return element == _selectElement;
+  };
+  const unSelect = function () {
+    if (_selectTimeId) clearInterval(_selectTimeId);
+    _selectElement = _selectTimeId = null;
+    jSelectBox.addClass(hideCls);
+  };
+  const select = function (element, opt) {
+    if (isSelect(element)) return;
+    _selectElement = element;
+    unOverBox();
+
+    // const jTarget = $(target);
+    const { title, collapse, menus } = opt;
+    const toolbarHtmlList = [];
+    let right = 0;
+    if (menus && menus.length > 0) {
+      menus.slice().reverse().forEach(function (item, index) {
+        toolbarHtmlList.push(`<a href="javascript:void(0);" title="${item.text}" class="select-toolbar layui-icon ${item.icon}"
+      tIndex="${index}" style="right:${right}px" />`);
+        right += 20;
+      });
+    }
+    const collapseHtml = !element.classList.contains('uieditor-drag-content') ? '' :
+      `<i class="container-extand-icon layui-icon ${collapse == 1 ? 'layui-icon-right' : 'layui-icon-down'}"></i>`
+    const html = `<div class="title">
+      ${collapseHtml}
+      ${title}
+    </div>${toolbarHtmlList.join('')}`;
+    jSelectBox.html(html);
+
+    function fn() {
+      const rect = getOffsetRect(body, element);
+      jSelectBox.css({
+        top: `${rect.top}px`,
+        left: `${rect.left}px`,
+        width: `${rect.width}px`,
+        height: `${rect.height}px`,
+      });
+    };
+    // if (_selectTimeId) clearInterval(_selectTimeId);
+    fn();
+    jSelectBox.removeClass(hideCls);
+    // _selectTimeId = setInterval(fn, 200);
+  };
+
+  // select menu click
+  jSelectBox.on('click', '>a', function (e) {
+    stopEvent(e);
+    var jo = $(e);
+    var index = ~~jo.attr('tIndex');
+    if (index >= 0) {
+      boxOpt.menus[index].click();
+    }
+    return false;
+  });
+
+  const isDragElement = function (element) {
+    return element &&
+      (element.classList.contains('uieditor-drag-item') || element.classList.contains('uieditor-drag-content'))
+  };
+  const findDragElement = function (element): HTMLElement {
+    if (isDragElement(element)) {
+      return element
+    }
+    return isDragElement(element) ? element : $(element).closest('.uieditor-drag-item,.uieditor-drag-content')[0];
+  };
+
+  //select
+  jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
+    const element = findDragElement(e.toElement || e.target);
+    if (element) {
+      stopEvent(e);
+      select(element, boxOpt);
+      return false;
+    }
+  });
+
+  //#endregion select
+
+  //#region overBox
+
+  let _overBoxElement;
+  const isOverBox = function (element: any) {
+    return element == _overBoxElement;
+  };
+  const unOverBox = function () {
+    _overBoxElement = null;
+    jOverBox.addClass(hideCls);
+  };
+  const overBox = function (element, opt) {
+    if (isOverBox(element)) return;
+    if (isSelect(element)) {
+      unOverBox();
+      return;
+    }
+    _overBoxElement = element;
+
+    // const jTarget = $(target);
+    const { title, collapse } = opt;
+    const collapseHtml = !element.classList.contains('uieditor-drag-content') ? '' :
+      `<i class="container-extand-icon layui-icon ${collapse == 1 ? 'layui-icon-right' : 'layui-icon-down'}"></i>`
+    const html = `<div class="title">
+      ${collapseHtml}
+      ${title}
+    </div>`;
+    jOverBox.html(html);
+
+    const rect = getOffsetRect(body, element);
+    jOverBox.css({
+      top: `${rect.top}px`,
+      left: `${rect.left}px`,
+      width: `${rect.width}px`,
+      height: `${rect.height}px`,
+    });
+    jOverBox.removeClass(hideCls);
+  };
+
+  //overBox
+  jEditorJsonContent.on('mouseover', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
+    const element = findDragElement(e.toElement || e.target);
+    if (element) {
+      stopEvent(e);
+      overBox(element, boxOpt);
+      return false;
+    }
+  });
+  jEditorJsonContent.on('mouseleave', function (e) {
+    unOverBox();
+  });
+
+  //#endregion overBox
+
+  //#region posLine
+
+
+  let _dragPosLine, _dragPosLineEl;
+  const posLine = function (el, ev, rect) {
+    if (!el) return;
+    rect || (rect = getPosLine(body, el, ev));
+    if (!rect) return;
+    // BgLogger.debug('posLine', el, rect);
+    // _option.setContext(el, '_dragPosLine_pre', _option.getContext(el, '_dragPosLine'));
+    _dragPosLine = rect;
+    _dragPosLineEl = el;
+    const box = jPosline[0];
+    const classList = box.classList;
+    if (!classList.contains('uieditor-drag-pos-line')) {
+      classList.add('uieditor-drag-pos-line')
+    }
+    const top = rect.top;
+    if (top > 0 && top < body.scrollTop) {
+      body.scrollTop = top;
+    } else {
+      const clientHeight = body.clientHeight;
+      let maxY = body.scrollTop + clientHeight;
+      if (rect.top > maxY) {
+        body.scrollTop = rect.top + 10 - clientHeight;
+      }
+    }
+    const jBox = $(box);
+    jBox.css({
+      top: `${rect.top}px`,
+      left: `${rect.left}px`,
+      width: `${rect.width}px`,
+      height: `${rect.height}px`,
+    });
+    if ((rect.type == 'in'))
+      jBox.addClass('pos-line-box');
+    else
+      jBox.removeClass('pos-line-box');
+    classList.remove(hideCls);
+    return box;
+  }
+  const unPosLine = function () {
+    // BgLogger.debug('unPosLine', el);
+    _dragPosLine = _dragPosLineEl = null;
+    draging = false;
+    const box = jPosline[0];
+    box.classList.add(hideCls);
+  };
+
+
+  let draging = false;
+  let dragPos = null;
+  let dragEl = null;
+  function _checkDragStart(el, ev) {
+    if (!dragEl || dragEl != el || !dragPos) return false;
+    if (draging) return true;
+    const pos = getMousePos(body, el, ev);
+    const start = _checkDragPos(pos, dragPos);
+    if (start) {
+      draging = true;
+      dragPos = null;
+    }
+    return start;
+  }
+  //移位xx位置后开始拖动
+  const _dragAbs = 5;
+  function _checkDragPos(pos1, pos2) {
+    return Math.abs(pos1.x - pos2.x) >= _dragAbs
+      || Math.abs(pos1.y - pos2.y) >= _dragAbs;
+  }
+
+
+  function _makeEvent(p: UEDragEvent) {
+    p.pos || (p.pos = _dragPosLine);
+    return p;
+  }
+
+  const jWIn = $(window);
+
+  jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
+    const el = findDragElement(e.toElement || e.target);
+    if (!el) return;
+
+    const isRoot = el.classList.contains('uieditor-drag-root');
+    if (isRoot) return;
+
+    if (options.select &&
+      options.select(_makeEvent({ fromEl: el, ev: e as any })) === false) {
+      return;
+    }
+
+    dragPos = getMousePos(body, el, e);
+    dragEl = el;
+
+    let _dragPosLine_pre = null;
+    let _dragOverEl_pre = null;
+
+    const mousemove = function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      if (_checkDragStart(el, e)) {
+        try {
+          if (options.dragstart) {
+            if (options.dragstart(_makeEvent({ fromEl: el, ev: e })) === false) {
+              return;
+            };
+          }
+          el.classList.add(hideCls);
+          unSelect();
+        } finally {
+          return false;
+        }
+      }
+      if (draging) {
+        const dragOverEl = _overBoxElement;
+        if (dragOverEl) {
+          const dragOverEl_pre = _dragOverEl_pre;
+          let change = dragOverEl_pre != dragOverEl;
+
+          const rectNew = getPosLine(body, dragOverEl, e);
+          if (!change) {
+            const rectPre = _dragPosLine_pre;
+            change = !rectNew || !rectPre || rectPre.type2 != rectNew.type2;
+          }
+
+          if (change) {
+            _dragOverEl_pre = dragOverEl;
+            _dragPosLine_pre = rectNew;
+            posLine(dragOverEl, e, rectNew);
+            const overOpt = options
+            let onDragover = overOpt.dragover;
+            if (onDragover) {
+              if (onDragover(_makeEvent({
+                fromEl: el,
+                pos: rectNew,
+                toEl: dragOverEl, ev: e
+              })) !== false) {
+                posLine(dragOverEl, e, rectNew);
+              }
+            } else
+              posLine(dragOverEl, e, rectNew);
+          }
+        } else {
+          // unPosLine();
+        }
+      }
+
+      return false;
+    };
+
+    const mouseup = function (e) {
+      jWIn.off('mousemove', mousemove);
+      jWIn.off('mouseup', mouseup);
+
+      if (draging) {
+        const dropOk = options.drop ? options.drop(_makeEvent({
+          fromEl: dragEl, toEl: _dragPosLineEl,
+          pos: _dragPosLine,
+          ev: e
+        })) : false;
+
+        unPosLine();
+        el.classList.remove(hideCls);
+        select(el, boxOpt);
+      }
+    };
+    jWIn.on('mousemove', mousemove);
+    jWIn.on('mouseup', mouseup);
+
+  });
+
+  //#endregion posLine
+
+
+}
+
 
 export function LayuiInit($el) {
 
@@ -181,331 +579,7 @@ export function LayuiInit($el) {
 
   jqueryInit();
 
-  function dragStart(jUieditor: JQuery) {
-    const stopEvent = function (e: any) {
-      e.stopPropagation();
-      e.preventDefault();
-    };
-
-    const boxOpt = {
-      title: 'test',
-      //1：收起；2：展开
-      collapse: 1,
-      menus: [{
-        text: '复制',
-        icon: 'layui-icon-file-b',
-        click() {
-          console.warn('复制');
-        }
-      }, {
-        text: '删除',
-        icon: 'layui-icon-close',
-        click() {
-          console.warn('删除');
-        }
-      }]
-    };
-
-
-    const hideCls = 'uieditor-drag-hide';
-    const jEditorJsonContent = jUieditor.find('.editor-json-content').first();
-    const jSelectBox = $('<div class="uieditor-drag-sel-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
-    const jOverBox = $('<div class="uieditor-drag-over-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
-    const jPosline = $('<div class="uieditor-drag-pos-line ' + hideCls + '" />').appendTo(jEditorJsonContent);
-    const body = jEditorJsonContent[0];
-
-    linkDom(jEditorJsonContent, function () {
-      console.log('clear jEditorJsonContent');
-    });
-
-    //#region select
-
-    var _selectElement: any = null;
-    const isSelect = function (element: any) {
-      return element == _selectElement;
-    };
-    const unSelect = function () {
-      _selectElement = null;
-      jSelectBox.addClass(hideCls);
-    };
-    const select = function (element, opt) {
-      if (isSelect(element)) return;
-      _selectElement = element;
-      unOverBox();
-
-      // const jTarget = $(target);
-      const { title, collapse, menus } = opt;
-      const toolbarHtmlList = [];
-      let right = 0;
-      if (menus && menus.length > 0) {
-        menus.slice().reverse().forEach(function (item, index) {
-          toolbarHtmlList.push(`<a href="javascript:void(0);" title="${item.text}" class="select-toolbar layui-icon ${item.icon}"
-        tIndex="${index}" style="right:${right}px" />`);
-          right += 20;
-        });
-      }
-      const collapseHtml = !element.classList.contains('uieditor-drag-content') ? '' :
-        `<i class="container-extand-icon layui-icon ${collapse == 1 ? 'layui-icon-right' : 'layui-icon-down'}"></i>`
-      const html = `<div class="title">
-        ${collapseHtml}
-        ${title}
-      </div>${toolbarHtmlList.join('')}`;
-      jSelectBox.html(html);
-
-      const rect = getOffsetRect(body, element);
-      jSelectBox.css({
-        top: `${rect.top}px`,
-        left: `${rect.left}px`,
-        width: `${rect.width}px`,
-        height: `${rect.height}px`,
-      });
-      jSelectBox.removeClass(hideCls);
-
-    };
-
-    // select menu click
-    jSelectBox.on('click', '>a', function (e) {
-      stopEvent(e);
-      var jo = $(e);
-      var index = ~~jo.attr('tIndex');
-      if (index >= 0) {
-        boxOpt.menus[index].click();
-      }
-      return false;
-    });
-
-    const isDragElement = function (element) {
-      return element &&
-        (element.classList.contains('uieditor-drag-item') || element.classList.contains('uieditor-drag-content'))
-    };
-    const findDragElement = function (element) {
-      if (isDragElement(element)) {
-        return element
-      }
-      return isDragElement(element) ? element : $(element).closest('.uieditor-drag-item,.uieditor-drag-content')[0];
-    };
-
-    //select
-    jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
-      const element = findDragElement(e.toElement || e.target);
-      if (element) {
-        stopEvent(e);
-        select(element, boxOpt);
-        return false;
-      }
-    });
-
-    //#endregion select
-
-    //#region overBox
-
-    let _overBoxElement;
-    const isOverBox = function (element: any) {
-      return element == _overBoxElement;
-    };
-    const unOverBox = function () {
-      _overBoxElement = null;
-      jOverBox.addClass(hideCls);
-    };
-    const overBox = function (element, opt) {
-      if (isOverBox(element)) return;
-      if (isSelect(element)) {
-        unOverBox();
-        return;
-      }
-      _overBoxElement = element;
-
-      // const jTarget = $(target);
-      const { title, collapse } = opt;
-      const collapseHtml = !element.classList.contains('uieditor-drag-content') ? '' :
-        `<i class="container-extand-icon layui-icon ${collapse == 1 ? 'layui-icon-right' : 'layui-icon-down'}"></i>`
-      const html = `<div class="title">
-        ${collapseHtml}
-        ${title}
-      </div>`;
-      jOverBox.html(html);
-
-      const rect = getOffsetRect(body, element);
-      jOverBox.css({
-        top: `${rect.top}px`,
-        left: `${rect.left}px`,
-        width: `${rect.width}px`,
-        height: `${rect.height}px`,
-      });
-      jOverBox.removeClass(hideCls);
-    };
-
-    //overBox
-    jEditorJsonContent.on('mouseover', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
-      const element = findDragElement(e.toElement || e.target);
-      if (element) {
-        stopEvent(e);
-        overBox(element, boxOpt);
-        return false;
-      }
-    });
-    jEditorJsonContent.on('mouseleave', function (e) {
-      unOverBox();
-    });
-
-    //#endregion overBox
-
-    //#region posLine
-
-
-    let _dragPosLine, _dragPosLineEl;
-    const posLine = function (el, ev, rect) {
-      if (!el) return;
-      rect || (rect = getPosLine(body, el, ev));
-      if (!rect) return;
-      // BgLogger.debug('posLine', el, rect);
-      // _option.setContext(el, '_dragPosLine_pre', _option.getContext(el, '_dragPosLine'));
-      _dragPosLine = rect;
-      _dragPosLineEl = el;
-      const box = jPosline[0];
-      const classList = box.classList;
-      if (!classList.contains('uieditor-drag-pos-line')) {
-        classList.add('uieditor-drag-pos-line')
-      }
-      const top = rect.top;
-      if (top > 0 && top < body.scrollTop) {
-        body.scrollTop = top;
-      } else {
-        const clientHeight = body.clientHeight;
-        let maxY = body.scrollTop + clientHeight;
-        if (rect.top > maxY) {
-          body.scrollTop = rect.top + 10 - clientHeight;
-        }
-      }
-      const jBox = $(box);
-      jBox.css({
-        top: `${rect.top}px`,
-        left: `${rect.left}px`,
-        width: `${rect.width}px`,
-        height: `${rect.height}px`,
-      });
-      if ((rect.type == 'in'))
-        jBox.addClass('pos-line-box');
-      else
-        jBox.removeClass('pos-line-box');
-      classList.remove(hideCls);
-      return box;
-    }
-    const unPosLine = function () {
-      // BgLogger.debug('unPosLine', el);
-      _dragPosLine = _dragPosLineEl = null;
-      draging = false;
-      const box = jPosline[0];
-      box.classList.add(hideCls);
-    };
-
-
-    let draging = false;
-    let dragPos = null;
-    let dragEl = null;
-    function _checkDragStart(el, ev) {
-      if (!dragEl || dragEl != el || !dragPos) return false;
-      if (draging) return true;
-      const pos = getMousePos(body, el, ev);
-      const start = _checkDragPos(pos, dragPos);
-      if (start) {
-        draging = true;
-        dragPos = null;
-      }
-      return start;
-    }
-    //移位xx位置后开始拖动
-    const _dragAbs = 5;
-    function _checkDragPos(pos1, pos2) {
-      return Math.abs(pos1.x - pos2.x) >= _dragAbs
-        || Math.abs(pos1.y - pos2.y) >= _dragAbs;
-    }
-
-    jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
-      const el = findDragElement(e.toElement || e.target);
-      if (!el) return;
-
-      dragPos = getMousePos(body, el, e);
-      dragEl = el;
-
-      let _dragPosLine_pre = null;
-      let _dragOverEl_pre = null;
-      const jWIn = $(window);
-      const mousemove = function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-        if (_checkDragStart(el, e)) {
-          try {
-            el.classList.add(hideCls);
-            unSelect();
-          } finally {
-            return false;
-          }
-        }
-        if (draging) {
-          const dragOverEl = _overBoxElement;
-          if (dragOverEl) {
-            const dragOverEl_pre = _dragOverEl_pre;
-            let change = dragOverEl_pre != dragOverEl;
-
-            const rectNew = getPosLine(body, dragOverEl, e);
-            if (!change) {
-              const rectPre = _dragPosLine_pre;
-              change = !rectNew || !rectPre || rectPre.type2 != rectNew.type2;
-            }
-
-            if (change) {
-              _dragOverEl_pre = dragOverEl;
-              _dragPosLine_pre = rectNew;
-              posLine(dragOverEl, e, rectNew);
-              // const overOpt = _option.get(dragOverEl)
-              // let onDragover1 = overOpt.dragover;
-              // // BgLogger.debug('onDragover1')
-              // if (onDragover1) {
-              //   // BgLogger.debug('onDragover1 bbbb')
-              //   if (onDragover1(_makeEvent({
-              //     fromEl: _option.getContext(el, '_dragEl'),
-              //     pos: rectNew,
-              //     toEl: dragOverEl, binding, vnode, ev: e
-              //   })) === false) {
-              //     // BgLogger.debug('onDragover1 false', rectNew && rectNew.type2)
-              //     _drag.unPosLine(dragOverEl);
-              //   } else {
-              //     // BgLogger.debug('onDragover1 true', rectNew && rectNew.type2)
-              //     _drag.posLine(dragOverEl, e, rectNew);
-              //   }
-              // } else
-              //   _drag.posLine(dragOverEl, e, rectNew);
-            }
-          } else {
-            // unPosLine();
-            // _drag.unPosLine(dragOverEl);
-          }
-        }
-
-        return false;
-      };
-
-      const mouseup = function (e) {
-        jWIn.off('mousemove', mousemove);
-        jWIn.off('mouseup', mouseup);
-
-        unPosLine();
-        el.classList.remove(hideCls);
-        select(el, boxOpt);
-
-      };
-      jWIn.on('mousemove', mousemove);
-      jWIn.on('mouseup', mouseup);
-
-    });
-
-    //#endregion posLine
-
-
-  }
-
-  layui.config({ base: '../src/lay/modules/' }).use(['tree', 'form', 'layedit', 'element', 'colorpicker', 'slider', 'selectInput'], function () {
+  layui.use(['tree', 'form', 'layedit', 'element', 'colorpicker', 'slider', 'selectInput'], function () {
 
 
     $('div[colorpicker]').each(function (idx, el) {
@@ -535,8 +609,8 @@ export function LayuiInit($el) {
       }
     });
 
-    dragStart($('.layui-uieditor').first());
-    console.warn('element', layui.element);
+    DragStart($el, {});
+
     selectInput.render({
       elem: '#selectInput1',
       data: [
