@@ -1,3 +1,4 @@
+import _ from 'lodash';
 
 declare const layui: any;
 let $: JQueryStatic;
@@ -17,14 +18,6 @@ interface UEDragEvent {
 }
 
 interface UEDragOptions {
-  /** 数据上下文，使用多个drag使用相同的上下文（内存） */
-  context?(): any;
-  body?(): HTMLElement;
-  /** 只接取 */
-  pullOnly?: boolean;
-  current?(e: UEDragEvent): boolean;
-  /** 是否使用选择 */
-  useSelct?: boolean;
   select?(e: UEDragEvent): boolean | void;
   dragstart?(e: UEDragEvent): boolean | void;
   dragover?(e: UEDragEvent): boolean | void;
@@ -227,13 +220,13 @@ export function DragStart($el, options: UEDragOptions) {
     collapse: 1,
     menus: [{
       text: '复制',
-      icon: 'layui-icon-file-b',
+      icon: 'layui-icon layui-icon-file-b',
       click() {
         console.warn('复制');
       }
     }, {
       text: '删除',
-      icon: 'layui-icon-close',
+      icon: 'layui-icon layui-icon-close',
       click() {
         console.warn('删除');
       }
@@ -256,12 +249,14 @@ export function DragStart($el, options: UEDragOptions) {
 
   var _selectElement: any = null;
   var _selectTimeId;
+  const _data_toolbarsKey = 'ue_drag_toolbars';
   const isSelect = function (element: any) {
     return element == _selectElement;
   };
   const unSelect = function () {
     if (_selectTimeId) clearInterval(_selectTimeId);
     _selectElement = _selectTimeId = null;
+    jSelectBox.removeData(_data_toolbarsKey);
     jSelectBox.addClass(hideCls);
   };
   const select = function (element, opt) {
@@ -269,24 +264,34 @@ export function DragStart($el, options: UEDragOptions) {
     _selectElement = element;
     unOverBox();
 
-    // const jTarget = $(target);
-    const { title, collapse, menus } = opt;
+    const control = options?.control(_makeEvent({ fromEl: element })) || {};
+    const title = control?.title || {};
+    const toolbars = control.toolbars || [];
+    const collapse = title.collapse;
+
     const toolbarHtmlList = [];
     let right = 0;
-    if (menus && menus.length > 0) {
-      menus.slice().reverse().forEach(function (item, index) {
-        toolbarHtmlList.push(`<a href="javascript:void(0);" title="${item.text}" class="select-toolbar layui-icon ${item.icon}"
+    if (toolbars && toolbars.length > 0) {
+      _.forEach(toolbars, function (item, index) {
+        if (item.show === false) return;
+        toolbarHtmlList.push(`<a href="javascript:void(0);" title="${item.text}" class="select-toolbar ${item.icon}"
       tIndex="${index}" style="right:${right}px" />`);
         right += 20;
       });
     }
-    const collapseHtml = !element.classList.contains('uieditor-drag-content') ? '' :
-      `<i class="container-extand-icon layui-icon ${collapse == 1 ? 'layui-icon-right' : 'layui-icon-down'}"></i>`
-    const html = `<div class="title">
+
+    if (title.show === false) {
+      jSelectBox.html(toolbarHtmlList.join(''));
+    } else {
+      const collapseHtml = !collapse ? '' :
+        `<i class="container-extand-icon layui-icon ${title.isCollapse ? 'layui-icon-down' : 'layui-icon-right'}"></i>`
+      const html = `<div class="title">
       ${collapseHtml}
-      ${title}
+      ${title.text}
     </div>${toolbarHtmlList.join('')}`;
-    jSelectBox.html(html);
+      jSelectBox.html(html);
+    }
+    jSelectBox.data(_data_toolbarsKey, toolbars);
 
     function fn() {
       const rect = getOffsetRect(body, element);
@@ -306,10 +311,12 @@ export function DragStart($el, options: UEDragOptions) {
   // select menu click
   jSelectBox.on('click', '>a', function (e) {
     stopEvent(e);
-    var jo = $(e);
+    var jo = $(e.target);
     var index = ~~jo.attr('tIndex');
     if (index >= 0) {
-      boxOpt.menus[index].click();
+      const toolbars = jSelectBox.data(_data_toolbarsKey);
+      const item = toolbars[index];
+      item?.click(item, e);
     }
     return false;
   });
@@ -356,14 +363,21 @@ export function DragStart($el, options: UEDragOptions) {
     _overBoxElement = element;
 
     // const jTarget = $(target);
-    const { title, collapse } = opt;
-    const collapseHtml = !element.classList.contains('uieditor-drag-content') ? '' :
-      `<i class="container-extand-icon layui-icon ${collapse == 1 ? 'layui-icon-right' : 'layui-icon-down'}"></i>`
-    const html = `<div class="title">
+    const control = options?.control(_makeEvent({ fromEl: element })) || {};
+    const title = control?.title || {};
+    if (title.show === false) {
+      jOverBox.html('');
+    } else {
+      const collapse = title.collapse;
+
+      const collapseHtml = !collapse ? '' :
+        `<i class="container-extand-icon layui-icon ${title.isCollapse ? 'layui-icon-down' : 'layui-icon-right'}"></i>`
+      const html = `<div class="title">
       ${collapseHtml}
-      ${title}
+      ${title.text}
     </div>`;
-    jOverBox.html(html);
+      jOverBox.html(html);
+    }
 
     const rect = getOffsetRect(body, element);
     jOverBox.css({
@@ -519,10 +533,8 @@ export function DragStart($el, options: UEDragOptions) {
             _dragOverEl_pre = dragOverEl;
             _dragPosLine_pre = rectNew;
             posLine(dragOverEl, e, rectNew);
-            const overOpt = options
-            let onDragover = overOpt.dragover;
-            if (onDragover) {
-              if (onDragover(_makeEvent({
+            if (options.dragover) {
+              if (options.dragover(_makeEvent({
                 fromEl: el,
                 pos: rectNew,
                 toEl: dragOverEl, ev: e
@@ -609,7 +621,84 @@ export function LayuiInit($el) {
       }
     });
 
-    DragStart($el, {});
+    DragStart($el, {
+      dragstart(e) {
+        console.warn('dragstart', e);
+        return true;
+      },
+      dragover(e) {
+        console.warn('dragover', e);
+        return true;
+      },
+      drop(e) {
+        console.warn('drop', e);
+        return true;
+      },
+      control: (ev) => {
+
+        // const fromEl = ev.fromEl;
+        // const renderId = _getIdByContent(fromEl);
+        // let render = this.getRenderItem(renderId);
+        // let editor = _getRenderEditor(render);
+        // if (!editor) return;
+        // const operation = editor.operation;
+        // const pRender = this.getParentRenderItem(render);
+        // const parentId = _getRenderId(pRender);
+        // // let pContainerBox = false;
+        // const pEditor = _getRenderEditor(pRender);
+        // if (!pEditor) return;
+        // const pOperation = pEditor.operation;
+        // if (editor.containerBox) editor = pEditor;
+        // let containerBox = editor.containerBox;
+        // // if (containerBox) pContainerBox = true;
+        // const title = containerBox ? '' : editor.textFormat(editor, _getRenderAttrs(render));
+        // let collapse = false;
+        // let collapseFn;
+        // let attrs = _getRenderAttrs(render);
+        // if (!editor.base || editor.collapse) {
+        //   collapse = _getCollapse(attrs) == 'true';
+        //   collapseFn = (e) => {
+        //     this.collapse(renderId)
+        //     // BgLogger.debug('collapse', e);
+        //   };
+        // }
+
+        // BgLogger.debug('fromEl', fromEl)
+        const control = {
+          title: {
+            // text: title,
+            // show: !containerBox,
+            // isCollapse: collapse,
+            // collapse: collapseFn
+            text: 'aaa',
+            show: true,
+            isCollapse: true,
+            collapse(e) {
+              // this.collapse(renderId)
+              // BgLogger.debug('collapse', e);
+            }
+          },
+          toolbars: [{
+            text: '删除',
+            icon: 'layui-icon layui-icon-close',
+            show: true,
+            click: (item, e) => {
+              console.warn('删除', item, e);
+              // this.deleteWidget(parentId, renderId);
+            }
+          }, {
+            text: '复制',
+            icon: 'layui-icon layui-icon-file-b',
+            show: true,
+            click: (item, e) => {
+              console.warn('复制', item, e);
+              // this.copyCurToNext(parentId, renderId, true);
+            }
+          }]
+        };
+        return control;
+      }
+    });
 
     selectInput.render({
       elem: '#selectInput1',
