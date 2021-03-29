@@ -209,7 +209,7 @@ export class UERender {
    * @param options 
    */
   static DefineOption(options: UEOption): UEOption {
-    if (_isInited) return options;
+    if (_isInited(options)) return options;
     _inited(options);
 
     options = _mergeDefaultOption(options);
@@ -221,11 +221,11 @@ export class UERender {
    * @param transfer 
    */
   static DefineTransfer(transfer: UETransfer): UETransfer {
-    if (_isInited) return transfer;
+    if (_isInited(transfer)) return transfer;
     _inited(transfer);
 
     _.forEach(transfer, function (transferItem, type) {
-      if (transferItem.editor) {
+    if (transferItem.editor) {
         transferItem.editor = UERender.DefineTransferEditor(type, transferItem.editor);
       }
     });
@@ -238,7 +238,7 @@ export class UERender {
    * @param editor 
    */
   static DefineTransferEditor(type: string, editor: UETransferEditor): UETransferEditor {
-    if (_isInited) return editor;
+    if (_isInited(editor)) return editor;
     _inited(editor);
 
     let emptyEditor = !editor.empty ? null : _emptyEditor(type, editor.empty);
@@ -261,7 +261,7 @@ export class UERender {
    * @param editor 
    */
   static DefineTransferEditorAttr(name: string, attr: UETransferEditorAttrsItem, editor: UETransferEditor): UETransferEditorAttrsItem {
-    if (_isInited) return attr;
+    if (_isInited(attr)) return attr;
     _inited(attr);
 
     let hideAttrs = editor.hideAttrs;

@@ -744,7 +744,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
 
     const select = true;
     let className;
-    let id
+    let id;
     if (collapse || editor.base) {
       let collapseCalss = collapse ? ' uieditor-drag-collapse' : '';
       if (select) {

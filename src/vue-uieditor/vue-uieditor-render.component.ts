@@ -196,10 +196,10 @@ export default class VueUieditorRender extends UEVue {
         compiled,
         $editorRender: this
       });
-      console.log('debugInfo     ====> ', debugInfo);
+      console.warn('debugInfo     ====> ', debugInfo);
       vueDef.mixins.push({
         created() {
-          console.log('this     ====> ', this);
+          console.warn('this     ====> ', this);
         }
       });
     }

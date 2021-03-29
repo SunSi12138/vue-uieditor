@@ -139,7 +139,7 @@
                     </div>
                     <div class="editor-json-content">
                       <vue-uieditor-render
-                        v-if="current"
+                        v-if="current && current.json"
                         :options="options"
                         :json="current.json"
                         :mixin="current.mixin"

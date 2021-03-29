@@ -35,7 +35,6 @@ export default class VueUieditor extends UEVue {
   private _service: UEService;
   get service(): UEService {
     if (!this.$isBeingDestroyed && !this._service) {
-      console.warn('this.optionEx', this.optionEx);
       this._service = new UEService(this, this.optionEx);
     }
     return this._service;
@@ -54,17 +53,12 @@ export default class VueUieditor extends UEVue {
   @UEVueLife('mounted')
   private async _mounted1() {
     const options = this.optionEx || {};
-    console.log('init1')
     await UECompiler.init({ bable: options.babel !== false });
-    console.log('init2')
     const service = this.service;
     this.current = service.current;
     await service.setJson(this.json);
-    console.log('init3')
     await this.$nextTick();
-    console.log('init4')
     LayuiInit(this.$el);
-    console.log('init5')
   }
 
   @UEVueLife('destroyed')
