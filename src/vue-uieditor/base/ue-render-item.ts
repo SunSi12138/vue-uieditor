@@ -11,6 +11,7 @@ export interface UERenderItem {
     isRender?: boolean;
     /** 获取父节点 */
     parent?(): UERenderItem;
+    content?: string;
     /** 编辑时的ID */
     readonly editorId?: string;
     /** 编辑时的 parent ID */

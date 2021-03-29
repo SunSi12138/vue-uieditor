@@ -1,7 +1,24 @@
-import { UERenderItem } from './ue-render-item';
-import { UETransferExtend, UETransfer, UEOption, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
 import _ from 'lodash';
-import { UEMergeMixin } from './vue-extends';
+import { UEOption, UETransfer, UETransferEditor, UETransferEditorAttrsItem, UETransferExtend } from './ue-base';
+import { UERenderItem } from './ue-render-item';
+
+/** 公共 transfer */
+const _globalTransfer = {};
+/** 公共 editor */
+const _globalEditor = {};
+const _globalInitedKey = '__ue_g_inited_210329';
+
+const _initedKey = '__ue_inited_210329';
+function _isInited(p) {
+  return p && p[_initedKey];
+}
+function _inited(p) {
+  Object.defineProperty(p, _initedKey, {
+    enumerable: false,
+    configurable: false,
+    get() { return true; }
+  });
+}
 
 function _findRender(renders: UERenderItem[], isFn: any) {
   let findItem;
@@ -153,13 +170,36 @@ export class UERender {
   }
 
   /**
+   * 添加公共 transfer，传入参数会被亏染
+   * @param options 
+   * @param transfer 
+   */
+  static AddGlobalTransfer(transfer: UETransfer) {
+    transfer = UERender.DefineTransfer(transfer);
+    let editor = _getTransferEditor(transfer);
+    _.assign(_globalEditor, editor);
+    _.assign(_globalTransfer, transfer);
+  }
+
+  /** 将公共 transfer，放到option */
+  static GlobalTransferToOptions(options: UEOption): UEOption {
+    if (options[_globalInitedKey]) return options;
+    options[_globalInitedKey] = true;
+    (options as any).editor = _.assign({}, _globalEditor, options.editor);
+    (options as any).transfer = _.assign({}, _globalTransfer, options.transfer);
+    return options;
+  }
+
+  /**
    * 添加新的 transfer 到 options，传入参数会被亏染
    * @param options 
    * @param transfer 
    */
   static AddTransfer(options: UEOption, transfer: UETransfer): UEOption {
+    transfer = UERender.DefineTransfer(transfer);
     let editor = _getTransferEditor(transfer);
-    (options as any).editor = _.assign({}, editor, options.editor);
+    (options as any).editor = _.assign({}, options.editor, editor);
+    (options as any).transfer = _.assign({}, options.transfer, transfer);
 
     return options;
   }
@@ -169,6 +209,9 @@ export class UERender {
    * @param options 
    */
   static DefineOption(options: UEOption): UEOption {
+    if (_isInited) return options;
+    _inited(options);
+
     options = _mergeDefaultOption(options);
     return UERender.AddTransfer(options, options.transfer);
   }
@@ -178,6 +221,9 @@ export class UERender {
    * @param transfer 
    */
   static DefineTransfer(transfer: UETransfer): UETransfer {
+    if (_isInited) return transfer;
+    _inited(transfer);
+
     _.forEach(transfer, function (transferItem, type) {
       if (transferItem.editor) {
         transferItem.editor = UERender.DefineTransferEditor(type, transferItem.editor);
@@ -192,6 +238,9 @@ export class UERender {
    * @param editor 
    */
   static DefineTransferEditor(type: string, editor: UETransferEditor): UETransferEditor {
+    if (_isInited) return editor;
+    _inited(editor);
+
     let emptyEditor = !editor.empty ? null : _emptyEditor(type, editor.empty);
     editor = _.assign({}, _defaultEditor(type), emptyEditor, editor);
     if (!editor.text) editor.text = type;
@@ -212,6 +261,8 @@ export class UERender {
    * @param editor 
    */
   static DefineTransferEditorAttr(name: string, attr: UETransferEditorAttrsItem, editor: UETransferEditor): UETransferEditorAttrsItem {
+    if (_isInited) return attr;
+    _inited(attr);
 
     let hideAttrs = editor.hideAttrs;
     let hideAttrGroups = editor.hideAttrGroups;

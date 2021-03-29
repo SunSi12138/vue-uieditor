@@ -26,7 +26,7 @@ import { UERender } from "../vue-uieditor/base/ue-render";
   },
 })
 export default class Home extends UEVue {
-  options: UEOption = UERender.NewOption({
+  options: UEOption = UERender.DefineOption({
     transfer: {},
     transferBefore(render) {
       return render;
@@ -37,28 +37,30 @@ export default class Home extends UEVue {
   });
 
   json: UERenderItem = {
-    type: "div",
+    type: "uieditor-div",
     children: [
       {
-        type: "span",
-        children: ["test"],
+        type: "uieditor-text",
+        props: {
+          text: "test1",
+        },
       },
     ],
   };
 
   @UEVueLife("mounted")
   private _mounted1() {
-    setTimeout(() => {
-      this.json = {
-        type: "div",
-        children: [
-          {
-            type: "span",
-            children: [`test:${new Date().valueOf()}`],
-          },
-        ],
-      };
-    }, 3000);
+    // setTimeout(() => {
+    //   this.json = {
+    //     type: "div",
+    //     children: [
+    //       {
+    //         type: "span",
+    //         children: [`test:${new Date().valueOf()}`],
+    //       },
+    //     ],
+    //   };
+    // }, 3000);
   }
 }
 </script>

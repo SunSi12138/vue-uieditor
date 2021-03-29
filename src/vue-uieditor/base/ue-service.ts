@@ -24,12 +24,12 @@ export class UEService {
   constructor(public readonly $uieditor: UEVue, public readonly options: UEOption) {
   }
 
-  _destroy(){
-    const _this:any = this;
+  _destroy() {
+    const _this: any = this;
     _this.current = _this.history =
-     _this.options = _this.rootRender =
-     _this.$uieditor  =
-     _this._editJson = null;
+      _this.options =
+      _this.$uieditor =
+      _this._editJson = null;
   }
 
   $emit(event: string, ...arg: any[]) {
@@ -157,34 +157,31 @@ export class UEService {
       let _this = this;
       this.current.json = rootRender;
       this.current.mixin = {
-        vueDef: {
-          data: function () {
-            return {
-              current: _this && _this.current || {}
-            };
-          },
-          mounted() {
-            if (_this) {
-              _this && _this.$emit('on-set-meta', { service: _this });
-              resolve(false);
-            } else {
-              resolve(false);
-            }
-          },
-          computed: {
-            $uieditor() {
-              return _this.$uieditor;
-            },
-            $service() {
-              return _this;
-            }
-          },
-          beforeDestroy() {
-            _this = null;
-            rootRender = json = null;
-          },
+        data: function () {
+          return {
+            current: _this && _this.current || {}
+          };
         },
-        // render: rootRender
+        mounted() {
+          if (_this) {
+            _this && _this.$emit('on-set-meta', { service: _this });
+            resolve(false);
+          } else {
+            resolve(false);
+          }
+        },
+        computed: {
+          $uieditor() {
+            return _this.$uieditor;
+          },
+          $service() {
+            return _this;
+          }
+        },
+        beforeDestroy() {
+          _this = null;
+          rootRender = json = null;
+        }
       };
     });
   }

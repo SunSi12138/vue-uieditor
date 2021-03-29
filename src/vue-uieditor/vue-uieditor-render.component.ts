@@ -7,6 +7,7 @@ import { UERender } from './base/ue-render';
 import { UERenderItem } from './base/ue-render-item';
 import { UEService } from './base/ue-service';
 import { UEMergeMixin, UEVue, UEVueComponent, UEVueInject, UEVueLife, UEVueMixin, UEVueProp, UEVueWatch } from './base/vue-extends';
+import './transfer';
 
 const _defaultGlobalExtend = {
   UEHelper,
@@ -47,6 +48,10 @@ export default class VueUieditorRender extends UEVue {
 
   @UEVueProp()
   private options!: UEOption;
+  get optionEx() {
+    const options = this.options;
+    return UERender.GlobalTransferToOptions(options);
+  }
 
   @UEVueInject('service')
   service: UEService;
@@ -69,8 +74,8 @@ export default class VueUieditorRender extends UEVue {
 
   @UEVueLife('created')
   private async _created1() {
-    const options = this.options || {};
-    await UECompiler.init({ bable: options.babel !== false })
+    const options = this.optionEx || {};
+    await UECompiler.init({ bable: options.babel !== false });
     this._makeVueRender();
   }
 
@@ -105,9 +110,10 @@ export default class VueUieditorRender extends UEVue {
     const json: UERenderItem = _.isString(this.json) ? JSON.parse(this.json) : this.json;
     const editing = this.editing === true;
     const preview = this.preview === true;
-    const options = _.assign(_defaultOptions(), this.options);
+    const options = _.assign(_defaultOptions(), this.optionEx);
 
     if (options?.mixins) vueDef.mixins = vueDef.mixins.concat(options.mixins);
+    if (this.mixin) vueDef.mixins = vueDef.mixins.concat([this.mixin]);
 
     const data = {};
     let mixinExBefore = {};
@@ -231,7 +237,7 @@ export default class VueUieditorRender extends UEVue {
 
     let $uieditorRender = this;
 
-    let options = this.options;
+    let options = this.optionEx;
     vueDef.mixins = (vueDef.mixins || []).concat([{
       data() {
         if (previewOpt && previewOpt.$init_0326_) {
