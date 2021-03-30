@@ -17,7 +17,7 @@ function _makeWrapRootDiv(json?: UERenderItem) {
 }
 
 function _getId() {
-  return UEHelper.makeAutoId();
+  return `uieditor_${UEHelper.makeAutoId()}`;
 }
 
 export class UEService {
@@ -619,10 +619,10 @@ export class UEService {
     this.$emit('on-add-component', { service: this, dragContent: pRender, render: newRender })
     children.splice(newIndex, 0, newRender);
     this.current.refreshAttr = true;
-    this.refresh().then(() => this.setCurrent(id));
+    return this.refresh().then(() => this.setCurrent(id));
   }
 
-  move(fromId: string, toId: string, type2: string) {
+  move(fromId: string, toId: string, type2: string): Promise<any> {
 
     const fromRender = fromId && this.getRenderItem(fromId);
     const fromParent = this.getParentRenderItem(fromRender);
@@ -649,7 +649,7 @@ export class UEService {
       pRender.children.splice(newIndex, 0, fromRender);
     }
 
-    this.refresh();
+    return this.refresh();
   }
 
 

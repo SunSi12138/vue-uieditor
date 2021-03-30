@@ -542,9 +542,9 @@ export function DragStart($el, options: UEDragOptions) {
           }
         }
 
-
         const dragOverEl = _overBoxElement;
-        if (dragOverEl) {
+        const isRoot = dragOverEl?.classList.contains('uieditor-drag-root');
+        if (!isRoot && dragOverEl) {
           const dragOverEl_pre = _dragOverEl_pre;
           let change = dragOverEl_pre != dragOverEl;
 
