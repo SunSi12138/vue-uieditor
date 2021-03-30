@@ -261,13 +261,13 @@ export function DragStart($el, options: UEDragOptions) {
     const collapse = title.collapse;
 
     const toolbarHtmlList = [];
-    let right = 0;
+    let right = -20;
     if (toolbars && toolbars.length > 0) {
       _.forEach(toolbars, function (item, index) {
         if (item.show === false) return;
         toolbarHtmlList.push(`<a href="javascript:void(0);" title="${item.text}" class="select-toolbar ${item.icon}"
       tIndex="${index}" style="right:${right}px" />`);
-        right += 20;
+        right -= 18;
       });
     }
 
@@ -279,7 +279,8 @@ export function DragStart($el, options: UEDragOptions) {
       const html = `<div class="title">
       ${collapseHtml}
       ${title.text}
-    </div>${toolbarHtmlList.join('')}`;
+      ${toolbarHtmlList.join('')}
+    </div>`;
       jSelectBox.html(html);
     }
     jSelectBox.data(_data_toolbarsKey, toolbars);
@@ -358,9 +359,11 @@ export function DragStart($el, options: UEDragOptions) {
     _overBoxElement = element;
 
     // const jTarget = $(target);
-    const control = options?.control(_makeEvent({ fromEl: element })) || {};
+    const isRoot = element.classList.contains('uieditor-drag-root');
+
+    const control = isRoot ? null : options?.control(_makeEvent({ fromEl: element })) || {};
     const title = control?.title || {};
-    if (title.show === false) {
+    if (isRoot || title.show === false) {
       jOverBox.html('');
     } else {
       const collapse = title.collapse;

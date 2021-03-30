@@ -144,30 +144,6 @@
                       :mixin="current.mixin"
                       editing
                     />
-                    <div class="uieditor-drag-content uieditor-drag-root">
-                      <div class="uieditor-drag-item test-item">item1</div>
-                      <div class="uieditor-drag-item test-item-inline">
-                        item-inline1
-                      </div>
-                      <div class="uieditor-drag-item test-item-inline">
-                        item-inline2
-                      </div>
-                      <div class="uieditor-drag-content test-content">
-                        content1
-                        <div class="uieditor-drag-item test-item-inline">
-                          item-inline3
-                        </div>
-                      </div>
-                      <div class="uieditor-drag-content test-content">
-                        content2
-                        <input class="uieditor-drag-item test-item-inline" />
-                        <select>
-                          <option value="test">test</option>
-                          <option value="test1">test1</option>
-                        </select>
-                        <input />
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -972,18 +948,4 @@
 </template>
 
 <script lang="ts" src="./vue-uieditor.component.ts"></script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-.test-content {
-  height: 100px;
-}
 
-.test-item {
-  height: 30px;
-}
-
-.test-item-inline {
-  height: 30px;
-  display: inline-block;
-}
-</style>

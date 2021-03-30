@@ -1,11 +1,11 @@
 import { UEOption } from './base/ue-base';
 import { UECompiler } from './base/ue-compiler';
+import { UERender } from './base/ue-render';
 import { UEService } from './base/ue-service';
 import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueProvide, UEVueWatch } from './base/vue-extends';
-import { Layuidestroy, LayuiInit, DragStart } from './layui-test';
-import './transfer';
-import { UERender } from './base/ue-render';
 import uieditorCpTree from './components/uieditor-cp-tree.component.vue';
+import { DragStart, Layuidestroy, LayuiInit } from './layui-test';
+import './transfer';
 
 
 @UEVueComponent({
@@ -96,6 +96,14 @@ export default class VueUieditor extends UEVue {
         return true;
       },
       control: (ev) => {
+        const fromEl = ev.fromEl;
+        const renderId = fromEl?.id;
+        if (!renderId) return;
+        const curRender = this.service.getRenderItem(renderId);
+        if (!curRender) return;
+
+        const { editor, attrs } = curRender;
+        const text = curRender.editor?.textFormat(editor, attrs);
 
         // const fromEl = ev.fromEl;
         // const renderId = _getIdByContent(fromEl);
@@ -131,7 +139,7 @@ export default class VueUieditor extends UEVue {
             // show: !containerBox,
             // isCollapse: collapse,
             // collapse: collapseFn
-            text: 'aaa',
+            text,
             show: true,
             isCollapse: true,
             collapse(e) {
@@ -140,20 +148,20 @@ export default class VueUieditor extends UEVue {
             }
           },
           toolbars: [{
-            text: '删除',
-            icon: 'layui-icon layui-icon-close',
-            show: true,
-            click: (item, e) => {
-              console.warn('删除', item, e);
-              // this.deleteWidget(parentId, renderId);
-            }
-          }, {
             text: '复制',
             icon: 'layui-icon layui-icon-file-b',
             show: true,
             click: (item, e) => {
               console.warn('复制', item, e);
               // this.copyCurToNext(parentId, renderId, true);
+            }
+          }, {
+            text: '删除',
+            icon: 'layui-icon layui-icon-close',
+            show: true,
+            click: (item, e) => {
+              console.warn('删除', item, e);
+              // this.deleteWidget(parentId, renderId);
             }
           }]
         };
