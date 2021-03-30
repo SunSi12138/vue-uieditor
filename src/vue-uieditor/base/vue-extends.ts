@@ -4,6 +4,8 @@ import Component from "vue-class-component";
 import { VueClass } from 'vue-class-component/lib/declarations';
 import { Constructor } from "vue-property-decorator";
 
+declare const layui:any;
+
 Component.registerHooks([
   'beforeRouteEnter',
   'beforeRouteLeave',
@@ -391,6 +393,19 @@ export class UEVue extends Vue {
 
   get $isRouteActived(): boolean {
     return this['_inactive'] !== true;
+  }
+
+  $confirm(msg){
+    return new Promise(function(r){
+      layui.layer.confirm('您是如何看待前端开发？', {
+        btn: ['确定','取消'], //按钮
+        end(){ console.warn('end', arguments)}
+      }, function(){
+        //layer.msg('的确很重要', {icon: 1});
+      }, function(){
+        
+      });
+    });
   }
 
 }

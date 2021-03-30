@@ -301,7 +301,7 @@ export function DragStart($el, options: UEDragOptions) {
   };
 
   // select menu click
-  jSelectBox.on('click', '>a', function (e) {
+  jSelectBox.on('click', 'a', function (e) {
     stopEvent(e);
     var jo = $(e.target);
     var index = ~~jo.attr('tIndex');
@@ -330,6 +330,11 @@ export function DragStart($el, options: UEDragOptions) {
     if (element) {
       const isRoot = element.classList.contains('uieditor-drag-root');
       if (isRoot) return;
+
+      if (options.select &&
+        options.select(_makeEvent({ fromEl: element, ev: e as any })) === false) {
+        return;
+      }
 
       stopEvent(e);
       select(element);
@@ -504,11 +509,6 @@ export function DragStart($el, options: UEDragOptions) {
     const isRoot = el.classList.contains('uieditor-drag-root');
     if (isRoot) return;
 
-    if (options.select &&
-      options.select(_makeEvent({ fromEl: el, ev: e as any, isTreeNode })) === false) {
-      return;
-    }
-
     dragPos = getMousePos(body, el, e);
     dragEl = el;
 
@@ -593,9 +593,12 @@ export function DragStart($el, options: UEDragOptions) {
           isTreeNode
         })) : false;
 
+        // if (!dropOk) {
+        //   unSelect();
+        // }
         unPosLine();
         el.classList.remove(isTreeNode ? 'uieditor-drag-tree-active' : hideCls);
-        select(el);
+        // select(el);
       }
     };
     jWIn.on('mousemove', mousemove);
@@ -608,8 +611,13 @@ export function DragStart($el, options: UEDragOptions) {
 
   //#endregion drag
 
+  return {
+    select(id) {
+      id && select(jEditorJsonContent.find(`#${id}`)[0]);
+    }
+  }
 
-}
+} // end DragStart();
 
 export function LayuiTree(p: { elem: any, data: any }) {
 

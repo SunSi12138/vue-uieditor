@@ -74,7 +74,19 @@ export default class VueUieditor extends UEVue {
     await service.setJson(this.json);
     await this.$nextTick();
     LayuiInit(this.$el);
-    DragStart(this.$el, {
+
+    this.$on('on-refesh-select-box', (id) => {
+      drager.select(id);
+    });
+    this.$on('on-set-json', ({ service }) => {
+      drager.select(service.current.id);
+    });
+    const drager = DragStart(this.$el, {
+      select: (e) => {
+        const { fromEl } = e;
+        const id = fromEl.id;
+        this.service.setCurrent(id);
+      },
       dragstart(e) {
         return true;
       },
@@ -135,7 +147,6 @@ export default class VueUieditor extends UEVue {
         // BgLogger.debug('fromEl', fromEl)
         const control = {
           title: {
-            // text: title,
             // show: !containerBox,
             // isCollapse: collapse,
             // collapse: collapseFn
@@ -160,6 +171,7 @@ export default class VueUieditor extends UEVue {
             icon: 'layui-icon layui-icon-close',
             show: true,
             click: (item, e) => {
+              this.service.delCur();
               console.warn('删除', item, e);
               // this.deleteWidget(parentId, renderId);
             }

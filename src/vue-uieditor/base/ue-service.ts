@@ -190,7 +190,7 @@ export class UEService {
         },
         mounted() {
           if (_this) {
-            _this && _this.$emit('on-set-meta', { service: _this });
+            _this && _this.$emit('on-set-json', { service: _this });
             resolve(false);
           } else {
             resolve(false);
@@ -361,7 +361,8 @@ export class UEService {
       this.deleteWidget(this.current.parentId, this.current.id, norefresh);
       return;
     }
-    // this.$confirm('确定要删除吗？', (r) => {
+    this.$uieditor.$confirm('确定要删除吗？');
+    // this.$uieditor.$confirm('确定要删除吗？', (r) => {
     //   if (!r) return;
     //   this.deleteWidget(this.current.parentId, this.current.id, norefresh);
     // });
@@ -505,13 +506,14 @@ export class UEService {
     const current = this.current;
     const render = this.getRenderItem(id);
 
-    let change = current.id !== id;
-    let editor = render.editor;
+    const change = current.id !== id;
+    // const editor = render.editor;
     const parentId = render.editorPId;
     const pRender = this.getParentRenderItem(render);
-    const pEditor = pRender?.editor
+    // const pEditor = pRender?.editor
     current.parentId = parentId;
     current.id = id;
+    this.refeshSelectBox();
 
     if (change) {
       const $uieditor = this.$uieditor;
@@ -538,6 +540,10 @@ export class UEService {
 
     this.refresBreadcrumbs(render);
     // this.$logger.debug('setCurrent', current.id)
+  }
+
+  refeshSelectBox() {
+    setTimeout(() => this.$emit('on-refesh-select-box', this.current.id), 10);
   }
 
 
@@ -619,6 +625,7 @@ export class UEService {
     this.$emit('on-add-component', { service: this, dragContent: pRender, render: newRender })
     children.splice(newIndex, 0, newRender);
     this.current.refreshAttr = true;
+    // this.setCurrent(id);
     return this.refresh().then(() => this.setCurrent(id));
   }
 
