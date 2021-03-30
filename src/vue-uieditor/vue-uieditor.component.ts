@@ -87,6 +87,11 @@ export default class VueUieditor extends UEVue {
           const cpId = $(fromEl).data('id');
           const renderId = toEl.id;
           this.service.addComponent(cpId, renderId, pos.type2);
+        } else {
+          const fromId = fromEl.id;
+          const toId = toEl.id;
+          this.service.move(fromId, toId, pos.type2);
+
         }
         return true;
       },

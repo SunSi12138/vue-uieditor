@@ -46,7 +46,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
         src: {
           enabledBind: true,
           order: 0,
-          value: './modules/bingo_ui_designer/assets/images/demo.png',
+          value: '',
           effect: true,
         },
         style: { value: 'min-width:30px;min-height:30px' }

@@ -590,14 +590,13 @@ export class UEService {
     return { list: this._components, tree: this._components_tree };
   }
 
-  addComponent(cpId: string, renderId: string, addType: string) {
+  addComponent(cpId: string, renderId: string, type2: string) {
 
     let component = _.find(this._components, { id: cpId });
     if (!component) return;
 
     const toRender = this.getRenderItem(renderId);
     if (!toRender) return;
-    const type2 = addType;
     const isIn = type2 == 'in';
     let pRender: UERenderItem = null;
     let newIndex = 0;
@@ -623,6 +622,35 @@ export class UEService {
     this.refresh().then(() => this.setCurrent(id));
   }
 
+  move(fromId: string, toId: string, type2: string) {
+
+    const fromRender = fromId && this.getRenderItem(fromId);
+    const fromParent = this.getParentRenderItem(fromRender);
+    _.remove(fromParent.children, (item) => fromRender == item);
+
+    let toRender = this.getRenderItem(toId);
+    let toEditor = toRender?.editor;
+    if (!toEditor) return;
+    const isIn = type2 == 'in';
+    let pRender: UERenderItem = null;
+    let newIndex = 0;
+    if (isIn) {
+      pRender = toRender;
+      newIndex = _.size(pRender.children);
+    } else {
+      pRender = this.getParentRenderItem(toRender);
+      const index = _.indexOf(pRender.children, toRender);
+      newIndex = type2 == 'after' ? index + 1 : index;
+      newIndex = Math.max(0, newIndex)
+    }
+
+    if (pRender) {
+      if (!pRender.children) pRender.children = [];
+      pRender.children.splice(newIndex, 0, fromRender);
+    }
+
+    this.refresh();
+  }
 
 
 } //end UEService
