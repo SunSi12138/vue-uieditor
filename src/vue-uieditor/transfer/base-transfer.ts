@@ -13,7 +13,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       order: 0,
       groupOrder,
       group,
-      icon: 'ios-square-outline',
+      icon: 'layui-icon layui-icon-template-1',
       base: false,
       container: true,
       className: 'drawing-item p-sm'
@@ -26,7 +26,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       order: 0,
       groupOrder,
       group,
-      icon: 'ios-square-outline',
+      icon: 'layui-icon layui-icon-more',
       base: false,
       inline: true,
       container: true,
@@ -40,7 +40,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       order: 0,
       groupOrder,
       group,
-      icon: 'ios-image',
+      icon: 'layui-icon layui-icon-picture',
       inline: true,
       attrs: {
         src: {
@@ -60,7 +60,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       order: 0,
       groupOrder,
       group,
-      icon: 'ios-shuffle',
+      icon: 'layui-icon layui-icon-layer',
       empty: 'iframe',
       attrs: {
         'src,frameborder:0,height:100%,width:100%,scrolling:yes': {
@@ -84,7 +84,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       groupOrder,
       group,
       inline: true,
-      icon: 'ios-barcode-outline',
+      icon: 'layui-icon layui-icon-align-left',
       attrs: {
         text: {
           effect: true, enabledBind: true,
@@ -109,7 +109,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       groupOrder,
       group,
       inline: true,
-      icon: 'ios-link',
+      icon: 'layui-icon layui-icon-link',
       attrs: {
         text: {
           effect: true, enabledBind: true,
@@ -149,7 +149,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       groupOrder,
       group,
       inline: true,
-      icon: 'ios-paper-outline',
+      icon: 'layui-icon layui-icon-fonts-html',
       // empty: 'Html',
       attrs: {
         content: {

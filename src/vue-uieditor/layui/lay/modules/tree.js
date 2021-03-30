@@ -176,7 +176,7 @@ layui.define('form', function(exports){
       var hasChild = item.children && item.children.length > 0
       ,packDiv = $('<div class="layui-tree-pack" '+ (item.spread ? 'style="display: block;"' : '') +'></div>')
       ,entryDiv = $(['<div data-id="'+ item.id +'" class="layui-tree-set'+ (item.spread ? " layui-tree-spread" : "") + (item.checked ? " layui-tree-checkedFirst" : "") +'">'
-        ,'<div class="layui-tree-entry">'
+        ,'<div class="layui-tree-entry" data-id="'+ item.id +'" data-type="'+ (item.type || '') +'"'+(item.uedrag?' data-uedrag':'')+'>'
           ,'<div class="layui-tree-main">'
             //箭头
             ,function(){
@@ -184,7 +184,7 @@ layui.define('form', function(exports){
                 if(hasChild){
                   return '<span class="layui-tree-iconClick layui-tree-icon"><i class="layui-icon '+ (item.spread ? "layui-icon-subtraction" : "layui-icon-addition") +'"></i></span>';
                 }else{
-                  return '<span class="layui-tree-iconClick"><i class="layui-icon layui-icon-file"></i></span>';
+                  return '<span class="layui-tree-iconClick"><i class="'+(item.icon || 'layui-icon layui-icon-file')+'"></i></span>';
                 };
               }else{
                 return '<span class="layui-tree-iconClick"><i class="layui-tree-iconArrow '+ (hasChild ? "": HIDE) +'"></i></span>';

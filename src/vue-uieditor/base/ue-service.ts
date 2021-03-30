@@ -1,10 +1,10 @@
-import { UEVue, UEVueMixin } from "./vue-extends";
-import { UERenderItem } from './ue-render-item';
 import _ from 'lodash';
-import { UEHelper } from './ue-helper';
-import { UEOption, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem } from './ue-base';
-import { UERender } from './ue-render';
 import { Layuidestroy } from '../layui-test';
+import { UEOption, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem } from './ue-base';
+import { UEHelper } from './ue-helper';
+import { UERender } from './ue-render';
+import { UERenderItem } from './ue-render-item';
+import { UEVue, UEVueMixin } from "./vue-extends";
 
 
 const _editorType = 'uieditor-div';
@@ -22,7 +22,16 @@ function _getId() {
 
 export class UEService {
 
-  constructor(public readonly $uieditor: UEVue, public readonly options: UEOption) {
+  constructor(public readonly $uieditor: UEVue, options: UEOption) {
+    this.options = options;
+  }
+
+  private _options: UEOption;
+  get options(): UEOption {
+    return this._options;
+  }
+  set options(options) {
+    this._options = options;
   }
 
   _destroy() {
@@ -199,7 +208,7 @@ export class UEService {
           _this = null;
           rootRender = json = null;
         },
-        destroyed(){
+        destroyed() {
           Layuidestroy(this.$el);
         }
       } as UEVueMixin;
@@ -283,7 +292,7 @@ export class UEService {
     let pId = render.editorPId
     const pRender = this.getRenderItem(pId);
     if (editor && editor.draggable) {
-      const pEditor = pRender.editor
+      // const pEditor = pRender.editor
       outList.unshift({
         text: (editor.textFormat && editor.textFormat(editor, render.attrs)) || editor.text,
         id: render.editorId,
@@ -533,6 +542,89 @@ export class UEService {
 
 
 
+  private _components: any[];
+  private _components_tree: any[]
+  /** 组件栏数据 */
+  get components(): { list: any[]; tree: any[] } {
+    if (this._components) return { list: this._components, tree: this._components_tree };
+    const components = [];
+    const tree = [];
+    const getTreeGroup = function (list: any[], groupList: string[]) {
+      const group = _.first(groupList);
+      groupList = groupList.slice(1);
+      let item = _.find(list, { group });
+      if (!item) {
+        item = { id: UEHelper.makeAutoId(), title: group, group, type: 'group', item: null, children: [] };
+        list.push(item);
+      }
+      if (!item.children) item.children = [];
+      if (_.size(groupList) > 0) {
+        return getTreeGroup(item.children, groupList);
+      } else {
+        return item;
+      }
+    }
+    let editor = this.options.editor;
+    if (_.size(editor) > 0) {
+      _.forEach(editor, function (item, type) {
+        const newItem = { id: UEHelper.makeAutoId(), uedrag: true, icon: item.icon, title: item.text, type, item };
+        if (item.show !== false) {
+          const group = getTreeGroup(tree, (item.group || '').split('/'));
+          group?.children.push(newItem);
+        }
+        components.push(newItem);
+      });
+      // components = BgPipeSync(
+      //   components,
+      //   bg_group('group'),
+      //   bg_each(function (group) {
+      //     group.items = BgPipeSync(group.items, bg_order('order', 'asc'));
+      //     let groupOrderItem = _.find(group.items, function (item) { return !_.isNil(item.groupOrder); });
+      //     group['order'] = groupOrderItem ? groupOrderItem.groupOrder : 99;
+      //   }),
+      //   bg_order('order', 'asc')
+      // );
+    }
+    this._components = components;
+    this._components_tree = tree;
+    return { list: this._components, tree: this._components_tree };
+  }
+
+  addComponent(cpId: string, renderId: string, addType: string) {
+
+    let component = _.find(this._components, { id: cpId });
+    if (!component) return;
+
+    const toRender = this.getRenderItem(renderId);
+    if (!toRender) return;
+    const type2 = addType;
+    const isIn = type2 == 'in';
+    let pRender: UERenderItem = null;
+    let newIndex = 0;
+    if (isIn) {
+      pRender = toRender;
+      newIndex = _.size(pRender.children);
+    } else {
+      pRender = this.getParentRenderItem(toRender);
+      const index = _.indexOf(pRender.children, toRender);
+      newIndex = type2 == 'after' ? index + 1 : index;
+      newIndex = Math.max(0, newIndex)
+    }
+    if (!pRender) return;
+
+    const parentId = pRender.editorId;
+    const children = (pRender.children || (pRender.children = []));
+
+    let newRender = this.createRender(component.type, parentId);
+    let id = newRender.editorId;
+    this.$emit('on-add-component', { service: this, dragContent: pRender, render: newRender })
+    children.splice(newIndex, 0, newRender);
+    this.current.refreshAttr = true;
+    this.refresh().then(() => this.setCurrent(id));
+  }
+
+
+
 } //end UEService
 
 
@@ -773,7 +865,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
       className = `uieditor-drag-item${collapseCalss}`;
       id = renderId;
     } else {
-      id = _makeEditorContentId(renderId);
+      id = renderId;// _makeEditorContentId(renderId);
       let emptyCls = !render.children || render.children as any == 0 ? ' uieditor-drag-empty' : '';
       if (select) {
         render.props['tabindex'] = '-1';

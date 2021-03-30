@@ -13,9 +13,11 @@ declare const layui: any;
 let $: JQueryStatic;
 
 interface UEDragEvent {
+  isTreeNode?: boolean;
   fromEl: HTMLElement;
   toEl?: HTMLElement;
   ev?: MouseEvent;
+  $?: JQueryStatic;
   pos?: {
     top: number;
     left: number;
@@ -478,6 +480,7 @@ export function DragStart($el, options: UEDragOptions) {
 
   function _makeEvent(p: UEDragEvent) {
     p.pos || (p.pos = _dragPosLine);
+    p.$ = $;
     return p;
   }
 
@@ -491,7 +494,7 @@ export function DragStart($el, options: UEDragOptions) {
 
   function dragEventFn(e) {
     const target = e.currentTarget;
-    const isTreeNode = target.classList.contains('layui-tree-main');
+    const isTreeNode = target.classList.contains('layui-tree-entry');
     const el = isTreeNode ? target : findDragElement(target);
     if (!el) return;
 
@@ -499,7 +502,7 @@ export function DragStart($el, options: UEDragOptions) {
     if (isRoot) return;
 
     if (options.select &&
-      options.select(_makeEvent({ fromEl: el, ev: e as any })) === false) {
+      options.select(_makeEvent({ fromEl: el, ev: e as any, isTreeNode })) === false) {
       return;
     }
 
@@ -516,12 +519,12 @@ export function DragStart($el, options: UEDragOptions) {
       if (_checkDragStart(el, e)) {
         try {
           if (options.dragstart) {
-            if (options.dragstart(_makeEvent({ fromEl: el, ev: e })) === false) {
+            if (options.dragstart(_makeEvent({ fromEl: el, ev: e, isTreeNode })) === false) {
               draging = false;
               return;
             };
           }
-          if (!isTreeNode) el.classList.add(hideCls);
+          el.classList.add(isTreeNode ? 'uieditor-drag-tree-active' : hideCls);
           unSelect();
         } finally {
           return false;
@@ -559,7 +562,8 @@ export function DragStart($el, options: UEDragOptions) {
               if (options.dragover(_makeEvent({
                 fromEl: el,
                 pos: rectNew,
-                toEl: dragOverEl, ev: e
+                toEl: dragOverEl, ev: e,
+                isTreeNode
               })) !== false) {
                 posLine(dragOverEl, e, rectNew);
               }
@@ -582,11 +586,12 @@ export function DragStart($el, options: UEDragOptions) {
         const dropOk = options.drop ? options.drop(_makeEvent({
           fromEl: dragEl, toEl: _dragPosLineEl,
           pos: _dragPosLine,
-          ev: e
+          ev: e,
+          isTreeNode
         })) : false;
 
         unPosLine();
-        el.classList.remove(hideCls);
+        el.classList.remove(isTreeNode ? 'uieditor-drag-tree-active' : hideCls);
         select(el);
       }
     };
@@ -595,7 +600,7 @@ export function DragStart($el, options: UEDragOptions) {
 
   };
 
-  jUieditor.on('mousedown', '.uieditor-cp-tree .layui-tree-main', dragEventFn);
+  jUieditor.on('mousedown', '.uieditor-cp-tree [data-uedrag]', dragEventFn);
   jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', dragEventFn);
 
   //#endregion drag
@@ -603,38 +608,18 @@ export function DragStart($el, options: UEDragOptions) {
 
 }
 
-export function LayuiTree(p: { el: any, data: any }) {
+export function LayuiTree(p: { elem: any, data: any }) {
 
   let index = 0;
-  tree.render({
-    elem: p.el
-    , data: p.data || []
-    , id: 'demoId1'
-    , click: function (obj) {
-      layer.msg(JSON.stringify(obj.data));
-      console.log(obj);
-    }
-    , oncheck: function (obj) {
-      //console.log(obj);
-    }
-    , operate: function (obj) {
-      var type = obj.type;
-      if (type == 'add') {
-        //ajax操作，返回key值
-        return index++;
-      } else if (type == 'update') {
-        console.log(obj.elem.find('.layui-tree-txt').html());
-      } else if (type == 'del') {
-        console.log(obj);
-      };
-    }
-    // ,showCheckbox: true  //是否显示复选框
+  tree.render(_.assign({
+    elem: null
+    , data: []
+    , showCheckbox: false  //是否显示复选框
     , accordion: false  //是否开启手风琴模式
-
-    , onlyIconControl: true //是否仅允许节点左侧图标控制展开收缩
+    , onlyIconControl: false //是否仅允许节点左侧图标控制展开收缩
     , isJump: false  //点击文案跳转地址
     , edit: false  //操作节点图标
-  });
+  }, p));
 
 }
 
@@ -670,85 +655,6 @@ export function LayuiInit($el) {
       , max: 24
       , change: function (value) {
         console.warn('slider', value)
-      }
-    });
-
-    DragStart($el, {
-      dragstart(e) {
-        console.warn('dragstart', e);
-        return true;
-      },
-      dragover(e) {
-        console.warn('dragover', e);
-        return true;
-      },
-      drop(e) {
-        console.warn('drop', e);
-        return true;
-      },
-      control: (ev) => {
-
-        // const fromEl = ev.fromEl;
-        // const renderId = _getIdByContent(fromEl);
-        // let render = this.getRenderItem(renderId);
-        // let editor = _getRenderEditor(render);
-        // if (!editor) return;
-        // const operation = editor.operation;
-        // const pRender = this.getParentRenderItem(render);
-        // const parentId = _getRenderId(pRender);
-        // // let pContainerBox = false;
-        // const pEditor = _getRenderEditor(pRender);
-        // if (!pEditor) return;
-        // const pOperation = pEditor.operation;
-        // if (editor.containerBox) editor = pEditor;
-        // let containerBox = editor.containerBox;
-        // // if (containerBox) pContainerBox = true;
-        // const title = containerBox ? '' : editor.textFormat(editor, _getRenderAttrs(render));
-        // let collapse = false;
-        // let collapseFn;
-        // let attrs = _getRenderAttrs(render);
-        // if (!editor.base || editor.collapse) {
-        //   collapse = _getCollapse(attrs) == 'true';
-        //   collapseFn = (e) => {
-        //     this.collapse(renderId)
-        //     // BgLogger.debug('collapse', e);
-        //   };
-        // }
-
-        // BgLogger.debug('fromEl', fromEl)
-        const control = {
-          title: {
-            // text: title,
-            // show: !containerBox,
-            // isCollapse: collapse,
-            // collapse: collapseFn
-            text: 'aaa',
-            show: true,
-            isCollapse: true,
-            collapse(e) {
-              // this.collapse(renderId)
-              // BgLogger.debug('collapse', e);
-            }
-          },
-          toolbars: [{
-            text: '删除',
-            icon: 'layui-icon layui-icon-close',
-            show: true,
-            click: (item, e) => {
-              console.warn('删除', item, e);
-              // this.deleteWidget(parentId, renderId);
-            }
-          }, {
-            text: '复制',
-            icon: 'layui-icon layui-icon-file-b',
-            show: true,
-            click: (item, e) => {
-              console.warn('复制', item, e);
-              // this.copyCurToNext(parentId, renderId, true);
-            }
-          }]
-        };
-        return control;
       }
     });
 

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { UEOption, UETransfer, UETransferEditor, UETransferEditorAttrsItem, UETransferExtend } from './ue-base';
 import { UERenderItem } from './ue-render-item';
+import { UEHelper } from './ue-helper';
 
 /** 公共 transfer */
 const _globalTransfer = {};
@@ -242,7 +243,7 @@ export class UERender {
     _inited(editor);
 
     let emptyEditor = !editor.empty ? null : _emptyEditor(type, editor.empty);
-    editor = _.assign({}, _defaultEditor(type), emptyEditor, editor);
+    editor = UEHelper.assignDepth({}, _defaultEditor(type), emptyEditor, editor);
     if (!editor.text) editor.text = type;
     if (!editor.placeholder) editor.placeholder = editor.text;
 
@@ -352,7 +353,7 @@ function _defaultEditor(name: string): UETransferEditor {
   return {
     group: "公用组件库/基础组件",
     name,
-    icon: "md-school",
+    icon: "layui-icon layui-icon-file",
     textFormat(editor, attrs) {
       let text = editor.text;
       if (text && text.indexOf('%') >= 0) {

@@ -1,5 +1,11 @@
 .layui-uieditor {
 
+  .uieditor-drag-tree-active {
+    .layui-tree-txt {
+      color: #f7871f;
+    }
+  }
+
   /** 隐藏 */
   .uieditor-drag-hide {
     display: none !important;
@@ -116,9 +122,11 @@
   .uieditor-drag-root {
     min-height: 75%;
     margin: 28px 10px 10px 10px;
+
     :focus {
       outline: none;
     }
+
     &:focus {
       outline: none;
     }
@@ -143,6 +151,11 @@
   /** empty */
   .uieditor-drag-empty {
     min-height: 30px;
+    
+    &.inline {
+      display: inline-block;
+      min-width: 40px;
+    }
   }
 
   /** 改起 */
