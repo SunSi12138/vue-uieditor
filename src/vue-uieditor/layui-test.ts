@@ -1,4 +1,13 @@
 import _ from 'lodash';
+import './layui-import';
+
+const form = layui.form
+  , layer = layui.layer
+  , tree = layui.tree
+  , layedit = layui.layedit
+  , colorpicker = layui.colorpicker
+  , slider = layui.slider
+  , selectInput = layui.selectInput;
 
 declare const layui: any;
 let $: JQueryStatic;
@@ -214,26 +223,6 @@ export function DragStart($el, options: UEDragOptions) {
     e.preventDefault();
   };
 
-  const boxOpt = {
-    title: 'test',
-    //1：收起；2：展开
-    collapse: 1,
-    menus: [{
-      text: '复制',
-      icon: 'layui-icon layui-icon-file-b',
-      click() {
-        console.warn('复制');
-      }
-    }, {
-      text: '删除',
-      icon: 'layui-icon layui-icon-close',
-      click() {
-        console.warn('删除');
-      }
-    }]
-  };
-
-
   const hideCls = 'uieditor-drag-hide';
   const jEditorJsonContent = jUieditor.find('.editor-json-content').first();
   const jSelectBox = $('<div class="uieditor-drag-sel-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
@@ -259,7 +248,7 @@ export function DragStart($el, options: UEDragOptions) {
     jSelectBox.removeData(_data_toolbarsKey);
     jSelectBox.addClass(hideCls);
   };
-  const select = function (element, opt) {
+  const select = function (element) {
     if (isSelect(element)) return;
     _selectElement = element;
     unOverBox();
@@ -334,10 +323,14 @@ export function DragStart($el, options: UEDragOptions) {
 
   //select
   jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
-    const element = findDragElement(e.toElement || e.target);
+    const element = findDragElement(e.currentTarget);
     if (element) {
+      const isRoot = element.classList.contains('uieditor-drag-root');
+      if (isRoot) return;
+
       stopEvent(e);
-      select(element, boxOpt);
+      select(element);
+      element.focus();
       return false;
     }
   });
@@ -354,7 +347,7 @@ export function DragStart($el, options: UEDragOptions) {
     _overBoxElement = null;
     jOverBox.addClass(hideCls);
   };
-  const overBox = function (element, opt) {
+  const overBox = function (element) {
     if (isOverBox(element)) return;
     if (isSelect(element)) {
       unOverBox();
@@ -391,10 +384,10 @@ export function DragStart($el, options: UEDragOptions) {
 
   //overBox
   jEditorJsonContent.on('mouseover', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
-    const element = findDragElement(e.toElement || e.target);
+    const element = findDragElement(e.currentTarget);
     if (element) {
       stopEvent(e);
-      overBox(element, boxOpt);
+      overBox(element);
       return false;
     }
   });
@@ -421,16 +414,18 @@ export function DragStart($el, options: UEDragOptions) {
     if (!classList.contains('uieditor-drag-pos-line')) {
       classList.add('uieditor-drag-pos-line')
     }
-    const top = rect.top;
-    if (top > 0 && top < body.scrollTop) {
-      body.scrollTop = top;
-    } else {
-      const clientHeight = body.clientHeight;
-      let maxY = body.scrollTop + clientHeight;
-      if (rect.top > maxY) {
-        body.scrollTop = rect.top + 10 - clientHeight;
-      }
-    }
+
+    // const top = rect.top;
+    // const padding = 34;
+    // if (top > 0 && top < body.scrollTop) {
+    //   body.scrollTop = top - padding;
+    // } else {
+    //   const clientHeight = body.clientHeight;
+    //   let maxY = body.scrollTop + clientHeight;
+    //   if (top > maxY) {
+    //     body.scrollTop = rect.top + padding + 10 - clientHeight;
+    //   }
+    // }
     const jBox = $(box);
     jBox.css({
       top: `${rect.top}px`,
@@ -453,6 +448,11 @@ export function DragStart($el, options: UEDragOptions) {
     box.classList.add(hideCls);
   };
 
+  //#endregion posLine
+
+
+
+  //#region posLine
 
   let draging = false;
   let dragPos = null;
@@ -483,8 +483,16 @@ export function DragStart($el, options: UEDragOptions) {
 
   const jWIn = $(window);
 
-  jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
-    const el = findDragElement(e.toElement || e.target);
+  jUieditor.on('selectstart', '.editor-json-content,.layui-tree', function (e) {
+    stopEvent(e);
+    return false;
+  });
+
+
+  function dragEventFn(e) {
+    const target = e.currentTarget;
+    const isTreeNode = target.classList.contains('layui-tree-main');
+    const el = isTreeNode ? target : findDragElement(target);
     if (!el) return;
 
     const isRoot = el.classList.contains('uieditor-drag-root');
@@ -502,22 +510,36 @@ export function DragStart($el, options: UEDragOptions) {
     let _dragOverEl_pre = null;
 
     const mousemove = function (e) {
-      e.stopPropagation();
-      e.preventDefault();
+      // console.warn('mousemove', el);
+
+      stopEvent(e);
       if (_checkDragStart(el, e)) {
         try {
           if (options.dragstart) {
             if (options.dragstart(_makeEvent({ fromEl: el, ev: e })) === false) {
+              draging = false;
               return;
             };
           }
-          el.classList.add(hideCls);
+          if (!isTreeNode) el.classList.add(hideCls);
           unSelect();
         } finally {
           return false;
         }
       }
       if (draging) {
+        const mPos = getMousePos(body, el, e);
+
+        if (mPos.y < body.scrollTop) {
+          body.scrollTop -= 5;
+        } else {
+          const bodyRect = getOffsetRect(body, body);
+          if (mPos.y > bodyRect.height) {
+            body.scrollTop += 5;
+          }
+        }
+
+
         const dragOverEl = _overBoxElement;
         if (dragOverEl) {
           const dragOverEl_pre = _dragOverEl_pre;
@@ -532,7 +554,7 @@ export function DragStart($el, options: UEDragOptions) {
           if (change) {
             _dragOverEl_pre = dragOverEl;
             _dragPosLine_pre = rectNew;
-            posLine(dragOverEl, e, rectNew);
+            // posLine(dragOverEl, e, rectNew);
             if (options.dragover) {
               if (options.dragover(_makeEvent({
                 fromEl: el,
@@ -565,29 +587,59 @@ export function DragStart($el, options: UEDragOptions) {
 
         unPosLine();
         el.classList.remove(hideCls);
-        select(el, boxOpt);
+        select(el);
       }
     };
     jWIn.on('mousemove', mousemove);
     jWIn.on('mouseup', mouseup);
 
+  };
+
+  jUieditor.on('mousedown', '.uieditor-cp-tree .layui-tree-main', dragEventFn);
+  jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', dragEventFn);
+
+  //#endregion drag
+
+
+}
+
+export function LayuiTree(p: { el: any, data: any }) {
+
+  let index = 0;
+  tree.render({
+    elem: p.el
+    , data: p.data || []
+    , id: 'demoId1'
+    , click: function (obj) {
+      layer.msg(JSON.stringify(obj.data));
+      console.log(obj);
+    }
+    , oncheck: function (obj) {
+      //console.log(obj);
+    }
+    , operate: function (obj) {
+      var type = obj.type;
+      if (type == 'add') {
+        //ajax操作，返回key值
+        return index++;
+      } else if (type == 'update') {
+        console.log(obj.elem.find('.layui-tree-txt').html());
+      } else if (type == 'del') {
+        console.log(obj);
+      };
+    }
+    // ,showCheckbox: true  //是否显示复选框
+    , accordion: false  //是否开启手风琴模式
+
+    , onlyIconControl: true //是否仅允许节点左侧图标控制展开收缩
+    , isJump: false  //点击文案跳转地址
+    , edit: false  //操作节点图标
   });
-
-  //#endregion posLine
-
 
 }
 
 
 export function LayuiInit($el) {
-
-  const form = layui.form
-    , layer = layui.layer
-    , tree = layui.tree
-    , layedit = layui.layedit
-    , colorpicker = layui.colorpicker
-    , slider = layui.slider
-    , selectInput = layui.selectInput;
 
   jqueryInit();
 
@@ -759,156 +811,6 @@ export function LayuiInit($el) {
     //     jo.removeClass('layui-bg-blue');
     //   }
     // });
-
-    //数据源
-    var data1 = [{
-      title: '一级1'
-      , id: 1
-      , children: [{
-        title: '二级1-1'
-        , id: 3
-        , href: 'https://www.layui.com/doc/'
-        , children: [{
-          title: '三级1-1-3'
-          , id: 23
-          , children: [{
-            title: '四级1-1-3-1'
-            , id: 24
-            , children: [{
-              title: '五级1-1-3-1-1'
-              , id: 30
-            }, {
-              title: '五级1-1-3-1-2'
-              , id: 31
-            }]
-          }]
-        }, {
-          title: '三级1-1-1'
-          , id: 7
-          , checked: true
-          , children: [{
-            title: '四级1-1-1-1'
-            , id: 15
-            //,checked: true
-            , href: 'https://www.layui.com/doc/base/infrastructure.html'
-          }]
-        }, {
-          title: '三级1-1-2'
-          , id: 8
-          , children: [{
-            title: '四级1-1-2-1'
-            , id: 32
-          }]
-        }]
-      }, {
-        title: '二级1-2'
-        , id: 4
-        , spread: true
-        , children: [{
-          title: '三级1-2-1'
-          , id: 9
-          , checked: true
-          , disabled: true
-        }, {
-          title: '三级1-2-2'
-          , id: 10
-        }]
-      }, {
-        title: '二级1-3'
-        , id: 20
-        , children: [{
-          title: '三级1-3-1'
-          , id: 21
-        }, {
-          title: '三级1-3-2'
-          , id: 22
-        }]
-      }]
-    }, {
-      title: '一级2'
-      , id: 2
-      , spread: true
-      , children: [{
-        title: '二级2-1'
-        , id: 5
-        , spread: true
-        , children: [{
-          title: '三级2-1-1'
-          , id: 11
-        }, {
-          title: '三级2-1-2'
-          , id: 12
-        }]
-      }, {
-        title: '二级2-2'
-        , id: 6
-        , checked: true
-        , children: [{
-          title: '三级2-2-1'
-          , id: 13
-        }, {
-          title: '三级2-2-2'
-          , id: 14
-          , disabled: true
-        }]
-      }]
-    }, {
-      title: '一级3'
-      , id: 16
-      , children: [{
-        title: '二级3-1'
-        , id: 17
-        , fixed: true
-        , children: [{
-          title: '三级3-1-1'
-          , id: 18
-        }, {
-          title: '三级3-1-2'
-          , id: 19
-        }]
-      }, {
-        title: '二级3-2'
-        , id: 27
-        , children: [{
-          title: '三级3-2-1'
-          , id: 28
-        }, {
-          title: '三级3-2-2'
-          , id: 29
-        }]
-      }]
-    }];
-
-    let index = 0;
-    tree.render({
-      elem: '#tree1'
-      , data: data1
-      , id: 'demoId1'
-      , click: function (obj) {
-        layer.msg(JSON.stringify(obj.data));
-        console.log(obj);
-      }
-      , oncheck: function (obj) {
-        //console.log(obj);
-      }
-      , operate: function (obj) {
-        var type = obj.type;
-        if (type == 'add') {
-          //ajax操作，返回key值
-          return index++;
-        } else if (type == 'update') {
-          console.log(obj.elem.find('.layui-tree-txt').html());
-        } else if (type == 'del') {
-          console.log(obj);
-        };
-      }
-      // ,showCheckbox: true  //是否显示复选框
-      , accordion: false  //是否开启手风琴模式
-
-      , onlyIconControl: true //是否仅允许节点左侧图标控制展开收缩
-      , isJump: false  //点击文案跳转地址
-      , edit: false  //操作节点图标
-    });
 
     //自定义验证规则
     form.verify({

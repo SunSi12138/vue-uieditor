@@ -96,7 +96,7 @@
                       <i class="layui-icon layui-colla-icon"></i>
                     </h2>
                     <div class="layui-colla-content layui-show">
-                      <div id="tree1"></div>
+                      <uieditor-cp-tree />
                     </div>
                   </div>
                 </div>

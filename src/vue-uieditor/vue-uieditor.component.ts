@@ -2,13 +2,17 @@ import { UEOption } from './base/ue-base';
 import { UECompiler } from './base/ue-compiler';
 import { UEService } from './base/ue-service';
 import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueProvide, UEVueWatch } from './base/vue-extends';
-import './layui-import';
 import { Layuidestroy, LayuiInit } from './layui-test';
 import './transfer';
 import { UERender } from './base/ue-render';
+import uieditorCpTree from './components/uieditor-cp-tree.component.vue';
 
 
-@UEVueComponent({})
+@UEVueComponent({
+  components:{
+    'uieditor-cp-tree':uieditorCpTree
+  }
+})
 export default class VueUieditor extends UEVue {
 
   @UEVueProp()
