@@ -454,7 +454,7 @@
                                         class="layui-badge layui-bg-blue-active"
                                         >：</span
                                       >
-                                      <div id="selectInput1"></div>
+                                      <div selectInput></div>
                                       <i
                                         class="layui-icon layui-icon-form"
                                       ></i>

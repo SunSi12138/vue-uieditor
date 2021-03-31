@@ -88,7 +88,8 @@ layui.define(['jquery'], function (exports) {
         var $elem = $(that.options.elem);
         var filter = $elem.attr('lay-filter');
         if (!filter) {
-            filter = that.options.elem.substring(1);
+            const selector = that.options.elem.substring ? that.options.elem : $elem.selector;
+            filter = selector.substring(1);
             $elem.attr('lay-filter', filter);
         }
         return {

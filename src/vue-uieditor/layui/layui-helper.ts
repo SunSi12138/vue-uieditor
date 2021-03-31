@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import './layui-import';
 
 export interface LayuiLayerOption {
   content: string;
@@ -19,7 +20,7 @@ export class LayuiHelper {
    * 返回 true | false | undefined
    * @param msg 
    */
-  static $confirm(msg: string, option?: LayuiLayerOption): Promise<boolean | undefined> {
+  static confirm(msg: string, option?: LayuiLayerOption): Promise<boolean | undefined> {
     return new Promise(function (r) {
       let isEnd = false;
       const fn = function (res?: any) {
@@ -47,7 +48,7 @@ export class LayuiHelper {
    * 返回 true | false | undefined
    * @param msg 
    */
-  static $alert(msg, option?: LayuiLayerOption): Promise<boolean | undefined> {
+  static alert(msg, option?: LayuiLayerOption): Promise<boolean | undefined> {
     return new Promise(function (r) {
       layui.layer.alert(msg, _.assign({}, option, {
         // btn: ['确定', '取消'],
@@ -59,7 +60,7 @@ export class LayuiHelper {
     });
   }
 
-  static $msg(msg, option?: LayuiLayerOption) {
+  static msg(msg, option?: LayuiLayerOption) {
     return new Promise(function (r) {
       layui.layer.msg(msg, _.assign({
         time: 0, //20s后自动关闭

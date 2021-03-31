@@ -1,16 +1,7 @@
 import _ from 'lodash';
 import './layui/layui-import';
 
-const form = layui.form
-  , layer = layui.layer
-  , tree = layui.tree
-  , layedit = layui.layedit
-  , colorpicker = layui.colorpicker
-  , slider = layui.slider
-  , selectInput = layui.selectInput;
-
-declare const layui: any;
-let $: JQueryStatic;
+const $:JQueryStatic = layui.$;
 
 interface UEDragEvent {
   isTreeNode?: boolean;
@@ -51,47 +42,22 @@ interface UEDragOptions {
   };
 }
 
-export function Layuidestroy($el) {
-  layui.$($el).remove();
-  // layui.$($el).html('');
-  // const $ = layui.$;
-  // layui.$('*', $el).add([$el]).each(function () {
-  //   layui.$.event.remove(this);
-  //   // console.log('aaaaa')
-  //   layui.$.removeData(this);
-  //   if (this._vue_uieditor_linkdom) {
-  //     $.each(this._vue_uieditor_linkdom, function (idx, item) {
-  //       item && item();
-  //     });
-  //     this._vue_uieditor_linkdom = null;
-  //   }
-  // });
-}
-
-let isJqueryInit = false;
-function jqueryInit() {
-  if (isJqueryInit) return;
-  isJqueryInit = true;
-
-  $ = layui.$;
-
-  const _cleanData = $.cleanData;
-  $.cleanData = function (elems) {
-    for (var i = 0, elem; (elem = elems[i]) != null; i++) {
-      try {
-        $(elem).triggerHandler('vue_uieditor_linkdom');
-      } catch (e) { }
-    }
-    _cleanData.apply($, arguments);
-  };
-};
-
-//dom销毁时处理内容
-function linkDom(dom, callback) {
-  if (!dom) return;
-  const jo: any = dom instanceof $ ? dom : $(dom);
-  jo.one('vue_uieditor_linkdom', callback);
-}
+// export function Layuidestroy($el) {
+//   layui.$($el).remove();
+//   // layui.$($el).html('');
+//   // const $ = layui.$;
+//   // layui.$('*', $el).add([$el]).each(function () {
+//   //   layui.$.event.remove(this);
+//   //   // console.log('aaaaa')
+//   //   layui.$.removeData(this);
+//   //   if (this._vue_uieditor_linkdom) {
+//   //     $.each(this._vue_uieditor_linkdom, function (idx, item) {
+//   //       item && item();
+//   //     });
+//   //     this._vue_uieditor_linkdom = null;
+//   //   }
+//   // });
+// }
 
 
 /**
@@ -231,10 +197,6 @@ export function DragStart($el, options: UEDragOptions) {
   const jOverBox = $('<div class="uieditor-drag-over-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
   const jPosline = $('<div class="uieditor-drag-pos-line ' + hideCls + '" />').appendTo(jEditorJsonContent);
   const body = jEditorJsonContent[0];
-
-  linkDom(jEditorJsonContent, function () {
-    console.log('clear jEditorJsonContent');
-  });
 
   //#region select
 
@@ -618,184 +580,3 @@ export function DragStart($el, options: UEDragOptions) {
   }
 
 } // end DragStart();
-
-export function LayuiTree(p: { elem: any, data: any }) {
-
-  let index = 0;
-  tree.render(_.assign({
-    elem: null
-    , data: []
-    , showCheckbox: false  //是否显示复选框
-    , accordion: false  //是否开启手风琴模式
-    , onlyIconControl: false //是否仅允许节点左侧图标控制展开收缩
-    , isJump: false  //点击文案跳转地址
-    , edit: false  //操作节点图标
-  }, p));
-
-}
-
-
-export function LayuiInit($el) {
-
-  jqueryInit();
-
-  layui.use(['tree', 'form', 'layedit', 'element', 'colorpicker', 'slider', 'selectInput'], function () {
-
-
-    $('div[colorpicker]').each(function (idx, el) {
-      var jParent = $(el);
-      var jColor = jParent.children('div');
-      console.warn("jParent", el, jParent.children(), jColor)
-      //表单赋值
-      colorpicker.render({
-        elem: jColor[0]
-        , color: '#1c97f5'
-        , done: function (color) {
-          console.warn("jParent.find('input')'", jParent, jParent.find('input'))
-          jParent.find('input').first().val(color);
-        }
-      });
-    });
-
-    //表单赋值
-    slider.render({
-      elem: '[slider]'
-      , range: false
-      , step: 1
-      , min: 1
-      , max: 24
-      , change: function (value) {
-        console.warn('slider', value)
-      }
-    });
-
-    selectInput.render({
-      elem: '#selectInput1',
-      data: [
-        { value: 1111, name: 1111 },
-        { value: 2222, name: 2222 },
-        { value: 3333, name: 3333 },
-        { value: 6666, name: 6666 },
-      ],
-      placeholder: '请输入名称',
-      name: 'list_common',
-      remoteSearch: false
-    });
-
-    var jUieditor = $('.layui-uieditor');
-
-    jUieditor.on('click', '.layui-bg-blue,.layui-bg-blue-active', function (e) {
-      var jo = $(e.target);
-      if (jo.hasClass('layui-bg-blue-active')) {
-        jo.addClass('layui-bg-blue');
-        jo.removeClass('layui-bg-blue-active');
-      } else {
-        jo.addClass('layui-bg-blue-active');
-        jo.removeClass('layui-bg-blue');
-      }
-    });
-    jUieditor.on('selectstart', '.layui-bg-blue,.layui-bg-gray', function (e) {
-      e.stopPropagation();
-      e.preventDefault();
-      return false;
-    });
-
-    // jUieditor.on('mousedown', function (e) {
-    //   layer.closeAll('tips');
-    // });
-
-    jUieditor.on('click', '.layui-icon-about', function (e) {
-      // layer.tips('desc', e.target, {
-      //   tips: [1, '#3595CC'],
-      //   time: 5000
-      // });
-      layer.msg('descdddddddddddd ddddddddddddddddddd dfdfsdf',
-        {
-          time: 0, //20s后自动关闭
-          btn: ['明白了']
-        });
-    });
-
-
-
-    // $('.layui-bg-blue').on('click', function(e){
-    //   var jo = $(e.target);
-    //   if (jo.hasClass('layui-bg-gray')){
-    //     jo.addClass('layui-bg-blue');
-    //     jo.removeClass('layui-bg-gray');
-    //   } else {
-    //     jo.addClass('layui-bg-gray');
-    //     jo.removeClass('layui-bg-blue');
-    //   }
-    // });
-
-    //自定义验证规则
-    form.verify({
-      title: function (value) {
-        if (value.length < 5) {
-          return '标题也太短了吧';
-        }
-      }
-      , pass: [/(.+){6,12}$/, '密码必须6到12位']
-      , money: [
-        /^\d+\.\b\d{2}\b$/
-        , '金额必须为小数保留两位'
-      ]
-    });
-
-    //初始赋值
-    var thisValue = form.val('first', {
-      'vModel': 'model.name'
-      , 'v-if': 'false'
-      , 'ref': 'refName'
-      , 'disabled': 'false'
-      , 'name': ''
-      //,'quiz': 2
-      , 'interest': 3
-      , 'like[write]': true
-      //,'open': false
-      , 'sex': '男'
-      , 'desc': 'form 是我们非常看重的一块'
-      , xxxxxxxxx: 123
-    });
-    console.log(thisValue);
-
-
-    //事件监听
-    form.on('select', function (data) {
-      console.log('select: ', this, data);
-    });
-
-    form.on('select(quiz)', function (data) {
-      console.log('select.quiz：', this, data);
-    });
-
-    form.on('select(interest)', function (data) {
-      console.log('select.interest: ', this, data);
-    });
-
-
-
-    form.on('checkbox', function (data) {
-      console.log(this.checked, data.elem.checked);
-    });
-
-    form.on('switch', function (data) {
-      console.log(data);
-    });
-
-    form.on('radio', function (data) {
-      console.log(data);
-    });
-
-    //监听提交
-    form.on('submit(*)', function (data) {
-      console.log(data)
-      alert(JSON.stringify(data.field));
-      return false;
-    });
-
-  });
-
-
-}

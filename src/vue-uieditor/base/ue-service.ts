@@ -1,11 +1,11 @@
 import _ from 'lodash';
-import { Layuidestroy } from '../layui-test';
 import { LayuiHelper } from '../layui/layui-helper';
 import { UEOption, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem } from './ue-base';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
 import { UERenderItem } from './ue-render-item';
 import { UEVue, UEVueMixin } from "./vue-extends";
+import { LayuiRender } from '../layui/layui-render';
 
 
 const _editorType = 'uieditor-div';
@@ -210,7 +210,7 @@ export class UEService {
           rootRender = json = null;
         },
         destroyed() {
-          Layuidestroy(this.$el);
+          LayuiRender.destroy(this.$el);
         }
       } as UEVueMixin;
     });
@@ -362,7 +362,7 @@ export class UEService {
       this.deleteWidget(this.current.parentId, this.current.id, norefresh);
       return;
     }
-    const ok = await LayuiHelper.$confirm('确定要删除吗？');
+    const ok = await LayuiHelper.confirm('确定要删除吗？');
     if (!ok) return;
     this.deleteWidget(this.current.parentId, this.current.id, norefresh);
   }

@@ -1,6 +1,6 @@
 import { UEService } from '../base/ue-service';
 import { UEVue, UEVueComponent, UEVueInject, UEVueLife } from '../base/vue-extends';
-import { Layuidestroy, LayuiTree } from '../layui-test';
+import { LayuiRender } from '../layui/layui-render';
 
 
 @UEVueComponent({})
@@ -14,12 +14,12 @@ export default class UieditorCpTree extends UEVue {
 
     const cps = this.service.components;
 
-    LayuiTree({ elem: this.$refs.tree1, data: cps.tree });
+    LayuiRender.renderTree({ elem: this.$refs.tree1, data: cps.tree });
   }
 
   @UEVueLife('destroyed')
   private _d1() {
-    Layuidestroy(this.$el);
+    LayuiRender.destroy(this.$el);
   }
 
 }
