@@ -264,8 +264,11 @@ function _dragStart($el, options: UEDragOptions) {
   };
 
   // select menu click
-  jSelectBox.on('click', 'a', function (e) {
+  jSelectBox.on('mousedown', function(e){
     stopEvent(e);
+    return false;
+  });
+  jSelectBox.on('mousedown', 'a', function (e) {
     var jo = $(e.target);
     var index = ~~jo.attr('tIndex');
     if (index >= 0) {
@@ -273,7 +276,6 @@ function _dragStart($el, options: UEDragOptions) {
       const item = toolbars[index];
       item?.click(item, e);
     }
-    return false;
   });
 
   const isDragElement = function (element) {
@@ -556,7 +558,7 @@ function _dragStart($el, options: UEDragOptions) {
       jWIn.off('mouseup', mouseup);
 
       if (draging) {
-        const dropOk = options.drop ? options.drop(_makeEvent({
+        const dropOk = options.drop && _dragPosLineEl ? options.drop(_makeEvent({
           fromEl: dragEl, toEl: _dragPosLineEl,
           pos: _dragPosLine,
           ev: e,

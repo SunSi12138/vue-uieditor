@@ -7,6 +7,7 @@ import uieditorCpTree from './components/uieditor-cp-tree.component.vue';
 import { UEDrag } from './ue-drag';
 import './transfer';
 import { LayuiRender } from './layui/layui-render';
+import { LayuiHelper } from './layui/layui-helper';
 
 
 @UEVueComponent({
@@ -164,7 +165,7 @@ export default class VueUieditor extends UEVue {
             icon: 'layui-icon layui-icon-file-b',
             show: true,
             click: (item, e) => {
-              console.warn('复制', item, e);
+              LayuiHelper.msg('复制! - ' + this.service.current.id);
               // this.copyCurToNext(parentId, renderId, true);
             }
           }, {

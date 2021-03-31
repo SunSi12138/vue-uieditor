@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import { LayuiHelper } from '../layui/layui-helper';
+import { LayuiRender } from '../layui/layui-render';
 import { UEOption, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem } from './ue-base';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
 import { UERenderItem } from './ue-render-item';
 import { UEVue, UEVueMixin } from "./vue-extends";
-import { LayuiRender } from '../layui/layui-render';
 
 
 const _editorType = 'uieditor-div';
@@ -275,7 +275,8 @@ export class UEService {
    * 刷新导向栏
    * @param render 
    */
-  refresBreadcrumbs(render: UERenderItem) {
+  refresBreadcrumbs(render?: UERenderItem) {
+    if (!render) render = this.getCurRender();
     let breadcrumbs = [];
     this._makeBreadcrumbs(render, breadcrumbs);
     if (breadcrumbs.length > 0) {
@@ -528,7 +529,6 @@ export class UEService {
   }
 
 
-
   private _components: any[];
   private _components_tree: any[]
   /** 组件栏数据 */
@@ -637,7 +637,7 @@ export class UEService {
       pRender.children.splice(newIndex, 0, fromRender);
     }
 
-    return this.refresh();
+    return this.refresh().then(() => this.refresBreadcrumbs());
   }
 
 

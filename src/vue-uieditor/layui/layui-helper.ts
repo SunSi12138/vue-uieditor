@@ -29,7 +29,8 @@ export class LayuiHelper {
         r(res);
       };
       layui.layer.confirm(msg, _.assign({
-        btn: ['确定', '取消']
+        btn: ['确定', '取消'],
+        title:'确认框'
       }, option, {
         end() {
           if (option?.end) option.end();
