@@ -286,7 +286,9 @@ function _dragStart($el, options: UEDragOptions) {
     }
     return isDragElement(element) ? element : $(element).closest('.uieditor-drag-item,.uieditor-drag-content')[0];
   };
-
+  jEditorJsonContent.on('mousedown', function(){
+    unSelect();
+  });
   //select
   jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
     const element = findDragElement(e.currentTarget);
