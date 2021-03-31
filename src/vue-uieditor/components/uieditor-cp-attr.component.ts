@@ -52,6 +52,8 @@ export default class UieditorCpAttr extends UEVue {
       }
       // 是否 v- 属性，如 v-if....
       attr['isPrefxV'] = _vReg.test(attr.name);
+      if (attr.event) attr.group = '___ue_event_';
+      if (attr.vue) attr.group = '___ue_vue_';
       attrList.push(attr);
     });
     console.warn('attrList', attrList);
@@ -69,7 +71,23 @@ export default class UieditorCpAttr extends UEVue {
     });
     groupList = _.orderBy(groupList, 'order', 'asc');
     console.warn('groupList', groupList);
-    this._makeFormDom(groupList);
+
+    const $: JQueryStatic = layui.$;
+
+    const attrGroupList = _.filter(groupList, function (item) { return item.group != '___ue_event_' && item.group != '___ue_vue_'; });
+    let html = this._makeFormDom(attrGroupList);
+    $(this.$refs.attrContent).html(html);
+
+    const eventGroupList = _.filter(groupList, function (item) { return item.group == '___ue_event_'; });
+    html = this._makeFormDom(eventGroupList);
+    $(this.$refs.eventContent).html(html);
+
+    const vueGroupList = _.filter(groupList, function (item) { return item.group == '___ue_vue_'; });
+    html = this._makeFormDom(vueGroupList);
+    $(this.$refs.vueContent).html(html);
+
+    LayuiRender.render(this.$el);
+
   }
 
 
@@ -152,8 +170,9 @@ export default class UieditorCpAttr extends UEVue {
 
     const htmlGroupList = [];
     _.forEach(groupList, (groupItem, index) => {
+      const groupName = (groupItem.group || '').replace('___ue_event_', '事件').replace('___ue_vue_', 'Vue');
       const htmlGroup = `<div class="layui-colla-item"><h2 class="layui-colla-title">
-      <span class="editor-pane-collapse-title">${groupItem.group}</span>
+      <span class="editor-pane-collapse-title">${groupName}</span>
       <i class="layui-icon layui-colla-icon"></i>
     </h2><div class="layui-colla-content layui-show"><form
     class="layui-form layui-form-pane1 uieditor-form"
@@ -163,27 +182,8 @@ export default class UieditorCpAttr extends UEVue {
       htmlGroupList.push(htmlGroup);
     });
 
-    const htmlForm = `<form
-    class="layui-form uieditor-searchform"
-    action=""
-    lay-filter="attrsearch"
-  >
-    <input
-      type="text"
-      placeholder="请输入搜索关键字"
-      autocomplete="off"
-      class="layui-input"
-    />
-    <i class="layui-icon layui-icon-search"></i>
-  </form><div
-  class="layui-collapse editor-pane-collapse"
-  lay-filter="attrcollapse"
->${htmlGroupList.join('')}</div>`;
-
-    // console.warn('htmlForm', htmlForm)
-    layui.$(this.$el).html(htmlForm);
-
-    LayuiRender.render(this.$el);
+    return htmlGroupList.join('');
   }
+
 
 }

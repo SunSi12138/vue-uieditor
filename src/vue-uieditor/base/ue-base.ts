@@ -121,6 +121,8 @@ export interface UETransferEditorAttrsItem {
   show?: boolean;
   /** 是否事件，默认：false */
   event?: boolean;
+  /** 是否vue属性，默认：false */
+  vue?: boolean;
   /** 是否在编辑时生效，默认：false */
   effect?: boolean;
   /** 此属性只使用于编辑器，即最终结果没有此属性 */

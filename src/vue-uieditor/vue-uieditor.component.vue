@@ -134,25 +134,7 @@
             </div>
             <div class="right">
               <div class="right-content">
-                <div
-                  class="layui-tab layui-tab-brief editor-pane-tab"
-                  lay-filter="docDemoTabBrief"
-                >
-                  <ul class="layui-tab-title" style="display:none;">
-                    <li class="layui-this">属性</li>
-                    <li>事件</li>
-                  </ul>
-                  <div class="layui-tab-content">
-                    <!-- 属性 -->
-                    <div class="layui-tab-item layui-show">
-                      <uieditor-cp-attr v-if="!current.refreshAttr && current.attrs" />
-                    </div>
-                    <!-- 事件 -->
-                    <div class="layui-tab-item">
-                      
-                    </div>
-                  </div>
-                </div>
+                <uieditor-cp-attr v-if="!current.refreshAttr && current.attrs" />
               </div>
             </div>
           </div>

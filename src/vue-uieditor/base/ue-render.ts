@@ -382,17 +382,17 @@ function _defaultEditor(name: string): UETransferEditor {
     attrs: {
       '_meta_type': { group: 'Vue', editorOlny: true, show: false, text: 'type', effect: true, groupOrder: -50, order: -50, desc: '更改类型，注意：只保留v-model与ref内容' },
       '_editor_collapse': { group: 'Vue', order: 999, show: false, value: 'false', editorOlny: true, desc: "editor内部使用" },
-      'v-show': { group: '语句', row: true, order: 102, groupOrder: 100 },
-      'v-if': { group: '语句', row: true, order: 103 },
-      'v-for': { group: '语句', row: true, order: 104 },
-      'v-model': { group: 'Vue', order: 105, groupOrder: -50 },
-      'ref': { group: 'Vue', codeBtn: false, order: 106 },
+      'v-show': { group: 'Vue', vue:true, row: true, order: 102, groupOrder: -50 },
+      'v-if': { group: 'Vue', vue:true, row: true, order: 103 },
+      'v-for': { group: 'Vue', vue:true, row: true, order: 104 },
+      'v-model': { group: 'Vue', vue:true, order: 105 },
+      'ref': { group: 'Vue', vue:true, codeBtn: false, order: 106 },
+      'slot': { group: 'Vue', vue:true, order: 107 },
+      'slot-scope': { group: 'Vue', vue:true, order: 108 },
       'class': {
-        group: 'Vue', effect: true, order: 107, enabledBind: true
+        group: 'Vue', vue:true, effect: true, order: 109, enabledBind: true
       },
-      'style': { group: 'Vue', effect: true, order: 108, enabledBind: true, language: 'css' },
-      'slot': { group: 'Vue', order: 109 },
-      'slot-scope': { group: 'Vue', order: 110 },
+      'style': { group: 'Vue', vue:true, effect: true, order: 110, enabledBind: true, language: 'css' }
     }
   }
 };
