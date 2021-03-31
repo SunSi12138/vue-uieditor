@@ -286,8 +286,13 @@ function _dragStart($el, options: UEDragOptions) {
     }
     return isDragElement(element) ? element : $(element).closest('.uieditor-drag-item,.uieditor-drag-content')[0];
   };
-  jEditorJsonContent.on('mousedown', function(){
+  jEditorJsonContent.on('mousedown', function(e){
     unSelect();
+    if (options.select &&
+      options.select(_makeEvent({ fromEl: e.currentTarget, ev: e as any })) === false) {
+      return;
+    }
+
   });
   //select
   jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {

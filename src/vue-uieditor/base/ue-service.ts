@@ -344,12 +344,12 @@ export class UEService {
       'ref': attrs['ref'].value
     });
     children.splice(index, 0, newRender);
-    this.$emit('on-change-type', { service: this, parent: pRender, render: newRender, oldRender: render });
     this.delCur(false, true);
 
     this.current.refreshAttr = true;
     this.refresh().then(() => {
       this.setCurrent(id);
+      this.$emit('on-change-type', { service: this, parent: pRender, render: newRender, oldRender: render });
     });
   }
 
@@ -398,28 +398,9 @@ export class UEService {
     }
   }
 
-
-  /**
-   * 获取 当前render的属性配置
-   * @param render 如果空，为当前render
-   */
-  getCurAttrs(render?: UERenderItem): UETransferEditorAttrs {
-    if (!render)
-      render = this.getRenderItem(this.current.id);
-    return render?.attrs
-  }
-
-  /**
-   * 设置 当前render的属性配置(属性栏)
-   * @param render 如果空，为当前render
-   */
-  setCurAttrs(render?: UERenderItem) {
-    if (!render) render = this.getRenderItem(this.current.id);
-    if (render) {
-      _setRenderAttrs(render, render.editor, true, this);
-      this.refresh();
-      this.refresBreadcrumbs(render);
-    }
+  getAttr(id: string, attrName: string): UETransferEditorAttrsItem {
+    const render = this.getRenderItem(id);
+    return render && render.attrs && render.attrs[attrName];
   }
 
   /**
@@ -429,7 +410,6 @@ export class UEService {
    */
   setAttr(id: string, attr: UETransferEditorAttrsItem) {
     let render = this.getRenderItem(id);
-    const editor = render.editor
 
     let name = attr.name;
     if (!render || !name) return;
@@ -509,7 +489,7 @@ export class UEService {
 
     const change = current.id !== id;
     // const editor = render.editor;
-    const parentId = render.editorPId;
+    const parentId = render?.editorPId;
     const pRender = this.getParentRenderItem(render);
     // const pEditor = pRender?.editor
     current.parentId = parentId;
@@ -520,11 +500,11 @@ export class UEService {
       const $uieditor = this.$uieditor;
       if (this._currentTimeId) clearTimeout(this._currentTimeId);
       current.refreshAttr = true;
-      this._currentTimeId = setTimeout(async () => {
+      this._currentTimeId = this.$uieditor.$nextTick(async () => {
         current.refreshAttr = true;
 
         if (render) {
-          current.attrs = this.getCurAttrs(render);
+          current.attrs = render.attrs;
           current.editor = render.editor;
         } else {
           current.attrs = {};
@@ -536,7 +516,7 @@ export class UEService {
           await $uieditor.$nextTick();
           this.$emit('on-select', { service: this, render, parent: pRender, editor: current.attrs, attrs: current.attrs });
         });
-      }, 50);
+      });
     }
 
     this.refresBreadcrumbs(render);
