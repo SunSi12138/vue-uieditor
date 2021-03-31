@@ -4,7 +4,7 @@ import { UERender } from './base/ue-render';
 import { UEService } from './base/ue-service';
 import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueProvide, UEVueWatch } from './base/vue-extends';
 import uieditorCpTree from './components/uieditor-cp-tree.component.vue';
-import { DragStart } from './layui-test';
+import { UEDrag } from './ue-drag';
 import './transfer';
 import { LayuiRender } from './layui/layui-render';
 
@@ -77,12 +77,12 @@ export default class VueUieditor extends UEVue {
     LayuiRender.render(this.$el);
 
     this.$on('on-refesh-select-box', (id) => {
-      drager.select(id);
+      UEDrag.select(id);
     });
     this.$on('on-set-json', ({ service }) => {
-      drager.select(service.current.id);
+      UEDrag.select(service.current.id);
     });
-    const drager = DragStart(this.$el, {
+    const drager = UEDrag.dragStart(this.$el, {
       select: (e) => {
         const { fromEl } = e;
         const id = fromEl.id;

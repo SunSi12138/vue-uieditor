@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import './layui/layui-import';
 
-const $:JQueryStatic = layui.$;
+const $: JQueryStatic = layui.$;
 
 interface UEDragEvent {
   isTreeNode?: boolean;
@@ -183,7 +183,8 @@ function getPosLine(body, el: HTMLElement, ev: MouseEvent) {
   return { top, left, width, height, type, type2 };
 }
 
-export function DragStart($el, options: UEDragOptions) {
+
+function _dragStart($el, options: UEDragOptions) {
   const jUieditor = $($el);
 
   const stopEvent = function (e: any) {
@@ -580,3 +581,16 @@ export function DragStart($el, options: UEDragOptions) {
   }
 
 } // end DragStart();
+
+let _dragner;
+
+export class UEDrag {
+  static dragStart($el, options: UEDragOptions) {
+    _dragner = _dragStart($el, options)
+  }
+
+  static select(id) {
+    if (!_dragner) return;
+    _dragner.select(id);
+  }
+}
