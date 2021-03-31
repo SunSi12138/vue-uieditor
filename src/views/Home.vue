@@ -2,12 +2,21 @@
   <div class="home">
     <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/> -->
-    <div style="height: 340px; width: 100%">
+    <div class="uieditor-div">
       <vue-uieditor :options="options" :json="json" />
     </div>
   </div>
 </template>
-
+<style lang="less" scoped>
+.uieditor-div {
+  position: absolute;
+  top:0;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+</style>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src

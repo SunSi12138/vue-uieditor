@@ -91,7 +91,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
           value: "文本内容",
           order: 0
         },
-        click: { group: "组件", event: true, order: 30 }
+        click: { event: true, order: 30 }
       }
     }
   },
@@ -116,7 +116,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
           value: "超链接",
           order: 0
         },
-        click: { group: "组件", event: true }
+        click: { event: true }
       }
     }
   },

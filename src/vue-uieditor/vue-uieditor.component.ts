@@ -4,6 +4,7 @@ import { UERender } from './base/ue-render';
 import { UEService } from './base/ue-service';
 import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueProvide, UEVueWatch } from './base/vue-extends';
 import uieditorCpTree from './components/uieditor-cp-tree.component.vue';
+import uieditorCpAttr from './components/uieditor-cp-attr.component.vue';
 import { UEDrag } from './ue-drag';
 import './transfer';
 import { LayuiRender } from './layui/layui-render';
@@ -12,7 +13,8 @@ import { LayuiHelper } from './layui/layui-helper';
 
 @UEVueComponent({
   components: {
-    'uieditor-cp-tree': uieditorCpTree
+    'uieditor-cp-tree': uieditorCpTree,
+    'uieditor-cp-attr': uieditorCpAttr
   }
 })
 export default class VueUieditor extends UEVue {
@@ -62,7 +64,8 @@ export default class VueUieditor extends UEVue {
     return this;
   }
 
-  current = null;
+  current:any = {};
+
   get isInited() {
     return !!this.current?.json;
   }

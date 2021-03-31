@@ -102,11 +102,15 @@ export interface UETransferEditorAttrsItem {
   demoValue?: any;
   /** 进入高级代码编写时，使用些属性代替 value 属性 */
   editValue?: string | { get(): any; set(val: any): void; };
+  /** 是否默认代码编辑按钮，默认为: true */
+  codeBtn?: boolean;
   placeholder?: string;
   /** 描述 */
   desc?: string;
   /** 代码编辑器的语言，javascript, typescript, ts, css */
   language?: string;
+  //是否占一行，默认为 false
+  row?: boolean;
   /** 分组 */
   group?: string;
   /** 分组顺序，同组第一个为准 */

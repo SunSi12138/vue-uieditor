@@ -226,7 +226,7 @@ export class UERender {
     _inited(transfer);
 
     _.forEach(transfer, function (transferItem, type) {
-    if (transferItem.editor) {
+      if (transferItem.editor) {
         transferItem.editor = UERender.DefineTransferEditor(type, transferItem.editor);
       }
     });
@@ -270,6 +270,10 @@ export class UERender {
     attr = _.assign({}, _defaultEditorAttrItem(name), attr);
     if (!attr.text) attr.text = name;
     if (!attr.placeholder) attr.placeholder = attr.text;
+    if (attr.event) {
+      attr.group = '组件事件';
+      attr.row = attr.row !== false;
+    }
     if ((hideAttrs && hideAttrs.indexOf(name) >= 0)
       || hideAttrGroups && hideAttrGroups.indexOf(attr.group) >= 0) {
       attr.show = false;
@@ -341,7 +345,7 @@ function _emptyEditor(component: string, defaultText: string) {
       return render;
     },
     attrs: {
-      text: { effect: true, group: '组件', groupOrder: 1, editorOlny: true, order: 1, value: defaultText },
+      text: { effect: true, group: '组件属性', groupOrder: 1, editorOlny: true, order: 1, value: defaultText },
       'class,style': { effect: false }
     }
   } as UETransferEditor;
@@ -378,11 +382,11 @@ function _defaultEditor(name: string): UETransferEditor {
     attrs: {
       '_meta_type': { group: 'Vue', editorOlny: true, show: false, text: 'type', effect: true, groupOrder: -50, order: -50, desc: '更改类型，注意：只保留v-model与ref内容' },
       '_editor_collapse': { group: 'Vue', order: 999, show: false, value: 'false', editorOlny: true, desc: "editor内部使用" },
-      'v-show': { group: 'Vue', order: 102 },
-      'v-if': { group: 'Vue', order: 103 },
-      'v-for': { group: 'Vue', order: 104 },
-      'v-model': { group: 'Vue', order: 105 },
-      'ref': { group: 'Vue', order: 106 },
+      'v-show': { group: '语句', row: true, order: 102, groupOrder: 100 },
+      'v-if': { group: '语句', row: true, order: 103 },
+      'v-for': { group: '语句', row: true, order: 104 },
+      'v-model': { group: 'Vue', order: 105, groupOrder: -50 },
+      'ref': { group: 'Vue', codeBtn: false, order: 106 },
       'class': {
         group: 'Vue', effect: true, order: 107, enabledBind: true
       },
@@ -394,7 +398,7 @@ function _defaultEditor(name: string): UETransferEditor {
 };
 
 const _defaultAttrGroup = '组件属性';
-const _defaultAttrGroupOrder = 0;
+const _defaultAttrGroupOrder = 99;
 
 function _defaultEditorAttrItem(name: string): UETransferEditorAttrsItem {
   return {
