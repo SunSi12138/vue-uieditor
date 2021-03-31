@@ -172,8 +172,6 @@ export default class VueUieditor extends UEVue {
             show: true,
             click: (item, e) => {
               this.service.delCur();
-              console.warn('删除', item, e);
-              // this.deleteWidget(parentId, renderId);
             }
           }]
         };

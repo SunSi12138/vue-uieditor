@@ -4,7 +4,6 @@ import Component from "vue-class-component";
 import { VueClass } from 'vue-class-component/lib/declarations';
 import { Constructor } from "vue-property-decorator";
 
-declare const layui:any;
 
 Component.registerHooks([
   'beforeRouteEnter',
@@ -361,21 +360,21 @@ export class UEVue extends Vue {
   readonly beforeRouteUpdate: void;
   readonly beforeRouteLeave: void;
 
-  
+
   @UEVueProp({ type: [String, Number, Boolean, Array], default: _defalutValue })
   private value: string;
 
   get $isDefaultValue(): any {
-      return this.value === _defalutValue;
+    return this.value === _defalutValue;
   }
 
   /** 获取或设置值 */
   get $value(): any {
-      return this.$isDefaultValue ? undefined : this.value;
+    return this.$isDefaultValue ? undefined : this.value;
   }
 
   set $value(value: any) {
-      this.$emit('input', value);
+    this.$emit('input', value);
   }
 
 
@@ -393,19 +392,6 @@ export class UEVue extends Vue {
 
   get $isRouteActived(): boolean {
     return this['_inactive'] !== true;
-  }
-
-  $confirm(msg){
-    return new Promise(function(r){
-      layui.layer.confirm('您是如何看待前端开发？', {
-        btn: ['确定','取消'], //按钮
-        end(){ console.warn('end', arguments)}
-      }, function(){
-        //layer.msg('的确很重要', {icon: 1});
-      }, function(){
-        
-      });
-    });
   }
 
 }

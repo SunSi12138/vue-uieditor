@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { Layuidestroy } from '../layui-test';
+import { LayuiHelper } from '../layui/layui-helper';
 import { UEOption, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem } from './ue-base';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -356,16 +357,14 @@ export class UEService {
    * @param cnf 是否要确认
    * @param norefresh 是否刷新
    */
-  delCur(cnf?: boolean, norefresh?: boolean) {
+  async delCur(cnf?: boolean, norefresh?: boolean) {
     if (cnf == false) {
       this.deleteWidget(this.current.parentId, this.current.id, norefresh);
       return;
     }
-    this.$uieditor.$confirm('确定要删除吗？');
-    // this.$uieditor.$confirm('确定要删除吗？', (r) => {
-    //   if (!r) return;
-    //   this.deleteWidget(this.current.parentId, this.current.id, norefresh);
-    // });
+    const ok = await LayuiHelper.$confirm('确定要删除吗？');
+    if (!ok) return;
+    this.deleteWidget(this.current.parentId, this.current.id, norefresh);
   }
 
   /** norefresh 是否刷新 */

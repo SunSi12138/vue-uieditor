@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import './layui-import';
+import './layui/layui-import';
 
 const form = layui.form
   , layer = layui.layer
@@ -251,7 +251,7 @@ export function DragStart($el, options: UEDragOptions) {
     jSelectBox.addClass(hideCls);
   };
   const select = function (element) {
-    if (isSelect(element)) return;
+    if (isSelect(element) || !element) return;
     _selectElement = element;
     unOverBox();
 
