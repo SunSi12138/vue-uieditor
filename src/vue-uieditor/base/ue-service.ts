@@ -282,7 +282,9 @@ export class UEService {
       let first = _.first(breadcrumbs);
       first.canOpt = false;
       first.text = "Root";
-      _.last(breadcrumbs).canOpt = false;
+      const last = _.last(breadcrumbs);
+      last.canOpt = false;
+      last.isLast = true;
     }
     this.current.breadcrumbs = breadcrumbs;
   }

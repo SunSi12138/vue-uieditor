@@ -105,35 +105,19 @@
             <div class="center">
               <div class="center-content">
                 <div class="editor-content">
-                  <div class="center-breadcrumb">
-                    <span>
-                      <a
-                        href="/"
-                        target="_self"
-                        class="center-breadcrumb-item-link"
-                      >
-                        Home
-                      </a>
-                      <span class="center-breadcrumb-item-separator"
-                        >&gt;</span
-                      >
-                    </span>
-                    <span>
-                      <a
-                        href="/components/breadcrumb"
-                        target="_self"
-                        class="center-breadcrumb-item-link"
-                      >
-                        Components
-                      </a>
-                      <span class="center-breadcrumb-item-separator"
-                        >&gt;</span
-                      >
-                    </span>
-                    <span>
-                      <span class="center-breadcrumb-item-link">
-                        Breadcrumb
+                  <div class="center-breadcrumb" v-if="current">
+                    <span v-for="(item, index) in current.breadcrumbs" :key="index">
+                      <span v-if="!item.canOpt" class="center-breadcrumb-item">
+                        {{ item.text }}
                       </span>
+                      <a
+                        v-else
+                        @click="service.setCurrent(item.id)"
+                        class="center-breadcrumb-item link"
+                      >
+                        {{ item.text }}
+                      </a>
+                      <span v-if="!item.isLast" class="center-breadcrumb-item-separator">&gt;</span>
                     </span>
                   </div>
                   <div class="editor-json-content">
@@ -181,9 +165,7 @@
                         <!-- Vue -->
                         <div class="layui-colla-item">
                           <h2 class="layui-colla-title">
-                            <span class="editor-pane-collapse-title"
-                              >Vue</span
-                            >
+                            <span class="editor-pane-collapse-title">Vue</span>
                             <i class="layui-icon layui-colla-icon"></i>
                           </h2>
                           <div class="layui-colla-content layui-show">
@@ -278,9 +260,7 @@
                                     </div>
                                   </div>
                                   <div class="layui-col-xs6">
-                                    <label class="layui-form-label"
-                                      >ref</label
-                                    >
+                                    <label class="layui-form-label">ref</label>
                                     <div class="layui-input-block">
                                       <input
                                         type="text"
@@ -313,9 +293,7 @@
                                         autocomplete="off"
                                         class="layui-input"
                                       />
-                                      <i
-                                        class="layui-icon layui-icon-form"
-                                      ></i>
+                                      <i class="layui-icon layui-icon-form"></i>
                                     </div>
                                   </div>
                                   <div class="layui-col-xs6">
@@ -334,9 +312,7 @@
                                         autocomplete="off"
                                         class="layui-input"
                                       />
-                                      <i
-                                        class="layui-icon layui-icon-form"
-                                      ></i>
+                                      <i class="layui-icon layui-icon-form"></i>
                                     </div>
                                   </div>
                                 </div>
@@ -380,15 +356,11 @@
                                         autocomplete="off"
                                         class="layui-input"
                                       />
-                                      <i
-                                        class="layui-icon layui-icon-form"
-                                      ></i>
+                                      <i class="layui-icon layui-icon-form"></i>
                                     </div>
                                   </div>
                                   <div class="layui-col-xs6">
-                                    <label class="layui-form-label"
-                                      >name</label
-                                    >
+                                    <label class="layui-form-label">name</label>
                                     <div
                                       class="layui-input-block attr-bind attr-code"
                                     >
@@ -401,9 +373,7 @@
                                         autocomplete="off"
                                         class="layui-input"
                                       />
-                                      <i
-                                        class="layui-icon layui-icon-form"
-                                      ></i>
+                                      <i class="layui-icon layui-icon-form"></i>
                                     </div>
                                   </div>
                                 </div>
@@ -411,9 +381,7 @@
                               <div class="layui-form-item">
                                 <div class="layui-row layui-col-space4">
                                   <div class="layui-col-xs12">
-                                    <label class="layui-form-label"
-                                      >密码</label
-                                    >
+                                    <label class="layui-form-label">密码</label>
                                     <div
                                       class="layui-input-block attr-bind attr-code"
                                     >
@@ -429,13 +397,9 @@
                                         autocomplete="off"
                                         class="layui-input"
                                       />
-                                      <i
-                                        class="layui-icon layui-icon-form"
-                                      ></i>
+                                      <i class="layui-icon layui-icon-form"></i>
                                     </div>
-                                    <div
-                                      class="layui-form-mid layui-word-aux"
-                                    >
+                                    <div class="layui-form-mid layui-word-aux">
                                       请务必填写用户名
                                     </div>
                                   </div>
@@ -455,17 +419,13 @@
                                         >：</span
                                       >
                                       <div selectInput></div>
-                                      <i
-                                        class="layui-icon layui-icon-form"
-                                      ></i>
+                                      <i class="layui-icon layui-icon-form"></i>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                               <div class="layui-form-item uieditor-add-item">
-                                <label class="layui-form-label"
-                                  >添加属性</label
-                                >
+                                <label class="layui-form-label">添加属性</label>
                                 <div class="layui-input-block">
                                   <input
                                     type="text"
@@ -844,9 +804,7 @@
                       >
                         <div class="layui-colla-item">
                           <h2 class="layui-colla-title">
-                            <span class="editor-pane-collapse-title"
-                              >事件</span
-                            >
+                            <span class="editor-pane-collapse-title">事件</span>
                             <i class="layui-icon layui-colla-icon"></i>
                           </h2>
                           <!-- 事件内容 -->
@@ -857,9 +815,7 @@
                               lay-filter="first"
                             >
                               <div class="layui-form-item">
-                                <label class="layui-form-label"
-                                  >on-click</label
-                                >
+                                <label class="layui-form-label">on-click</label>
                                 <div
                                   class="layui-input-block attr-bind attr-code"
                                 >
@@ -903,9 +859,7 @@
                                 </div>
                               </div>
                               <div class="layui-form-item uieditor-add-item">
-                                <label class="layui-form-label"
-                                  >添加事件</label
-                                >
+                                <label class="layui-form-label">添加事件</label>
                                 <div class="layui-input-block">
                                   <input
                                     type="text"
