@@ -129,6 +129,8 @@ export interface UETransferEditorAttrsItem {
   editorOlny?: boolean;
   /** 显示类型，默认：text，custom为自定义（弹出对话框） */
   type?: 'text' | 'slider' | 'textarea' | 'select' | 'radiogroup' | 'select-only' | 'boolean' | 'custom';
+  /** 显示类型的参数 */
+  typeOption?: any;
   /** 数据源, string[] | {text:string;value:string;} */
   datas?: any[] | ((p: { attr: UETransferEditorAttrsItem; attrs: UETransferEditorAttrs; service: UEService }) => any[]);
   /** 是否为bind属性，默认为 false */

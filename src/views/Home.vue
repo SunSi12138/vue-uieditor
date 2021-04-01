@@ -25,10 +25,10 @@ import { UERenderItem } from "../vue-uieditor/base/ue-render-item";
 import {
   UEVue,
   UEVueComponent,
-  UEVueLife
+  UEVueLife,
 } from "../vue-uieditor/base/vue-extends";
 const groupOrder = 10;
-const group = '测试组件库/基础组件';
+const group = "测试组件库/基础组件";
 
 @UEVueComponent({
   components: {
@@ -58,9 +58,19 @@ export default class Home extends UEVue {
               effect: true,
               enabledBind: true,
               value: "测试文本",
-              type:'select',
-              datas:['sm', 'lg'],
+              type: "select",
+              datas: ["sm", "lg", "dd"],
               order: 0,
+            },
+            slider: {
+              effect: false,
+              enabledBind: false,
+              codeBtn: false,
+              row: false,
+              value: "0",
+              type: "slider",
+              typeOption: { min: 1, max: 24, step: 1 },
+              order: 1,
             },
             click: { event: true, order: 30 },
           },
@@ -98,7 +108,7 @@ export default class Home extends UEVue {
             props: {
               text: "测试文本",
             },
-          }
+          },
         ],
       },
     ],

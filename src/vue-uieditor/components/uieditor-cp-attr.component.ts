@@ -166,7 +166,7 @@ export default class UieditorCpAttr extends UEVue {
 
       const desc = attr.desc ? `<i class="layui-icon layui-icon-about"></i>` : '';
 
-      const attrCode = ' attr-code';
+      const attrCode = attr.codeBtn !== false ? ' attr-code' : '';
       const codeBtn = attr.codeBtn !== false ? '<i class="layui-icon layui-icon-form"></i>' : '';
       const htmlClose = isRow && !isClose ? '</div></div>' : '';
       const isAddBtn = attr['isAddBtn'];
@@ -196,24 +196,27 @@ export default class UieditorCpAttr extends UEVue {
       </div>`;
       } else {
         switch (attr.type) {
+          case 'slider':
+            attrInputHtml = `<div ue-slider name="${attr.name}"></div>`;
+            break;
           case 'select':
-            attrInputHtml = `<div selectInput name="${attr.name}"></div>`;
-          //   attrInputHtml = `<select
-          //   name="quiz"
-          //   lay-verify="required"
-          //   lay-verType="tips"
-          // >
-          //   <option value="">请选择问题</option>
-          //   <option value="0">
-          //     你工作的第一个城市
-          //   </option>
-          //   <option value="1" disabled>
-          //     你的工号
-          //   </option>
-          //   <option value="2">
-          //     你最喜欢的老师
-          //   </option>
-          // </select>`;
+            attrInputHtml = `<div ue-selectInput name="${attr.name}"></div>`;
+            //   attrInputHtml = `<select
+            //   name="quiz"
+            //   lay-verify="required"
+            //   lay-verType="tips"
+            // >
+            //   <option value="">请选择问题</option>
+            //   <option value="0">
+            //     你工作的第一个城市
+            //   </option>
+            //   <option value="1" disabled>
+            //     你的工号
+            //   </option>
+            //   <option value="2">
+            //     你最喜欢的老师
+            //   </option>
+            // </select>`;
             break;
           default:
             attrInputHtml = `<input
@@ -294,18 +297,19 @@ export default class UieditorCpAttr extends UEVue {
   private _renderDom() {
     const jo = $(this.$el);
     const form = layui.form;
-    const selectInput = layui.selectInput;
+    const selectInput = layui.selectInput,
+      slider = layui.slider;
     const model = this._model;
     const attrs = this._attrs;
 
     form.render();
 
-    jo.find('.layui-form[lay-filter="attrform"]').change(function (e) {
+    jo.find('.layui-form[lay-filter="attrform"]').change((e) => {
       var jInput = $(e.target);
-      console.warn('form change', jInput.attr('name'), jInput.val(), e);
+      this._change(jInput.attr('name'), jInput.val());
     });
 
-    jo.find('[selectInput]').each(function (index, el) {
+    jo.find('[ue-selectInput]').each(function (index, el) {
       const jItem = $(el);
       const name = jItem.attr('name');
       const attr = attrs[name];
@@ -317,6 +321,24 @@ export default class UieditorCpAttr extends UEVue {
         name: name,
         remoteSearch: false
       });
+    });
+
+    jo.find('[ue-slider]').each((index, el) =>{
+      const jItem = $(el);
+      const name = jItem.attr('name');
+      const attr = attrs[name];
+      const typeOption = attr.typeOption;
+
+      slider.render(_.assign({
+        min: 1,
+        max: 24
+      }, typeOption, {
+        elem: $(el),
+        name,
+        change:(value) =>{
+          this._change(name, value);
+        }
+      }));
     });
 
     //初始赋值
@@ -343,5 +365,9 @@ export default class UieditorCpAttr extends UEVue {
 
   }
 
+  private _change(name, value) {
+    _.set(this._model, name, value);
+    console.warn('form change', name, value);
+  }
 
 }
