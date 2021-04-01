@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { UETransferEditorAttrs, UETransferEditorAttrsItem } from '../base/ue-base';
 import { UEService } from '../base/ue-service';
-import { UEVue, UEVueComponent, UEVueInject, UEVueLife } from '../base/vue-extends';
+import { UEVue, UEVueComponent, UEVueInject, UEVueLife, UETransFn } from '../base/vue-extends';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
 
@@ -41,9 +41,13 @@ export default class UieditorCpAttr extends UEVue {
 
   isEmpty = false;
 
+  renderId: string;
+
   @UEVueLife('created')
   private _c1() {
-    this.isEmpty = _.size(this.service.current.attrs) == 0
+    const current = this.service.current;
+    this.renderId = current.id;
+    this.isEmpty = _.size(current.attrs) == 0
     if (this.isEmpty) return;
   }
 
@@ -333,7 +337,7 @@ export default class UieditorCpAttr extends UEVue {
         elem: $(el),
         name,
         change: (value) => {
-          this._change(name, value);
+          this._changeAsync(name, value);
         }
       }));
     });
@@ -362,9 +366,20 @@ export default class UieditorCpAttr extends UEVue {
 
   }
 
+  @UETransFn((fn) => _.debounce(fn, 50))
+  private _changeAsync(name, value) {
+    console.warn('form change', name, value);
+    this._change(name, value);
+  }
+
   private _change(name, value) {
     _.set(this._model, name, value);
-    console.warn('form change', name, value);
+    const attr = this._attrs[name];
+    if (attr) {
+      attr.value = value;
+      this.service.setAttr(this.renderId, attr);
+    }
+    // console.warn('form change', this, name, value);
   }
 
 }

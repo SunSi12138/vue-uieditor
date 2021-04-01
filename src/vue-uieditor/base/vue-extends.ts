@@ -129,6 +129,23 @@ export function UEVueData(): PropertyDecorator {
   };
 }
 
+/**
+ * UEProp(String)
+ * @param options 
+ * @returns 
+ */
+export function UETransFn(fn: any): MethodDecorator {
+  return function (target: any, propKey: string, descriptor: TypedPropertyDescriptor<any>) {
+    let oldFn = target[propKey];
+    let key = `_ue_trans_${propKey}`
+    descriptor.value = function () {
+      if (!this[key]) this[key] = fn(oldFn);
+      this[key].apply(this, arguments);
+    };
+  };
+}
+
+
 const fnType = typeof (function () { });
 
 function _getWatchPath(target: any, propKey: string, path: any): string {

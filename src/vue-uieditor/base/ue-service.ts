@@ -423,8 +423,9 @@ export class UEService {
       _.assign(attrs[name], attr);
     if (!attr.effect || !!attr.demoValue) return;
     _setRenderAttrs(render, render.editor, true, this);
-    this.refresh();
-    this.refresBreadcrumbs(render);
+    this.refresh().then(() => {
+      this.refresBreadcrumbs(render);
+    });
   }
 
   /**
