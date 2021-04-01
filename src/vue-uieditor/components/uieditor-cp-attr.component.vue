@@ -27,7 +27,7 @@
         <div
           class="layui-collapse editor-pane-collapse"
           lay-filter="attrcollapse"
-          ref="attrContent"
+           ref="attrContent"
         >
         </div>
       </div>
@@ -37,8 +37,7 @@
           class="layui-collapse editor-pane-collapse"
           lay-filter="eventcollapse"
           ref="eventContent"
-        >
-        </div>
+        ></div>
       </div>
       <!-- Vue -->
       <div class="layui-tab-item">
@@ -46,8 +45,7 @@
           class="layui-collapse editor-pane-collapse"
           lay-filter="vuecollapse"
           ref="vueContent"
-        >
-        </div>
+        ></div>
       </div>
     </div>
   </div>
