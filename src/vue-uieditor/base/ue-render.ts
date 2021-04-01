@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { UEOption, UETransfer, UETransferEditor, UETransferEditorAttrsItem, UETransferExtend } from './ue-base';
-import { UERenderItem } from './ue-render-item';
 import { UEHelper } from './ue-helper';
+import { UERenderItem } from './ue-render-item';
 
 /** 公共 transfer */
 const _globalTransfer = {};
@@ -269,9 +269,18 @@ export class UERender {
     let hideAttrGroups = editor.hideAttrGroups;
     attr = _.assign({}, _defaultEditorAttrItem(name), attr);
     if (!attr.text) attr.text = name;
-    if (['select-only', 'slider', 'radiogroup'].indexOf(attr.type) >= 0) {
-      attr.enabledBind = false;
-      attr.codeBtn = false;
+    switch (attr.type) {
+      case 'select-only':
+      case 'slider':
+        attr.enabledBind = false;
+        attr.codeBtn = false;
+        break;
+      case 'boolean':
+        attr.bind = true;
+        attr.datas = ['true', 'false'];
+        // attr.enabledBind = true;
+        // attr.codeBtn = true;
+        break;
     }
     // if (!attr.placeholder) attr.placeholder = attr.text;
     if (attr.event) {

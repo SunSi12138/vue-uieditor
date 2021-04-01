@@ -175,7 +175,7 @@ layui.define(['jquery'], function (exports) {
                     components.$selectElem.find("dl").css({ "display": "none" });
                 }
             };
-            var isAll = !(value !== '' && value !== null && value !== undefined);
+            var isAll = isClick || !(value !== '' && value !== null && value !== undefined);
             if (!that.options.remoteSearch) {
                 var jNext = $(this).next();
                 jNext.addClass(selectedCss + ' ' + upCss);

@@ -57,6 +57,7 @@ export default class Home extends UEVue {
             text: {
               effect: true,
               enabledBind: true,
+              row:true,
               value: "测试文本",
               type: "select",
               datas: ["sm", "lg", "dd"],
@@ -64,7 +65,7 @@ export default class Home extends UEVue {
             },
             slider: {
               effect: false,
-              row: true,
+              row: false,
               value: "0",
               type: "slider",
               typeOption: { min: 1, max: 24, step: 1 },
@@ -72,10 +73,17 @@ export default class Home extends UEVue {
             },
             select: {
               effect: false,
-              row: true,
+              row: false,
               value: "sm",
               type: "select-only",
               datas: ["sm", "lg", "dd"],
+              order: 2,
+            },
+            boolean: {
+              effect: false,
+              row: false,
+              value: "sm",
+              type: 'boolean',
               order: 2,
             },
             click: { event: true, order: 30 },

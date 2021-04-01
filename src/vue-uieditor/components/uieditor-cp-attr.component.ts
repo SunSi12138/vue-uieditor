@@ -56,6 +56,7 @@ export default class UieditorCpAttr extends UEVue {
 
   @UEVueLife('destroyed')
   private _d1() {
+    layui.off('select', 'form');
     LayuiRender.destroy(this.$el);
   }
 
@@ -161,7 +162,7 @@ export default class UieditorCpAttr extends UEVue {
       const attrBind = attr.enabledBind || attr.bind || attr['isPrefxV'] || attr.event ? ' attr-bind' : ''
       const attrBindColor = attr.enabledBind ? (attr.bind ? ' layui-bg-blue-active' : 'layui-bg-blue') : attr['isPrefxV'] || attr.event || attr.bind ? ` layui-bg-gray` : '';
       const attrBindHtml = !attrBind ? '' : `<span class="layui-badge ${attrBindColor}">
-      ${attr.event ? '@' : (attr['isPrefxV'] ? 'v' : (attr.enabledBind ? ':' : ''))}
+      ${attr.event ? '@' : (attr['isPrefxV'] ? 'v' : ':')}
       </span>`;
 
       const desc = attr.desc ? `<i class="layui-icon layui-icon-about"></i>` : '';
@@ -200,14 +201,15 @@ export default class UieditorCpAttr extends UEVue {
             attrInputHtml = `<div ue-slider name="${attr.name}"></div>`;
             break;
           case 'select':
+          case 'boolean':
             attrInputHtml = `<div ue-selectInput name="${attr.name}"></div>`;
             break;
           case 'select-only':
             const datas = attr.datas;
-            const sHtmlList = _.map(datas, function(item){
-                return `<option value="${item.value}">${item.text}</option>`;
+            const sHtmlList = _.map(datas, function (item) {
+              return `<option value="${item.value}">${item.text}</option>`;
             });
-              attrInputHtml = `<select
+            attrInputHtml = `<select
               name="${attr.name}"
             >
               ${sHtmlList.join('')}
@@ -318,7 +320,7 @@ export default class UieditorCpAttr extends UEVue {
       });
     });
 
-    jo.find('[ue-slider]').each((index, el) =>{
+    jo.find('[ue-slider]').each((index, el) => {
       const jItem = $(el);
       const name = jItem.attr('name');
       const attr = attrs[name];
@@ -330,7 +332,7 @@ export default class UieditorCpAttr extends UEVue {
       }, typeOption, {
         elem: $(el),
         name,
-        change:(value) =>{
+        change: (value) => {
           this._change(name, value);
         }
       }));
@@ -340,10 +342,10 @@ export default class UieditorCpAttr extends UEVue {
     form.val('attrform', model || {});
 
     // //事件监听
-    // form.on('select', function (data) {
-    //   console.log('select: ', this, data);
-    // });
-
+    form.on('select', (data) => {
+      const name = $(data.elem).attr('name');
+      this._change(name, data.value);
+    });
 
     // form.on('checkbox', function (data) {
     //   console.log(this.checked, data.elem.checked);
