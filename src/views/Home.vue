@@ -76,7 +76,7 @@ export default class Home extends UEVue {
               value: "sm",
               type: "select-only",
               datas: ["sm", "lg", "dd"],
-              order: -1,
+              order: 2,
             },
             click: { event: true, order: 30 },
           },

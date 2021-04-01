@@ -173,8 +173,16 @@ layui.define('layer', function(exports){
           
           //展开下拉
           var showDown = function(){
-            var top = reElem.offset().top + reElem.outerHeight() + 5 - $win.scrollTop()
+            var offset = reElem.offset();
+            var top = offset.top + reElem.outerHeight() + 5 - $win.scrollTop()
             ,dlHeight = dl.outerHeight();
+            dl.css({
+              position:'fixed',
+              top:offset.top+32,
+              left:offset.left,
+              width:reElem.outerWidth(),
+              'min-width':'auto'
+            });
             
             index = select[0].selectedIndex; //获取最新的 selectedIndex
             reElem.addClass(CLASS+'ed');
@@ -186,7 +194,11 @@ layui.define('layer', function(exports){
 
             //上下定位识别
             if(top + dlHeight > $win.height() && top >= dlHeight){
-              reElem.addClass(CLASS + 'up');
+              // reElem.addClass(CLASS + 'up');
+              dl.css({
+                top:Math.max(1, offset.top - dlHeight-4)
+              });
+  
             }
             
             followScroll();
