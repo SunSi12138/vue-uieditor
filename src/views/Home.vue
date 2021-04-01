@@ -10,7 +10,7 @@
 <style lang="less" scoped>
 .uieditor-div {
   position: absolute;
-  top:0;
+  top: 0;
   bottom: 2px;
   left: 0;
   right: 0;
@@ -18,16 +18,17 @@
 }
 </style>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
 import { UEOption } from "../vue-uieditor/base/ue-base";
+import { UERender } from "../vue-uieditor/base/ue-render";
 import { UERenderItem } from "../vue-uieditor/base/ue-render-item";
 import {
   UEVue,
   UEVueComponent,
-  UEVueLife,
+  UEVueLife
 } from "../vue-uieditor/base/vue-extends";
-import { UERender } from "../vue-uieditor/base/ue-render";
+const groupOrder = 10;
+const group = '测试组件库/基础组件';
 
 @UEVueComponent({
   components: {
@@ -36,7 +37,36 @@ import { UERender } from "../vue-uieditor/base/ue-render";
 })
 export default class Home extends UEVue {
   options: UEOption = UERender.DefineOption({
-    transfer: {},
+    transfer: {
+      "test-text": {
+        transfer(render, extend) {
+          const { getPropText } = extend;
+          render.type = "span";
+          const text = getPropText("text", "Text", true);
+          render.children = [text];
+          return render;
+        },
+        editor: {
+          text: "Text 文本",
+          order: 0,
+          groupOrder,
+          group,
+          inline: true,
+          icon: "layui-icon layui-icon-align-left",
+          attrs: {
+            text: {
+              effect: true,
+              enabledBind: true,
+              value: "测试文本",
+              type:'select',
+              datas:['sm', 'lg'],
+              order: 0,
+            },
+            click: { event: true, order: 30 },
+          },
+        },
+      },
+    },
     transferBefore(render) {
       return render;
     },
@@ -63,6 +93,12 @@ export default class Home extends UEVue {
               text: "test1222",
             },
           },
+          {
+            type: "test-text",
+            props: {
+              text: "测试文本",
+            },
+          }
         ],
       },
     ],

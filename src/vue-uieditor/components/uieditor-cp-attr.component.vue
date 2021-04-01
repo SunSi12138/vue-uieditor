@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="!isEmpty"
     class="layui-tab layui-tab-brief editor-pane-tab"
     lay-filter="docDemoTabBrief"
   >

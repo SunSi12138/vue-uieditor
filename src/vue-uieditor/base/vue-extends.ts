@@ -360,6 +360,9 @@ export class UEVue extends Vue {
   readonly beforeRouteUpdate: void;
   readonly beforeRouteLeave: void;
 
+  readonly render: () => any;
+  readonly _render: () => any;
+
 
   @UEVueProp({ type: [String, Number, Boolean, Array], default: _defalutValue })
   private value: string;

@@ -3,12 +3,12 @@ import { UECompiler } from './base/ue-compiler';
 import { UERender } from './base/ue-render';
 import { UEService } from './base/ue-service';
 import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueProvide, UEVueWatch } from './base/vue-extends';
-import uieditorCpTree from './components/uieditor-cp-tree.component.vue';
 import uieditorCpAttr from './components/uieditor-cp-attr.component.vue';
-import { UEDrag } from './ue-drag';
-import './transfer';
-import { LayuiRender } from './layui/layui-render';
+import uieditorCpTree from './components/uieditor-cp-tree.component.vue';
 import { LayuiHelper } from './layui/layui-helper';
+import { LayuiRender } from './layui/layui-render';
+import './transfer';
+import { UEDrag } from './ue-drag';
 
 
 @UEVueComponent({
@@ -64,7 +64,7 @@ export default class VueUieditor extends UEVue {
     return this;
   }
 
-  current:any = {};
+  current: any = {};
 
   get isInited() {
     return !!this.current?.json;
@@ -78,7 +78,7 @@ export default class VueUieditor extends UEVue {
     this.current = service.current;
     await service.setJson(this.json);
     await this.$nextTick();
-    LayuiRender.render(this.$el);
+    // LayuiRender.render(this.$el);
 
     this.$on('on-refesh-select-box', (id) => {
       UEDrag.select(id);

@@ -269,7 +269,7 @@ export class UERender {
     let hideAttrGroups = editor.hideAttrGroups;
     attr = _.assign({}, _defaultEditorAttrItem(name), attr);
     if (!attr.text) attr.text = name;
-    if (!attr.placeholder) attr.placeholder = attr.text;
+    // if (!attr.placeholder) attr.placeholder = attr.text;
     if (attr.event) {
       attr.group = '组件事件';
       attr.row = attr.row !== false;

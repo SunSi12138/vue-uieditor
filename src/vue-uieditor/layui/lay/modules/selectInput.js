@@ -118,7 +118,7 @@ layui.define(['jquery'], function (exports) {
     selectInput.prototype.renderBody = function (data) {
         var _input = this.renderInput();
         var components = this.getComponents();
-        var bodyHtml = '<div class="layui-form-selectInput" id="' + this._select + '">' + '<dl class="layui-anim layui-anim-upbit ' + selectInputClass + '" style="">';
+        var bodyHtml = '<div class="layui-form-selectInput" style="position: relative;" id="' + this._select + '">' + '<dl class="layui-anim layui-anim-upbit ' + selectInputClass + '" style="position: fixed;">';
         if (!data) data = [];
         if (data.length > 0) {
             var contentHtml = '';
@@ -179,7 +179,8 @@ layui.define(['jquery'], function (exports) {
             if (!that.options.remoteSearch) {
                 var jNext = $(this).next();
                 jNext.addClass(selectedCss + ' ' + upCss);
-                jNext.find("dl").css({ "display": "block" })
+                var offset = jNext.offset();
+                jNext.find("dl").css({ "display": "block", top: offset.top + 32, left: offset.left, width: jNext.width(), 'min-width':'auto' });
                 jNext.find('dd').removeClass(THIS);
                 // console.warn('value', value, jNext.find('dd[lay-value="'+value+'"]'), jNext.find('dd[lay-value="'+value+'"]:visible'));
                 var dl = $(this).next().find("dl").children();
@@ -225,9 +226,9 @@ layui.define(['jquery'], function (exports) {
 
         components.$inputElem.off('keydown').on('keydown', function (e) { //键盘按下
             var keyCode = e.keyCode;
-            var isDone = [27,13,38,40].indexOf(keyCode) >= 0;
+            var isDone = [27, 13, 38, 40].indexOf(keyCode) >= 0;
 
-            if (isDone){
+            if (isDone) {
                 e.stopPropagation();
                 e.preventDefault();
             }
