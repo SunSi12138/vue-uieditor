@@ -201,22 +201,17 @@ export default class UieditorCpAttr extends UEVue {
             break;
           case 'select':
             attrInputHtml = `<div ue-selectInput name="${attr.name}"></div>`;
-            //   attrInputHtml = `<select
-            //   name="quiz"
-            //   lay-verify="required"
-            //   lay-verType="tips"
-            // >
-            //   <option value="">请选择问题</option>
-            //   <option value="0">
-            //     你工作的第一个城市
-            //   </option>
-            //   <option value="1" disabled>
-            //     你的工号
-            //   </option>
-            //   <option value="2">
-            //     你最喜欢的老师
-            //   </option>
-            // </select>`;
+            break;
+          case 'select-only':
+            const datas = attr.datas;
+            const sHtmlList = _.map(datas, function(item){
+                return `<option value="${item.value}">${item.text}</option>`;
+            });
+              attrInputHtml = `<select
+              name="${attr.name}"
+            >
+              ${sHtmlList.join('')}
+            </select>`;
             break;
           default:
             attrInputHtml = `<input
