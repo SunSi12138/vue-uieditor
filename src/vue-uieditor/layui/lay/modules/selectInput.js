@@ -175,30 +175,53 @@ layui.define(['jquery'], function (exports) {
                     components.$selectElem.find("dl").css({ "display": "none" });
                 }
             };
-            var isAll = isClick || !(value !== '' && value !== null && value !== undefined);
+            var isAll = !(value !== '' && value !== null && value !== undefined);
             if (!that.options.remoteSearch) {
                 var jNext = $(this).next();
                 jNext.addClass(selectedCss + ' ' + upCss);
-                var offset = jNext.offset();
-                jNext.find("dl").css({ "display": "block", top: offset.top + 32, left: offset.left, width: jNext.width(), 'min-width':'auto' });
-                jNext.find('dd').removeClass(THIS);
-                // console.warn('value', value, jNext.find('dd[lay-value="'+value+'"]'), jNext.find('dd[lay-value="'+value+'"]:visible'));
-                var dl = $(this).next().find("dl").children();
-                var j = -1;
+                var jDl = jNext.find("dl");
+                jDl.css({
+                    "display": "block",
+                    'min-width': 'auto'
+                });
+                var jDD = jDl.children();
+                jDD.removeClass(THIS);
                 var has = false;
-                for (var i = 0; i < dl.length; i++) {
-                    if (!isAll && dl[i].innerHTML.indexOf(value) <= -1) {
-                        dl[i].style.display = "none";
-                        j++;
+                jDD.each(function (index, dl) {
+                    var jItem = $(dl);
+                    var val = jItem.attr('lay-value') || '';
+                    if (!isAll && val.indexOf(value) <= -1) {
+                        jItem.hide();
                     } else {
-                        dl[i].style.display = "block";
+                        if (jItem.attr('lay-value') == value) {
+                            jItem.addClass(THIS);
+                        }
+                        jItem.show();
                         has = true;
                     }
-                    if (j === (dl.length - 1)) {
-                        $(this).next().find("dl").css({ "display": "none" });
+                });
+                if (!has) {
+                    jDl.css({
+                        "display": "none"
+                    });
+                } else {
+                    var inputHeight = 32;
+                    var offset = jNext.offset();
+                    var dlHeight = jDl.outerHeight();
+                    var bottom = dlHeight + offset.top + inputHeight;
+                    var winHeight = $(window).height();
+                    if (bottom > winHeight) {
+                        offset.top -= (dlHeight + 4);
+                        if (offset.top < 0) offset.top = 0;
+                    } else {
+                        offset.top += inputHeight;
                     }
+                    jDl.css({
+                        top: offset.top,
+                        left: offset.left,
+                        width: jNext.outerWidth()
+                    });
                 }
-                jNext.find('dd[lay-value="' + value + '"]:visible').first().addClass(THIS);
 
             } else if (that.options.remoteSearch && that.options.remoteMethod) {
                 // 远程执行搜索
@@ -271,10 +294,11 @@ layui.define(['jquery'], function (exports) {
 
         // select 选择事件
         components.$ddElem.off('click').on('click', function () {
+            var jo = $(this);
             // 执行我们的正常的操作
-            $(this).parent().parent().prev().val($(this).text());
+            jo.parent().parent().prev().val(jo.text()).trigger('change');
             //$(this).parent().parent().removeClass(selectedCss + ' ' + upCss);
-            $(this).parent().css({ "display": "none" });
+            jo.parent().css({ "display": "none" });
             layui.event.call(this, _MOD, 'itemSelect(' + components.filter + ')', commonMember(this));
         });
     };
