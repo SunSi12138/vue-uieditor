@@ -1,11 +1,44 @@
 import { UETransfer } from '../base/ue-base';
 import _ from 'lodash';
 import { UERender } from '../base/ue-render';
+import { UECompiler } from '../base/ue-compiler';
 
 const groupOrder = 2;
 const group = '公用组件库/基础组件';
 
 export const BaseTransfer: UETransfer = UERender.DefineTransfer({
+  'uieditor-vue-def': {
+    type: 'div',
+    transfer(render, extend) {
+      let content = extend.getPropValue('content', true);
+      if (content) {
+        const babelContent = UECompiler.babelTransform(`function __bg_vue_def_ctx(){ return ${content}; }`);
+        let contentDef = (new Function('__bg_vue_def_', `with(__bg_vue_def_) { return { mixins: [(function() { ${babelContent.code}; return __bg_vue_def_ctx(); })(), { data: function(){ __bg_vue_def_.$this = this; return {}; } }] } }`))({ $this: {}, ...extend.global });
+        extend.extendMixin(contentDef)
+      }
+      // if (extend.editing) return render;
+      return null;
+    },
+    "editor": {
+      group: "公用组件库/Vue",
+      groupOrder: 100,
+      show: false,
+      text: "vue-def",
+      inline: true,
+      empty: '$$vue-def',
+      attrs: {
+        content: {
+          group: '组件',
+          bind: true,
+          editorBind: true,
+          effect: true,
+          isVueDef: true,
+          value: ''
+        },
+        class: { effect: false }
+      }
+    }
+  },
   'uieditor-div': {
     type: 'div',
     "editor": {

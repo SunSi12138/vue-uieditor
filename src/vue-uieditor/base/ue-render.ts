@@ -122,18 +122,19 @@ export class UERender {
       }
 
       if (render.type == 'script') {
-        render.type = 'ue-vue-def';
+        render.type = 'uieditor-vue-def';
         render.props = { ':content': render.children[0] };
         render.children = [];
       } else if (render.type == 'style') {
-        render.type = 'ue-style';
+        render.type = 'uieditor-style';
       }
 
       const resetRender = function () {
+        if (!render) return false;
         isStr = _.isString(render);
         if (!isStr)
           render.parent = parent;
-        else if (!render || render.isRender === false)
+        else if (render.isRender === false)
           return false;
         extend2.render = render;
       };

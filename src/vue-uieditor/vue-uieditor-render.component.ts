@@ -379,7 +379,7 @@ function _getVuePropText(prop: string, defaultValue?: any, remove = true) {
   if (!vueProp) return '';
   let text = vueProp.value || defaultValue;
   if (text && vueProp.bind) {
-    text = `{{${this.compatibleExpression(text)}}}`
+    text = `{{${text}}}`
   }
   return text || '';
 }

@@ -155,14 +155,21 @@ export class UEService {
         break;
       case 'preview':
         this._clearMonacoEditor();
+        current.monacoEditor.content = this.getJson();
         break;
       case 'script':
+        const scrtiptContent = await this.getScript();
         current.monacoEditor = {
-          content: 'var a = "aaaa"',
+          content: `UEEditorVueDef(${scrtiptContent})`,
           extraLib: '',
           formatAuto: true,
           language: "javascript",
-          save: () => { }
+          save: async () => {
+            let content = current.monacoEditor.content;
+            content = content.replace(/^[\s\r\n]*UEEditorVueDef\s*\(\s*/i, '').replace(/\)[\s\r\n]*$/i, '');
+            await this.setScript(content);
+            this.setModeUI('design');
+          }
         };
         break;
       case 'json':
@@ -209,6 +216,26 @@ export class UEService {
     const json: any = await UECompiler.htmlToRenderAsync(html);
     await this.setJson(json);
   }
+
+  async getScript(): Promise<string> {
+    const render = this.getRenderByType('script');
+    return render ? render.children[0] as string : "{\n  data() {\n    return {};\n  },\n  computed: {\n\n  },\n  watch: {},\n  methods: {},\n  created() {\n    \n  }\n}";
+  }
+
+  async setScript(script: string) {
+    const render = this.getRenderByType('script');
+    if (render) {
+      render.children = [script || '{}'];
+    } else {
+      this._editJson.children = [{
+        type: 'script',
+        children: [script || '{}'],
+      }].concat(this._editJson.children as any || []);
+    }
+    const json = this.getJson();
+    await this.setJson(json);
+  }
+
 
   private _resetCurrent() {
     if (!this.current.json) return;
@@ -317,6 +344,16 @@ export class UEService {
   }
 
   /**
+ * 根据 type 获取 render
+ * @param type 
+ * @param render 如果不为空，从些render开始查找
+ */
+  getRenderByType(type: string, context?: UERenderItem): UERenderItem {
+    context || (context = this._editJson);
+    return !type ? null : UERender.findRender([context], { type });
+  }
+
+  /**
    * 获取当前render
    */
   getCurRender() {
@@ -414,7 +451,6 @@ export class UEService {
       editorId: _getId(),
       editorPId: parentId
     } as UERenderItem;
-    // let editor = this.options.editor[type];
     return render;
   }
 
@@ -637,7 +673,6 @@ export class UEService {
     }
 
     this.refresBreadcrumbs(render);
-    // this.$logger.debug('setCurrent', current.id)
   }
 
   refeshSelectBox() {
@@ -677,16 +712,6 @@ export class UEService {
         }
         components.push(newItem);
       });
-      // components = BgPipeSync(
-      //   components,
-      //   bg_group('group'),
-      //   bg_each(function (group) {
-      //     group.items = BgPipeSync(group.items, bg_order('order', 'asc'));
-      //     let groupOrderItem = _.find(group.items, function (item) { return !_.isNil(item.groupOrder); });
-      //     group['order'] = groupOrderItem ? groupOrderItem.groupOrder : 99;
-      //   }),
-      //   bg_order('order', 'asc')
-      // );
     }
     this._components = components;
     this._components_tree = tree;

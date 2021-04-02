@@ -82,7 +82,7 @@ export default class Home extends UEVue {
             boolean: {
               effect: false,
               row: false,
-              value: "sm",
+              value: "true",
               type: 'boolean',
               order: 2,
             },
