@@ -106,7 +106,7 @@ layui.define(['jquery'], function (exports) {
     selectInput.prototype.renderInput = function () {
         var options = this.options;
         var name = options.name ? options.name : this.version + this.tmpId;
-        var placeholder = options.placeholder ? options.placeholder : '请输入内容';
+        var placeholder = options.placeholder ? options.placeholder : '';
         var initValue = options.initValue ? options.initValue : '';
         return '<input type="text" value="' + initValue + '"  name="' + name + '"  id="' + this._input + '" autocomplete="off" placeholder="' + placeholder + '"  class="layui-input">';
     };

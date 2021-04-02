@@ -6,55 +6,62 @@
         <div class="layui-btn-group">
           <button
             type="button"
+            layui-tip="新建"
+            layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm"
+            @click="service.empty()"
           >
-            文字
+            <i class="layui-icon layui-icon-file-b"></i>
           </button>
           <button
             type="button"
-            class="layui-btn layui-btn-primary layui-btn-sm divided"
+            layui-tip="刷新"
+            layui-tip-direction="3"
+            class="layui-btn layui-btn-primary layui-btn-sm"
+            @click="service.refresh()"
           >
             <i class="layui-icon layui-icon-refresh"></i>
           </button>
           <button
             type="button"
+            layui-tip="撤销"
+            layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm"
+            @clic="service.history.pre()"
           >
             <i class="layui-icon layui-icon-left"></i>
           </button>
           <button
             type="button"
+            layui-tip="恢复"
+            layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm"
+            @clic="service.history.next()"
           >
             <i class="layui-icon layui-icon-right"></i>
           </button>
           <button
             type="button"
-            class="layui-btn layui-btn-primary layui-btn-sm divided"
-          >
-            <i class="layui-icon layui-icon-align-left"></i>
-          </button>
-          <button
-            type="button"
+            layui-tip="删除"
+            layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm"
+            @click="service.delCur()"
           >
-            <i class="layui-icon layui-icon-ok"></i>
+            <i class="layui-icon layui-icon-delete"></i>
           </button>
-          <button
+          <!-- <button
             type="button"
-            class="layui-btn layui-btn-primary layui-btn-sm"
-          >
-            <i class="layui-icon layui-icon-close"></i>
-          </button>
-          <button
-            type="button"
+            layui-tip="设置"
+            layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm divided"
           >
             <i class="layui-icon layui-icon-set-fill"></i>
-          </button>
+          </button> -->
           <button
             type="button"
-            class="layui-btn layui-btn-primary layui-btn-sm"
+            layui-tip="关于"
+            layui-tip-direction="3"
+            class="layui-btn layui-btn-primary layui-btn-sm divided"
           >
             <i class="layui-icon layui-icon-about"></i>
           </button>
@@ -78,10 +85,25 @@
             type="button"
             layui-tip="应用"
             layui-tip-direction="3"
-            class="layui-btn layui-btn-primary layui-btn-sm"
+            class="layui-btn layui-btn-primary layui-btn-sm divided"
             @click="current.monacoEditor.save()"
           >
             <i class="layui-icon layui-icon-ok"></i>
+          </button>
+        </div>
+      </div>
+      <div
+        class="tool-bar"
+        v-if="current.mode == 'preview'"
+      >
+        <div class="layui-btn-group">
+           <button
+            type="button"
+            layui-tip="设置模拟参数"
+            layui-tip-direction="3"
+            class="layui-btn layui-btn-primary layui-btn-sm"
+          >
+            <i class="layui-icon layui-icon-set-fill"></i>
           </button>
         </div>
       </div>

@@ -510,12 +510,14 @@ function _dragStart($el, options: UEDragOptions) {
         }
 
         const dragOverEl = _overBoxElement;
-        const isRoot = dragOverEl?.classList.contains('uieditor-drag-root');
-        if (!isRoot && dragOverEl) {
+        if (dragOverEl) {
           const dragOverEl_pre = _dragOverEl_pre;
           let change = dragOverEl_pre != dragOverEl;
 
+          const isRoot = dragOverEl?.classList.contains('uieditor-drag-root');
           const rectNew = getPosLine(body, dragOverEl, e);
+          if (isRoot && rectNew.type2 != 'in') return;
+
           if (!change) {
             const rectPre = _dragPosLine_pre;
             change = !rectNew || !rectPre || rectPre.type2 != rectNew.type2;

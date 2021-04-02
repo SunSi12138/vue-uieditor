@@ -293,10 +293,8 @@ export class UEService {
       let editorid = rootRender.editorId;
       rootRender.props || (rootRender.props = {});
       rootRender.props["id"] = editorid;
-      // rootRender.props["drag-root"] = true;
       rootRender.props["tabindex"] = '-1';
-      const emptyCls = !rootRender.children || rootRender.children as any == 0 ? ' uieditor-drag-empty' : '';
-      const className = `uieditor-drag-content uieditor-drag-root${emptyCls}`;
+      const className = `uieditor-drag-content uieditor-drag-root`;
       rootRender.props["class"] = className;
 
       // if (emptyCls) json.props['drag-empty'] = true;
@@ -401,6 +399,17 @@ export class UEService {
       return this.closest(pRender, fn);
     }
     return null;
+  }
+
+  async empty(cnf?: boolean) {
+    if (cnf == false) {
+      this.setJson({ type: 'uieditor-div' });
+    } else {
+      const ok = await LayuiHelper.confirm('确定要新建吗？');
+      if (!ok) return;
+      this.setJson({ type: 'uieditor-div' });
+    }
+    await this.refresh();
   }
 
   /**
