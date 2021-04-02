@@ -305,6 +305,7 @@ export class UERender {
     if (attr.event) {
       attr.group = '组件事件';
       attr.effect = false;
+      attr.enabledBind = false;
       attr.row = attr.row !== false;
     }
     if ((hideAttrs && hideAttrs.indexOf(name) >= 0)
@@ -328,7 +329,7 @@ export class UERender {
       row: true,
       group: _defaultAttrGroup,
       groupOrder: _defaultAttrGroupOrder,
-    } as UETransferEditorAttrsItem), editor);
+    } as UETransferEditorAttrsItem, attr), editor);
   }
 
   static newEditValue(fnName: string): { get(): any; set(val: any): void; } {

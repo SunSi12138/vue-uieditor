@@ -64,6 +64,13 @@ export default class UieditorCpAttr extends UEVue {
     LayuiRender.destroy(this.$el);
   }
 
+  private refresh() {
+    layui.off('select', 'form');
+    const current = this.service.current;
+    this.isEmpty = _.size(current.attrs) == 0
+    this._makeAttrs();
+  }
+
   private _model;
   private _attrs: UETransferEditorAttrs;
   private _makeAttrs() {
@@ -187,7 +194,7 @@ export default class UieditorCpAttr extends UEVue {
         attrInputHtml = `<input
         type="text"
         name="${name}"
-        required
+        ue-attr-addinput
         placeholder="${attr.placeholder || ''}"
         autocomplete="off"
         class="layui-input"
@@ -195,9 +202,11 @@ export default class UieditorCpAttr extends UEVue {
       <div class="layui-btn-group">
         <button
           type="button"
+          ue-attr-addbtn
+          name="${name}"
           class="layui-btn layui-btn-sm layui-btn-normal"
         >
-          <i class="layui-icon">&#xe654;</i>
+          <i name="${name}" class="layui-icon">&#xe654;</i>
         </button>
       </div>`;
       } else {
@@ -304,6 +313,32 @@ export default class UieditorCpAttr extends UEVue {
       if (attr && attr.desc) {
         LayuiHelper.msg(attr.desc);
       }
+    });
+
+    //ue-attr-addbtn
+
+    const addAttr = function (e) {
+      const inputName = $(e.target).attr('name');
+      const isEvent = inputName === '_ue_cust_event_add_';
+      const name = _.trim($(`input[name="${inputName}"]`).val() as string || '');
+      if (!name) return;
+      const attr = $this.service.addAttr($this.renderId, isEvent ? `@${name}` : name);
+      if (attr) {
+        $this.refresh();
+      }
+    };
+
+    jo.on('keydown', '[ue-attr-addinput]', function(e){
+      if (e.keyCode == 13){
+        e.stopPropagation();
+        e.preventDefault();
+        addAttr(e);
+        return false;
+      }
+    });
+
+    jo.on('click', '[ue-attr-addbtn]', function (e) {
+      addAttr(e);
     });
   }
 

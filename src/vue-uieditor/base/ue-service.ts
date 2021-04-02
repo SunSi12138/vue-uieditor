@@ -411,7 +411,7 @@ export class UEService {
    * @param attr 
    */
   setAttr(id: string, attr: UETransferEditorAttrsItem, refresh = true) {
-    let render = this.getRenderItem(id);
+    const render = this.getRenderItem(id);
 
     let name = attr.name;
     if (!render || !name) return;
@@ -430,6 +430,23 @@ export class UEService {
     this.refresh().then(() => {
       this.refresBreadcrumbs(render);
     });
+  }
+
+  /**
+   * 添加属性
+   * @param id 
+   * @param attrName 
+   */
+  addAttr(id: string, attrName: string):UETransferEditorAttrsItem {
+    const render = this.getRenderItem(id);
+    const attrs = render?.attrs;
+    if (!attrs) return;
+    const { name, isEvent, isBind } = UERender.getVueBindNameEx(attrName);
+    if (_.has(attrs, name)) return;
+    return attrs[name] = UERender.NewCustAttr(name, {
+      bind: isBind,
+      event: isEvent
+    }, render.editor);
   }
 
   /**
