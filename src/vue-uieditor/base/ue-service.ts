@@ -137,6 +137,12 @@ export class UEService {
       save() { }
     };
   }
+
+  setModeUI(mode){
+    const $:JQueryStatic = layui.$;
+    $(this.$uieditor.$el).find('.layui-tab-title').children(`[${mode}]`).trigger('click');
+  }
+
   async setMode(mode: 'design' | 'json' | 'script' | 'tmpl' | 'preview') {
     if (!mode) mode = 'design';
     const current = this.current;
@@ -163,7 +169,12 @@ export class UEService {
           extraLib: '',
           formatAuto: false,
           language: "json",
-          save: () => { }
+          save: async () => {
+            const json = JSON.parse(current.monacoEditor.content);
+            await this.setJson(json);
+            await this.$uieditor.$nextTick();
+            this.setModeUI('design');
+          }
         };
         break;
       case 'tmpl':
@@ -253,7 +264,7 @@ export class UEService {
         mounted() {
           if (_this) {
             _this && _this.$emit('on-set-json', { service: _this });
-            resolve(false);
+            resolve(true);
           } else {
             resolve(false);
           }
@@ -274,6 +285,8 @@ export class UEService {
           LayuiRender.destroy(this.$el);
         }
       } as UEVueMixin;
+      if (this.current.mode != 'design')
+        resolve(true);
     });
   }
 

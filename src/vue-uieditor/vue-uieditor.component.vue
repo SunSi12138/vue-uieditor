@@ -87,15 +87,16 @@
       </div>
       <ul class="layui-tab-title">
         <li
+          design
           class="layui-tab-first layui-this"
           @click="service.setMode('design')"
         >
           设计
         </li>
-        <li @click="service.setMode('script')">代码</li>
-        <li @click="service.setMode('tmpl')">模板</li>
-        <li @click="service.setMode('json')">JSON</li>
-        <li @click="service.setMode('preview')">预览</li>
+        <li script @click="service.setMode('script')">代码</li>
+        <li tmpl @click="service.setMode('tmpl')">模板</li>
+        <li json @click="service.setMode('json')">JSON</li>
+        <li preview @click="service.setMode('preview')">预览</li>
       </ul>
       <div class="layui-tab-content">
         <div class="layui-tab-item layui-show">
