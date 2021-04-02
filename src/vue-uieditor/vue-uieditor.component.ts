@@ -72,10 +72,45 @@ export default class VueUieditor extends UEVue {
     return !!this.current?.json;
   }
 
+
+  private _initEvents() {
+    const $: JQueryStatic = layui.$,
+      layer = layui.layer;
+    const jo = $(this.$el);
+
+    jo.click(function () {
+      closeTip();
+    });
+    let tipId;
+    const closeTip = function () {
+      if (!tipId) return;
+      layer.close(tipId);
+      tipId = null;
+    };
+    jo.on('mouseenter', '[layui-tip]', (e) => {
+      const jTip = $(e.currentTarget);
+      const text = jTip.attr('layui-tip');
+      if (!text) return;
+      tipId = layer.tips(text, jTip, {
+        tips: (~~jTip.attr('layui-tip-direction')) || 1
+      });
+    });
+    jo.on('mouseleave', '[layui-tip]', (e) => {
+      closeTip();
+    });
+
+    jo.on('selectstart', '.layui-tab-title,.tool-bar', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      return false;
+    });
+  }
+
   _drager: any;
 
   @UEVueLife('mounted')
   private async _mounted1() {
+    this._initEvents();
     const options = this.optionEx || {};
     await UECompiler.init({ bable: options.babel !== false });
     const service = this.service;

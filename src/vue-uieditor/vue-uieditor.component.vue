@@ -2,7 +2,7 @@
   <div class="layui-uieditor">
     <div class="layui-tab layui-tab-card">
       <!-- tool-bar -->
-      <div class="tool-bar">
+      <div class="tool-bar" v-if="current.mode == 'design'">
         <div class="layui-btn-group">
           <button
             type="button"
@@ -57,6 +57,31 @@
             class="layui-btn layui-btn-primary layui-btn-sm"
           >
             <i class="layui-icon layui-icon-about"></i>
+          </button>
+        </div>
+      </div>
+      <div
+        class="tool-bar"
+        v-if="['script', 'json', 'tmpl'].indexOf(current.mode) >= 0"
+      >
+        <div class="layui-btn-group">
+          <button
+            type="button"
+            layui-tip="格式化"
+            layui-tip-direction="3"
+            class="layui-btn layui-btn-primary layui-btn-sm"
+            @click="$refs.modeMonacoEditor.formatCode()"
+          >
+            <i class="layui-icon layui-icon-align-left"></i>
+          </button>
+          <button
+            type="button"
+            layui-tip="应用"
+            layui-tip-direction="3"
+            class="layui-btn layui-btn-primary layui-btn-sm"
+            @click="current.monacoEditor.save()"
+          >
+            <i class="layui-icon layui-icon-ok"></i>
           </button>
         </div>
       </div>
@@ -160,6 +185,7 @@
             :extraLib="current.monacoEditor.extraLib"
             :format-auto="current.monacoEditor.formatAuto"
             :language="current.monacoEditor.language"
+            ref="modeMonacoEditor"
           />
         </div>
         <div class="layui-tab-item">
@@ -169,6 +195,7 @@
             :extraLib="current.monacoEditor.extraLib"
             :format-auto="current.monacoEditor.formatAuto"
             :language="current.monacoEditor.language"
+            ref="modeMonacoEditor"
           />
         </div>
         <div class="layui-tab-item">
@@ -178,6 +205,7 @@
             :extraLib="current.monacoEditor.extraLib"
             :format-auto="current.monacoEditor.formatAuto"
             :language="current.monacoEditor.language"
+            ref="modeMonacoEditor"
           />
         </div>
         <div class="layui-tab-item">预览</div>
