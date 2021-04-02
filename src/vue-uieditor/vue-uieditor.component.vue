@@ -61,11 +61,16 @@
         </div>
       </div>
       <ul class="layui-tab-title">
-        <li class="layui-tab-first layui-this">设计</li>
-        <li>代码</li>
-        <li>模板</li>
-        <li>JSON</li>
-        <li>预览</li>
+        <li
+          class="layui-tab-first layui-this"
+          @click="service.setMode('design')"
+        >
+          设计
+        </li>
+        <li @click="service.setMode('script')">代码</li>
+        <li @click="service.setMode('tmpl')">模板</li>
+        <li @click="service.setMode('json')">JSON</li>
+        <li @click="service.setMode('preview')">预览</li>
       </ul>
       <div class="layui-tab-content">
         <div class="layui-tab-item layui-show">
@@ -106,7 +111,10 @@
               <div class="center-content">
                 <div class="editor-content">
                   <div class="center-breadcrumb" v-if="current">
-                    <span v-for="(item, index) in current.breadcrumbs" :key="index">
+                    <span
+                      v-for="(item, index) in current.breadcrumbs"
+                      :key="index"
+                    >
                       <span v-if="!item.canOpt" class="center-breadcrumb-item">
                         {{ item.text }}
                       </span>
@@ -117,12 +125,16 @@
                       >
                         {{ item.text }}
                       </a>
-                      <span v-if="!item.isLast" class="center-breadcrumb-item-separator">&gt;</span>
+                      <span
+                        v-if="!item.isLast"
+                        class="center-breadcrumb-item-separator"
+                        >&gt;</span
+                      >
                     </span>
                   </div>
                   <div class="editor-json-content">
                     <vue-uieditor-render
-                      v-if="current && current.json"
+                      v-if="current && current.json && current.mode == 'design'"
                       :options="options"
                       :json="current.json"
                       :mixin="current.mixin"
@@ -134,14 +146,40 @@
             </div>
             <div class="right">
               <div class="right-content">
-                <uieditor-cp-attr v-if="!current.refreshAttr && current.attrs" />
+                <uieditor-cp-attr
+                  v-if="!current.refreshAttr && current.attrs"
+                />
               </div>
             </div>
           </div>
         </div>
-        <div class="layui-tab-item">代码</div>
-        <div class="layui-tab-item">模板</div>
-        <div class="layui-tab-item">JSON</div>
+        <div class="layui-tab-item">
+          <uieditor-monaco-editor
+            v-if="current.mode == 'script'"
+            v-model="current.monacoEditor.content"
+            :extraLib="current.monacoEditor.extraLib"
+            :format-auto="current.monacoEditor.formatAuto"
+            :language="current.monacoEditor.language"
+          />
+        </div>
+        <div class="layui-tab-item">
+          <uieditor-monaco-editor
+            v-if="current.mode == 'tmpl'"
+            v-model="current.monacoEditor.content"
+            :extraLib="current.monacoEditor.extraLib"
+            :format-auto="current.monacoEditor.formatAuto"
+            :language="current.monacoEditor.language"
+          />
+        </div>
+        <div class="layui-tab-item">
+          <uieditor-monaco-editor
+            v-if="current.mode == 'json'"
+            v-model="current.monacoEditor.content"
+            :extraLib="current.monacoEditor.extraLib"
+            :format-auto="current.monacoEditor.formatAuto"
+            :language="current.monacoEditor.language"
+          />
+        </div>
         <div class="layui-tab-item">预览</div>
       </div>
     </div>

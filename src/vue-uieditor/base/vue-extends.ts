@@ -346,7 +346,40 @@ export function UEVueEvent<T = UEVue>(event: string, p: boolean | {
   };
 }
 
-const _defalutValue = '_ue_defaultValue_def_';
+/**
+ * 影射到v-model value 值
+ * @param change change(self, val, oldVal):void
+ * @example UEVueValue() id:string = '';
+ */
+export function UEVueValue<T>(change?: (self: T, val, oldVal) => void) {
+  return function (target: any, propKey: string) {
+    _setMixin(target, {
+      data() {
+        return {
+          [propKey]: this['$value']
+        };
+      }
+    })
+    _setLife(target, 'created', function () {
+      this[propKey] = this.$value;
+      this.$watch('$value', function (value) {
+        if (value != this[propKey]) {
+          const oldVal = this[propKey];
+          this[propKey] = value;
+          change && change.call(this, this, value, oldVal)
+        }
+      }.bind(this));
+      this.$watch(propKey, function (value) {
+        if (value != this.$value) {
+          const oldVal = this.$value;
+          this.$value = value;
+          change && change.call(this, this, value, oldVal)
+        }
+      }.bind(this));
+    });
+
+  }
+}
 
 export class UEVue extends Vue {
 
@@ -381,18 +414,14 @@ export class UEVue extends Vue {
   readonly _render: () => any;
 
 
-  @UEVueProp({ type: [String, Number, Boolean, Array], default: _defalutValue })
+  @UEVueProp()
   private value: string;
 
-  get $isDefaultValue(): any {
-    return this.value === _defalutValue;
-  }
 
   /** 获取或设置值 */
   get $value(): any {
-    return this.$isDefaultValue ? undefined : this.value;
+    return this.value;
   }
-
   set $value(value: any) {
     this.$emit('input', value);
   }

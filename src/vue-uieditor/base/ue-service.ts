@@ -117,7 +117,67 @@ export class UEService {
     mixin: null,
     /** 计算后用于显示的JSON */
     json: null,
+    /** 模式：design, json, script, tmpl, preview */
+    mode: 'design',
+    monacoEditor: {
+      content: '',
+      extraLib: '',
+      formatAuto: false,
+      language: "javascript",
+      save() { }
+    }
   };
+
+  private _clearMonacoEditor() {
+    this.current.monacoEditor = {
+      content: '',
+      extraLib: '',
+      formatAuto: false,
+      language: "javascript",
+      save() { }
+    };
+  }
+  async setMode(mode: 'design' | 'json' | 'script' | 'tmpl' | 'preview') {
+    if (!mode) mode = 'design';
+    const current = this.current;
+    switch (mode) {
+      case 'design':
+        this._clearMonacoEditor();
+        break;
+      case 'preview':
+        this._clearMonacoEditor();
+        break;
+      case 'script':
+        current.monacoEditor = {
+          content: 'var a = "aaaa"',
+          extraLib: '',
+          formatAuto: true,
+          language: "javascript",
+          save: () => { }
+        };
+        break;
+      case 'json':
+        const json = JSON.stringify(this.getJson(), null, 2)
+        current.monacoEditor = {
+          content: json,
+          extraLib: '',
+          formatAuto: false,
+          language: "json",
+          save: () => { }
+        };
+        break;
+      case 'tmpl':
+        current.monacoEditor = {
+          content: '<template><uieditor-div>aaaa</uieditor-div></template>',
+          extraLib: '',
+          formatAuto: true,
+          language: "html",
+          save: () => { }
+        };
+        break;
+    }
+    this.current.mode = mode;
+  }
 
   private _resetCurrent() {
     if (!this.current.json) return;
@@ -437,7 +497,7 @@ export class UEService {
    * @param id 
    * @param attrName 
    */
-  addAttr(id: string, attrName: string):UETransferEditorAttrsItem {
+  addAttr(id: string, attrName: string): UETransferEditorAttrsItem {
     const render = this.getRenderItem(id);
     const attrs = render?.attrs;
     if (!attrs) return;
