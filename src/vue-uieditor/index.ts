@@ -1,6 +1,10 @@
 // 导入颜色选择器组件
 // import vueUieditor from "./vue-uieditor.component.vue";
 
+export * from './base/ue-base';
+export * from './base/ue-render';
+
+
 // 存储组件列表
 const components: any = {
   'vue-uieditor': () => import(/* webpackChunkName: "vue_uieditor_cp" */ './vue-uieditor.component.vue'),

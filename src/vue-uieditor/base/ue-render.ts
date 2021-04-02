@@ -299,6 +299,7 @@ export class UERender {
         break;
       case 'boolean':
         attr.type = 'select';
+        attr.enabledBind = false;
         attr.bind = true;
         attr.datas = ['true', 'false'];
         break;
