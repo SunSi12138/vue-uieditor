@@ -257,7 +257,7 @@ export class UERender {
           let [key1, value1] = newKey.split(':');
           let newAttr = _.assign({}, _.cloneDeep(attr), { order: order++ });
           if (value1) newAttr.value = _.trim(value1);
-          attrs[_.trim(key1)] = newAttr;
+          newAttrs[_.trim(key1)] = newAttr;
         });
       } else {
         newAttrs[key] = attr;
@@ -385,7 +385,7 @@ function _emptyEditor(component: string, defaultText: string) {
       return render;
     },
     attrs: {
-      text: { effect: true, group: '组件属性', groupOrder: 1, editorOlny: true, order: 1, value: defaultText },
+      text: { effect: true, group: '组件属性', row: true, groupOrder: 1, editorOlny: true, order: -1, value: defaultText },
       class: { effect: false },
       style: { effect: false }
     }

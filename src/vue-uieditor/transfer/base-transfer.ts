@@ -63,9 +63,14 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       icon: 'layui-icon layui-icon-layer',
       empty: 'iframe',
       attrs: {
-        'src,frameborder:0,height:100%,width:100%,scrolling:yes': {
+        src: {
           enabledBind: true,
-          order: 0
+          order: 1,
+          row: true
+        },
+        'frameborder:0,height:100%,width:100%,scrolling:yes': {
+          enabledBind: true,
+          order: 2
         }
       }
     }

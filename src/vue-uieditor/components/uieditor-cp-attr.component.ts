@@ -380,7 +380,6 @@ export default class UieditorCpAttr extends UEVue {
 
   @UETransFn((fn) => _.debounce(fn, 50))
   private _changeAsync(name, value) {
-    console.warn('form change', name, value);
     this._change(name, value);
   }
 
