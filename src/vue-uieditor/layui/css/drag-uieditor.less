@@ -150,8 +150,8 @@
 
   /** empty */
   .uieditor-drag-empty {
-    min-height: 30px;
-    
+    min-height: 12px;
+
     &.inline {
       display: inline-block !important;
       min-width: 40px;
@@ -193,7 +193,17 @@
     background-color: rgba(0, 0, 0, .8);
     color: #fff;
     padding: 0 12px;
-    margin-right: 4px
+    margin-right: 4px;
+    min-height: 22px;
+    line-height: 22px;
+  }
+
+  .drawing-item {
+    border: 1px dashed rgba(0, 0, 0, .3);
+  }
+
+  .p-sm {
+    padding: 4px !important;
   }
 
 }

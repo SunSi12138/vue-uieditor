@@ -243,14 +243,31 @@ export class UERender {
     _inited(editor);
 
     let emptyEditor = !editor.empty ? null : _emptyEditor(type, editor.empty);
-    editor = UEHelper.assignDepth({}, _defaultEditor(type), emptyEditor, editor);
+    editor = UEHelper.assignDepth({}, _defaultEditor(type), editor, emptyEditor);
     if (!editor.text) editor.text = type;
     if (!editor.placeholder) editor.placeholder = editor.text;
 
-    let attrs = editor.attrs;
-    _.forEach(attrs, function (attr, name) {
-      attrs[name] = UERender.DefineTransferEditorAttr(name, attr, editor);
+    const attrs = editor.attrs;
+    const newAttrs = {};
+    //支持 'text:aaa,id':{}
+    _.forEach(attrs, function (attr, key) {
+      if (key.indexOf(',') >= 0) {
+        let order = attr.order || 1;
+        _.forEach(key.split(','), function (newKey) {
+          let [key1, value1] = newKey.split(':');
+          let newAttr = _.assign({}, _.cloneDeep(attr), { order: order++ });
+          if (value1) newAttr.value = _.trim(value1);
+          attrs[_.trim(key1)] = newAttr;
+        });
+      } else {
+        newAttrs[key] = attr;
+      }
     });
+
+    _.forEach(newAttrs, function (attr, name) {
+      newAttrs[name] = UERender.DefineTransferEditorAttr(name, attr, editor);
+    });
+    editor.attrs = newAttrs;
 
     return editor;
   };
@@ -269,6 +286,8 @@ export class UERender {
     let hideAttrGroups = editor.hideAttrGroups;
     attr = _.assign({}, _defaultEditorAttrItem(name), attr);
     if (!attr.text) attr.text = name;
+    if (_.isString(attr.editValue)) attr.editValue = UERender.newEditValue(attr.editValue);
+
     switch (attr.type) {
       case 'select-only':
       case 'slider':
@@ -278,13 +297,12 @@ export class UERender {
       case 'boolean':
         attr.bind = true;
         attr.datas = ['true', 'false'];
-        // attr.enabledBind = true;
-        // attr.codeBtn = true;
         break;
     }
     // if (!attr.placeholder) attr.placeholder = attr.text;
     if (attr.event) {
       attr.group = '组件事件';
+      attr.effect = false;
       attr.row = attr.row !== false;
     }
     if ((hideAttrs && hideAttrs.indexOf(name) >= 0)
@@ -308,6 +326,14 @@ export class UERender {
       group: _defaultAttrGroup,
       groupOrder: _defaultAttrGroupOrder,
     } as UETransferEditorAttrsItem), editor);
+  }
+
+  static newEditValue(fnName: string): { get(): any; set(val: any): void; } {
+    const regex = new RegExp(`^[\\s\\r\\n]*${fnName}\\s*\\(\\s*`, 'i');
+    return {
+      get() { return `${fnName}(${this.value || '{}'})`; },
+      set(value) { this.value = value.replace(regex, '').replace(/\)[\s\r\n]*$/i, ''); }
+    }
   }
 
   static findRender(renders: UERenderItem[], p: any): UERenderItem {
@@ -346,7 +372,7 @@ const _eventAttrEx = /^\s*\@(.*)/;
 
 function _emptyEditor(component: string, defaultText: string) {
   let editor = {
-    transfer({ render, attrs, editing }) {
+    transferAttr({ render, attrs, editing }) {
       if (!editing) {
         render.type = component;
         delete render.children;
@@ -359,7 +385,8 @@ function _emptyEditor(component: string, defaultText: string) {
     },
     attrs: {
       text: { effect: true, group: '组件属性', groupOrder: 1, editorOlny: true, order: 1, value: defaultText },
-      'class,style': { effect: false }
+      class: { effect: false },
+      style: { effect: false }
     }
   } as UETransferEditor;
   return editor;

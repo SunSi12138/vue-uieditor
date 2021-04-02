@@ -135,13 +135,12 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
         } else
           render.children = [html.value];
       } else {
-        render.props.class = `${render.props.class ||''} empty-component`;
+        render.props.class = `${render.props.class || ''} empty-component`;
 
         render.children = ['Html'];
       }
       if (editing && render.type == 'div')
         render.props.style = 'display:block;';
-        console.warn('html', render);
       return render;
     },
     "editor": {
@@ -156,6 +155,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
           effect: true,
           language: 'html',
           enabledBind: true,
+          row: true,
           value: "<span>html</span>"
         },
         type: {
