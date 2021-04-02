@@ -859,10 +859,12 @@ function _initAttrsFromRender(render: UERenderItem) {
   _.forEach(props, function (value, key) {
     const { name, isEvent, isBind } = UERender.getVueBindNameEx(key);
     if (!attrs[name]) {
+      const isB = _.isBoolean(value);
       attrs[name] = UERender.NewCustAttr(name, {
         bind: isBind,
         event: isEvent,
-        value: value || ''
+        value: isB ? value : (value || ''),
+        type: isB ? 'boolean' : 'text'
       }, editor);
     }
   });
