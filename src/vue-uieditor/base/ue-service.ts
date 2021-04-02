@@ -2,11 +2,11 @@ import _ from 'lodash';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
 import { UEOption, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem } from './ue-base';
+import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
 import { UERenderItem } from './ue-render-item';
 import { UEVue, UEVueMixin } from "./vue-extends";
-import { UEDrag } from '../ue-drag';
 
 
 const _editorType = 'uieditor-div';
@@ -138,13 +138,16 @@ export class UEService {
     };
   }
 
-  setModeUI(mode){
-    const $:JQueryStatic = layui.$;
+  setModeUI(mode) {
+    const $: JQueryStatic = layui.$;
     $(this.$uieditor.$el).find('.layui-tab-title').children(`[${mode}]`).trigger('click');
   }
 
   async setMode(mode: 'design' | 'json' | 'script' | 'tmpl' | 'preview') {
     if (!mode) mode = 'design';
+    const oldMode = this.current.mode;
+    if (oldMode == mode) return;
+
     const current = this.current;
     switch (mode) {
       case 'design':
@@ -178,16 +181,33 @@ export class UEService {
         };
         break;
       case 'tmpl':
+        const html = await this.getTmpl();
         current.monacoEditor = {
-          content: '<template><uieditor-div>aaaa</uieditor-div></template>',
+          content: html,
           extraLib: '',
           formatAuto: true,
           language: "html",
-          save: () => { }
+          save: async () => {
+            const tmpl = current.monacoEditor.content || '<div></div>';
+            await this.setTmpl(tmpl);
+            this.setModeUI('design');
+          }
         };
         break;
     }
     this.current.mode = mode;
+    this.$emit('on-change-mode', { service: this, mode, oldMode })
+  }
+
+  async getTmpl() {
+    const jsonTmpl = this.getJson();
+    const html = await UECompiler.renderToHtmlAsync(jsonTmpl);
+    return html;
+  }
+
+  async setTmpl(html) {
+    const json: any = await UECompiler.htmlToRenderAsync(html);
+    await this.setJson(json);
   }
 
   private _resetCurrent() {
@@ -221,6 +241,7 @@ export class UEService {
 
   private _setJson(json: UERenderItem, formHistory: boolean): Promise<any> {
     return new Promise((resolve) => {
+      const jsonOrg = json;
       json = _.cloneDeep(json);
       if (json.type != _editorType) {
         json = _makeWrapRootDiv(json);
@@ -263,7 +284,7 @@ export class UEService {
         },
         mounted() {
           if (_this) {
-            _this && _this.$emit('on-set-json', { service: _this });
+            _this && _this.$emit('on-set-json', { service: _this, json: jsonOrg });
             resolve(true);
           } else {
             resolve(false);
@@ -620,7 +641,7 @@ export class UEService {
   }
 
   refeshSelectBox() {
-    setTimeout(() => this.$emit('on-refesh-select-box', this.current.id), 10);
+    setTimeout(() => this.$emit('on-refesh-select-box', { service: this, id: this.current.id }), 10);
   }
 
 

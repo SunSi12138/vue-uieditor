@@ -119,12 +119,18 @@ export default class VueUieditor extends UEVue {
     await this.$nextTick();
     // LayuiRender.render(this.$el);
 
-    this.$on('on-refesh-select-box', (id) => {
+    this.$on('on-refesh-select-box', ({ service, id }) => {
       drager.select(id);
     });
-    this.$on('on-set-json', ({ service }) => {
+    this.$on('on-set-json', ({ service, json }) => {
       drager.select(service.current.id);
     });
+    this.$on('on-change-mode', ({ service, mode, oldMode }) => {
+      if (mode != 'design') {
+        drager.unSelect();
+      }
+    });
+
     const drager = this._drager = UEDrag.dragStart(this.$el, {
       select: (e) => {
         const { fromEl } = e;

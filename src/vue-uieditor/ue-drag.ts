@@ -579,9 +579,9 @@ function _dragStart($el, options: UEDragOptions) {
     select(id: string, focus?: boolean) {
       id && select(jEditorJsonContent.find(`#${id}`)[0], focus);
     },
-    // unSelect() {
-    //   unSelect();
-    // },
+    unSelect() {
+      unSelect();
+    },
     // unPosLine() {
     //   unPosLine();
     // },
