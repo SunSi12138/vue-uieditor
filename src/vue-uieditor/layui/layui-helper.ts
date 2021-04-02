@@ -14,6 +14,8 @@ export interface LayuiLayerOption {
   end(): void;
 };
 
+const layer = layui.layer;
+
 export class LayuiHelper {
 
   /**
@@ -28,16 +30,16 @@ export class LayuiHelper {
         isEnd = true;
         r(res);
       };
-      layui.layer.confirm(msg, _.assign({
+      layer.confirm(msg, _.assign({
         btn: ['确定', '取消'],
-        title:'确认框'
+        title: '确认框'
       }, option, {
         end() {
           if (option?.end) option.end();
           fn();
         }
       }), function (index) {
-        layui.layer.close(index);
+        layer.close(index);
         fn(true);
       }, function (index) {
         fn(false);
@@ -51,7 +53,7 @@ export class LayuiHelper {
    */
   static alert(msg, option?: LayuiLayerOption): Promise<boolean | undefined> {
     return new Promise(function (r) {
-      layui.layer.alert(msg, _.assign({}, option, {
+      layer.alert(msg, _.assign({}, option, {
         // btn: ['确定', '取消'],
         end() {
           if (option?.end) option.end();
@@ -61,9 +63,27 @@ export class LayuiHelper {
     });
   }
 
+  /**
+   * 返回 true | false | undefined
+   * @param msg 
+   */
+  static prompt(msg, option?: LayuiLayerOption): Promise<any> {
+    return new Promise(function (r) {
+      layer.prompt(_.assign({ title: msg, formType: 1 }, option, {
+        end() {
+          if (option?.end) option.end();
+          r();
+        }
+      }), function (s, index) {
+        layer.close(index);
+        r(s);
+      });
+    });
+  }
+
   static msg(msg, option?: LayuiLayerOption) {
     return new Promise(function (r) {
-      layui.layer.msg(msg, _.assign({
+      layer.msg(msg, _.assign({
         time: 0, //20s后自动关闭
         btn: ['确定']
       }, option, {
