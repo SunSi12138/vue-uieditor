@@ -77,7 +77,6 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       inline: true,
       attrs: {
         src: {
-          enabledBind: true,
           order: 0,
           value: './vue-uieditor/assets/images/demo.png',
           effect: true,
@@ -97,12 +96,10 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       empty: 'iframe',
       attrs: {
         src: {
-          enabledBind: true,
           order: 1,
           row: true
         },
         'frameborder:0,height:100%,width:100%,scrolling:yes': {
-          enabledBind: true,
           order: 2
         }
       }
@@ -125,11 +122,11 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       icon: 'layui-icon layui-icon-align-left',
       attrs: {
         text: {
-          effect: true, enabledBind: true,
+          effect: true,
           value: "文本内容",
           order: 0
         },
-        click: { event: true, order: 30 }
+        click: { event: true }
       }
     }
   },
@@ -150,9 +147,17 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       icon: 'layui-icon layui-icon-link',
       attrs: {
         text: {
-          effect: true, enabledBind: true,
+          effect: true,
           value: "超链接",
           order: 0
+        },
+        target: {
+          type: 'select',
+          datas: ['_blank', '_self', '_parent', '_top'],
+          order: 1
+        },
+        href: {
+          order: 2, row: true
         },
         click: { event: true }
       }
@@ -189,13 +194,6 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       icon: 'layui-icon layui-icon-fonts-html',
       // empty: 'Html',
       attrs: {
-        content: {
-          effect: true,
-          language: 'html',
-          enabledBind: true,
-          row: true,
-          value: "<span>html</span>"
-        },
         type: {
           effect: true,
           type: 'select-only',
@@ -209,6 +207,12 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
           type: 'select-only',
           datas: ['true', 'false'],
           value: 'false'
+        },
+        content: {
+          effect: true,
+          language: 'html',
+          row: true,
+          value: "<span>html</span>"
         }
       }
     }

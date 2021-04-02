@@ -390,7 +390,7 @@ function _emptyEditor(component: string, defaultText: string) {
       return render;
     },
     attrs: {
-      text: { effect: true, group: '组件属性', row: true, groupOrder: 1, editorOlny: true, order: -1, value: defaultText },
+      text: { effect: true, group: '组件属性', row: true, groupOrder: 1, editorOlny: true, enabledBind: false, codeBtn: false, order: -1, value: defaultText },
       class: { effect: false },
       style: { effect: false }
     }
@@ -453,7 +453,7 @@ function _defaultEditorAttrItem(name: string): UETransferEditorAttrsItem {
     group: _defaultAttrGroup,
     groupOrder: _defaultAttrGroupOrder,
     show: true,
-    enabledBind: false,
+    enabledBind: true,
     order: 99,
     effect: false,
     codeEditor: true,
