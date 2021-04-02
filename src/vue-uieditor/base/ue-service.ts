@@ -6,6 +6,7 @@ import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
 import { UERenderItem } from './ue-render-item';
 import { UEVue, UEVueMixin } from "./vue-extends";
+import { UEDrag } from '../ue-drag';
 
 
 const _editorType = 'uieditor-div';
@@ -409,7 +410,7 @@ export class UEService {
    * @param id 
    * @param attr 
    */
-  setAttr(id: string, attr: UETransferEditorAttrsItem) {
+  setAttr(id: string, attr: UETransferEditorAttrsItem, refresh = true) {
     let render = this.getRenderItem(id);
 
     let name = attr.name;
@@ -418,10 +419,13 @@ export class UEService {
       this.changeRenderType(render, attr.value);
       return;
     }
+    const oldText = render.editor.textFormat(render.editor, render.attrs);
     let attrs = render.attrs
     if (attrs[name])
       _.assign(attrs[name], attr);
-    if (!attr.effect || !!attr.demoValue) return;
+    const newText = render.editor.textFormat(render.editor, render.attrs);
+    if (newText != oldText) UEDrag.select(id, true);
+    if (!refresh || !attr.effect || !!attr.demoValue) return;
     _setRenderAttrs(render, render.editor, true, this);
     this.refresh().then(() => {
       this.refresBreadcrumbs(render);

@@ -323,6 +323,7 @@ export class UERender {
       order: 990,
       enabledBind: true,
       cust: true,
+      row: true,
       group: _defaultAttrGroup,
       groupOrder: _defaultAttrGroupOrder,
     } as UETransferEditorAttrsItem), editor);

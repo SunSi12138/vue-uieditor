@@ -106,6 +106,7 @@ export default class Home extends UEVue {
         type: "uieditor-text",
         props: {
           text: "test1",
+          name:'name1'
         },
       },
       {

@@ -213,8 +213,8 @@ function _dragStart($el, options: UEDragOptions) {
     jSelectBox.removeData(_data_toolbarsKey);
     jSelectBox.addClass(hideCls);
   };
-  const select = function (element) {
-    if (isSelect(element) || !element) return;
+  const select = function (element, focus?: boolean) {
+    if (!focus && (isSelect(element) || !element)) return;
     _selectElement = element;
     unOverBox();
 
@@ -264,7 +264,7 @@ function _dragStart($el, options: UEDragOptions) {
   };
 
   // select menu click
-  jSelectBox.on('mousedown', function(e){
+  jSelectBox.on('mousedown', function (e) {
     stopEvent(e);
     return false;
   });
@@ -288,7 +288,7 @@ function _dragStart($el, options: UEDragOptions) {
     }
     return isDragElement(element) ? element : $(element).closest('.uieditor-drag-item,.uieditor-drag-content')[0];
   };
-  jEditorJsonContent.on('mousedown', function(e){
+  jEditorJsonContent.on('mousedown', function (e) {
     unSelect();
     if (options.select &&
       options.select(_makeEvent({ fromEl: e.currentTarget, ev: e as any })) === false) {
@@ -584,8 +584,8 @@ function _dragStart($el, options: UEDragOptions) {
   //#endregion drag
 
   return {
-    select(id) {
-      id && select(jEditorJsonContent.find(`#${id}`)[0]);
+    select(id, focus) {
+      id && select(jEditorJsonContent.find(`#${id}`)[0], focus);
     }
   }
 
@@ -598,8 +598,8 @@ export class UEDrag {
     _dragner = _dragStart($el, options)
   }
 
-  static select(id) {
+  static select(id: string, focus?: boolean) {
     if (!_dragner) return;
-    _dragner.select(id);
+    _dragner.select(id, focus);
   }
 }

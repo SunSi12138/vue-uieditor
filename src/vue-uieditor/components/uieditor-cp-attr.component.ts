@@ -162,14 +162,15 @@ export default class UieditorCpAttr extends UEVue {
       const isRow = attr.row || (isLast && isClose);//最后一个自动占一行
       const row = isRow ? '12' : '6';
       colIndex++;
+      const name = attr.name;
 
       const attrBind = attr.enabledBind || attr.bind || attr['isPrefxV'] || attr.event ? ' attr-bind' : ''
       const attrBindColor = attr.enabledBind ? (attr.bind ? ' layui-bg-blue-active' : 'layui-bg-blue') : attr['isPrefxV'] || attr.event || attr.bind ? ` layui-bg-gray` : '';
-      const attrBindHtml = !attrBind ? '' : `<span class="layui-badge ${attrBindColor}">
+      const attrBindHtml = !attrBind ? '' : `<span name="${name}" class="layui-badge ${attrBindColor}">
       ${attr.event ? '@' : (attr['isPrefxV'] ? 'v' : ':')}
       </span>`;
 
-      const desc = attr.desc ? `<i class="layui-icon layui-icon-about"></i>` : '';
+      const desc = attr.desc ? `<i name="${name}" class="layui-icon layui-icon-about"></i>` : '';
 
       const attrCode = attr.codeBtn !== false ? ' attr-code' : '';
       const codeBtn = attr.codeBtn !== false ? '<i class="layui-icon layui-icon-form"></i>' : '';
@@ -185,7 +186,7 @@ export default class UieditorCpAttr extends UEVue {
       if (isAddBtn) {
         attrInputHtml = `<input
         type="text"
-        name="${attr.name}"
+        name="${name}"
         required
         placeholder="${attr.placeholder || ''}"
         autocomplete="off"
@@ -202,11 +203,11 @@ export default class UieditorCpAttr extends UEVue {
       } else {
         switch (attr.type) {
           case 'slider':
-            attrInputHtml = `<div ue-slider name="${attr.name}"></div>`;
+            attrInputHtml = `<div ue-slider name="${name}"></div>`;
             break;
           case 'select':
           case 'boolean':
-            attrInputHtml = `<div ue-selectInput name="${attr.name}"></div>`;
+            attrInputHtml = `<div ue-selectInput name="${name}"></div>`;
             break;
           case 'select-only':
             const datas = attr.datas;
@@ -214,7 +215,7 @@ export default class UieditorCpAttr extends UEVue {
               return `<option value="${item.value}">${item.text}</option>`;
             });
             attrInputHtml = `<select
-              name="${attr.name}"
+              name="${name}"
             >
               ${sHtmlList.join('')}
             </select>`;
@@ -222,7 +223,7 @@ export default class UieditorCpAttr extends UEVue {
           default:
             attrInputHtml = `<input
             type="text"
-            name="${attr.name}"
+            name="${name}"
             autocomplete="off"
             placeholder="${attr.placeholder || ''}"
             class="layui-input"
@@ -274,15 +275,22 @@ export default class UieditorCpAttr extends UEVue {
 
   private _initEvent() {
     const jo = $(this.$el);
+    const $this = this;
     jo.on('click', '.layui-bg-blue,.layui-bg-blue-active', function (e) {
       var jo = $(e.target);
+      const name = $(e.target).attr('name');
+      const attr = $this._attrs[name];
+
       if (jo.hasClass('layui-bg-blue-active')) {
         jo.addClass('layui-bg-blue');
         jo.removeClass('layui-bg-blue-active');
+        if (attr) attr.bind = false;
       } else {
         jo.addClass('layui-bg-blue-active');
         jo.removeClass('layui-bg-blue');
+        if (attr) attr.bind = true;
       }
+      $this._changeAttr(name, false);
     });
     jo.on('selectstart', '.layui-bg-blue,.layui-bg-gray', function (e) {
       e.stopPropagation();
@@ -291,7 +299,11 @@ export default class UieditorCpAttr extends UEVue {
     });
 
     jo.on('click', '.layui-icon-about', function (e) {
-      LayuiHelper.msg('aaaa')
+      const name = $(e.target).attr('name');
+      const attr = $this._attrs[name];
+      if (attr && attr.desc) {
+        LayuiHelper.msg(attr.desc);
+      }
     });
   }
 
@@ -378,6 +390,18 @@ export default class UieditorCpAttr extends UEVue {
     if (attr) {
       attr.value = value;
       this.service.setAttr(this.renderId, attr);
+    }
+    // console.warn('form change', this, name, value);
+  }
+
+  /**
+   * 通知修改了 attr
+   * @param name 
+   */
+  private _changeAttr(name, refresh = true) {
+    const attr = this._attrs[name];
+    if (attr) {
+      this.service.setAttr(this.renderId, attr, refresh);
     }
     // console.warn('form change', this, name, value);
   }
