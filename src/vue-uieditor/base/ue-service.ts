@@ -861,7 +861,8 @@ function _initAttrsFromRender(render: UERenderItem) {
     if (!attrs[name]) {
       attrs[name] = UERender.NewCustAttr(name, {
         bind: isBind,
-        event: isEvent
+        event: isEvent,
+        value: value || ''
       }, editor);
     }
   });
