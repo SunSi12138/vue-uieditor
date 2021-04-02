@@ -424,7 +424,7 @@ export class UEService {
     if (attrs[name])
       _.assign(attrs[name], attr);
     const newText = render.editor.textFormat(render.editor, render.attrs);
-    if (newText != oldText) UEDrag.select(id, true);
+    if (newText != oldText) this.$uieditor['_drager'].select(id, true);
     if (!refresh || !attr.effect || !!attr.demoValue) return;
     _setRenderAttrs(render, render.editor, true, this);
     this.refresh().then(() => {

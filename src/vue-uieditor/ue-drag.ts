@@ -42,23 +42,6 @@ interface UEDragOptions {
   };
 }
 
-// export function Layuidestroy($el) {
-//   layui.$($el).remove();
-//   // layui.$($el).html('');
-//   // const $ = layui.$;
-//   // layui.$('*', $el).add([$el]).each(function () {
-//   //   layui.$.event.remove(this);
-//   //   // console.log('aaaaa')
-//   //   layui.$.removeData(this);
-//   //   if (this._vue_uieditor_linkdom) {
-//   //     $.each(this._vue_uieditor_linkdom, function (idx, item) {
-//   //       item && item();
-//   //     });
-//   //     this._vue_uieditor_linkdom = null;
-//   //   }
-//   // });
-// }
-
 
 /**
  * 获取element的rect
@@ -202,14 +185,14 @@ function _dragStart($el, options: UEDragOptions) {
   //#region select
 
   var _selectElement: any = null;
-  var _selectTimeId;
+  var _selectTimeId, _selectRect;
   const _data_toolbarsKey = 'ue_drag_toolbars';
   const isSelect = function (element: any) {
     return element == _selectElement;
   };
   const unSelect = function () {
-    if (_selectTimeId) clearInterval(_selectTimeId);
-    _selectElement = _selectTimeId = null;
+    if (_selectTimeId) cancelAnimationFrame(_selectTimeId);
+    _selectElement = _selectTimeId = _selectRect = null;
     jSelectBox.removeData(_data_toolbarsKey);
     jSelectBox.addClass(hideCls);
   };
@@ -249,18 +232,27 @@ function _dragStart($el, options: UEDragOptions) {
     jSelectBox.data(_data_toolbarsKey, toolbars);
 
     function fn() {
+      if (!_selectElement || _selectElement != element) {
+        cancelAnimationFrame(timeId);
+        return;
+      };
       const rect = getOffsetRect(body, element);
-      jSelectBox.css({
-        top: `${rect.top}px`,
-        left: `${rect.left}px`,
-        width: `${rect.width}px`,
-        height: `${rect.height}px`,
-      });
+      if (!_.isEqual(_selectRect, rect)) {
+        _selectRect = rect;
+        jSelectBox.css({
+          top: `${rect.top}px`,
+          left: `${rect.left}px`,
+          width: `${rect.width}px`,
+          height: `${rect.height}px`,
+        });
+      }
+      timeId = _selectTimeId = window.requestAnimationFrame(fn);
     };
-    // if (_selectTimeId) clearInterval(_selectTimeId);
+    _selectRect = null;
+    if (_selectTimeId) cancelAnimationFrame(_selectTimeId);
     fn();
     jSelectBox.removeClass(hideCls);
-    // _selectTimeId = setInterval(fn, 200);
+    let timeId = _selectTimeId = window.requestAnimationFrame(fn);
   };
 
   // select menu click
@@ -584,22 +576,30 @@ function _dragStart($el, options: UEDragOptions) {
   //#endregion drag
 
   return {
-    select(id, focus) {
+    select(id: string, focus?: boolean) {
       id && select(jEditorJsonContent.find(`#${id}`)[0], focus);
+    },
+    // unSelect() {
+    //   unSelect();
+    // },
+    // unPosLine() {
+    //   unPosLine();
+    // },
+    // unOverBox() {
+    //   unOverBox();
+    // },
+    destroy() {
+      unSelect();
+      unPosLine();
+      unOverBox();
     }
   }
 
-} // end DragStart();
+} // end _dragStart();
 
-let _dragner;
 
 export class UEDrag {
   static dragStart($el, options: UEDragOptions) {
-    _dragner = _dragStart($el, options)
-  }
-
-  static select(id: string, focus?: boolean) {
-    if (!_dragner) return;
-    _dragner.select(id, focus);
+    return _dragStart($el, options);
   }
 }

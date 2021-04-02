@@ -56,6 +56,15 @@ module.exports = {
       .add(path.resolve(__dirname, './src/vue-uieditor/layui'))
       .end();
 
+
+      
+  config.plugin('copy-assets').use(CopyWebpackPlugin, [
+    [{
+      from: './src/vue-uieditor/assets/',
+      to: './vue-uieditor/assets/'
+    }]
+  ]);
+
     if (process.env.NODE_ENV === 'production') {
       // 为生产环境修改配置...
 

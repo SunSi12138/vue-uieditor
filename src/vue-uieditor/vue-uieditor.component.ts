@@ -70,6 +70,8 @@ export default class VueUieditor extends UEVue {
     return !!this.current?.json;
   }
 
+  _drager: any;
+
   @UEVueLife('mounted')
   private async _mounted1() {
     const options = this.optionEx || {};
@@ -81,12 +83,12 @@ export default class VueUieditor extends UEVue {
     // LayuiRender.render(this.$el);
 
     this.$on('on-refesh-select-box', (id) => {
-      UEDrag.select(id);
+      drager.select(id);
     });
     this.$on('on-set-json', ({ service }) => {
-      UEDrag.select(service.current.id);
+      drager.select(service.current.id);
     });
-    const drager = UEDrag.dragStart(this.$el, {
+    const drager = this._drager = UEDrag.dragStart(this.$el, {
       select: (e) => {
         const { fromEl } = e;
         const id = fromEl.id;
@@ -188,8 +190,9 @@ export default class VueUieditor extends UEVue {
 
   @UEVueLife('destroyed')
   private _destroyed1() {
+    this._drager?.destroy();
     this._service?._destroy();
-    this._service = null;
+    this._service = this._drager = null;
     LayuiRender.destroy(this.$el);
   }
 
