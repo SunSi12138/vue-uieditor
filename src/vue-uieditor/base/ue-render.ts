@@ -175,11 +175,13 @@ export class UERender {
    * @param options 
    * @param transfer 
    */
-  static AddGlobalTransfer(transfer: UETransfer) {
-    transfer = UERender.DefineTransfer(transfer);
-    let editor = _getTransferEditor(transfer);
-    _.assign(_globalEditor, editor);
-    _.assign(_globalTransfer, transfer);
+  static AddGlobalTransfer(...transfers: UETransfer[]) {
+    _.forEach(transfers, function (transfer) {
+      transfer = UERender.DefineTransfer(transfer);
+      let editor = _getTransferEditor(transfer);
+      _.assign(_globalEditor, editor);
+      _.assign(_globalTransfer, transfer);
+    });
   }
 
   /** 将公共 transfer，放到option */
