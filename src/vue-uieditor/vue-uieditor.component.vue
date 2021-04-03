@@ -27,6 +27,7 @@
             layui-tip="撤销"
             layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm"
+            :class="{'layui-disabled':!service.history.canPre}"
             @click="service.history.pre()"
           >
             <i class="layui-icon layui-icon-left"></i>
@@ -36,6 +37,7 @@
             layui-tip="恢复"
             layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm"
+            :class="{'layui-disabled':!service.history.canNext}"
             @click="service.history.next()"
           >
             <i class="layui-icon layui-icon-right"></i>
