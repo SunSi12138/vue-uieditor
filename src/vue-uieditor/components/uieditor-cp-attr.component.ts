@@ -325,7 +325,7 @@ export default class UieditorCpAttr extends UEVue {
       const name = $(e.target).attr('name');
       const attr = $this._attrs[name];
       if (!attr) return;
-      $this.service.setModeOther({
+      $this.service.showMonacoEditorOther({
         content: $this._model[name],
         language: attr.language as any || 'javascript',
         save(content) {

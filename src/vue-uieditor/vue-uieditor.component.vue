@@ -2,7 +2,7 @@
   <div class="layui-uieditor">
     <div class="layui-tab layui-tab-card">
       <!-- tool-bar -->
-      <div class="tool-bar" v-if="current.mode == 'design'">
+      <div class="tool-bar" v-if="current.mode == 'design' && !current.isMonacoEditorOther">
         <div class="layui-btn-group">
           <button
             type="button"
@@ -69,7 +69,7 @@
       </div>
       <div
         class="tool-bar"
-        v-if="['script', 'json', 'tmpl'].indexOf(current.mode) >= 0"
+        v-if="['script', 'json', 'tmpl'].indexOf(current.mode) >= 0  && !current.isMonacoEditorOther"
       >
         <div class="layui-btn-group">
           <button
@@ -94,7 +94,7 @@
       </div>
       <div
         class="tool-bar"
-        v-if="current.mode == 'other'"
+        v-if="current.isMonacoEditorOther"
       >
         <div class="layui-btn-group">
           <button
@@ -153,7 +153,7 @@
         <li tmpl @click="service.setMode('tmpl')">模板</li>
         <li json @click="service.setMode('json')">JSON</li>
         <li preview @click="service.setMode('preview')">预览</li>
-        <li other @click="service.setMode('other')" style="display:none">其他</li>
+        <li other style="display:none">其他</li>
       </ul>
       <div class="layui-tab-content">
         <div class="layui-tab-item layui-show">
@@ -276,7 +276,7 @@
         </div>
         <div class="layui-tab-item">
           <uieditor-monaco-editor
-            v-if="current.mode == 'other'"
+            v-if="current.isMonacoEditorOther"
             v-model="current.monacoEditorOther.content"
             :extraLib="current.monacoEditorOther.extraLib"
             :format-auto="current.monacoEditorOther.formatAuto"

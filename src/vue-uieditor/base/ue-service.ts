@@ -132,6 +132,7 @@ export class UEService {
     /** 模式：design, json, script, tmpl, preview */
     mode: 'design' as UEMode,
     monacoEditor: null as MonacoEditorContext,
+    isMonacoEditorOther: false,
     monacoEditorOther: null as MonacoEditorContext
   };
 
@@ -150,16 +151,18 @@ export class UEService {
 
   async setMode(mode: UEMode) {
     if (!mode) mode = 'design';
-    const oldMode = this.current.mode;
-    if (oldMode == mode) return;
-
-    const jTitle =  layui.$(this.$uieditor.$el).find('.layui-tab-title');
-    if (mode == 'other'){
+    
+    const jTitle = layui.$(this.$uieditor.$el).find('.layui-tab-title');
+    if (mode == 'other') {
       jTitle.children().hide();
+      return;
     } else {
       jTitle.children().show();
       jTitle.children('[other]').hide();
     }
+
+    const oldMode = this.current.mode;
+    if (oldMode == mode) return;
 
     const current = this.current;
     switch (mode) {
@@ -216,20 +219,16 @@ export class UEService {
           }
         };
         break;
-      case 'other':
-        if (!current.monacoEditorOther)
-          current.monacoEditorOther = {}
-        break;
     }
     this.current.mode = mode;
     this.$emit('on-change-mode', { service: this, mode, oldMode })
   }
 
   /**
-   * 设置其它模式，如：属性代码编辑
+   * 打开代码编辑
    * @param option 
    */
-  setModeOther(option: MonacoEditorContext) {
+  showMonacoEditorOther(option: MonacoEditorContext) {
     const current = this.current;
     const oldMode = current.mode;
     current.monacoEditorOther = _.assign({
@@ -240,16 +239,20 @@ export class UEService {
         if (option.save) {
           await option.save(current.monacoEditorOther.content);
         }
+        current.isMonacoEditorOther = false;
         this.setModeUI(oldMode);
       },
       close: async () => {
         if (option.close) {
           await option.close();
         }
+        current.isMonacoEditorOther = false;
         this.setModeUI(oldMode);
       }
     });
     this.setModeUI('other');
+    current.isMonacoEditorOther = true;
+    // this.setModeUI('other');
   }
 
   async getTmpl() {
