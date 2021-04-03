@@ -763,8 +763,16 @@ declare class UEVue extends Vue {
 
 `;
 
+
+const _other = `
+
+declare function UEEditorVueDef(def:UEVueMixin):UEVueMixin;
+
+`;
+
 export const ExtraLib = `
 ${_vueDef}
 ${_routerDef}
 ${_vueExtends}
+${_other}
 `;

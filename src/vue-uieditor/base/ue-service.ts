@@ -7,6 +7,7 @@ import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
 import { UERenderItem } from './ue-render-item';
 import { UEVue, UEVueMixin } from "./vue-extends";
+import Vue from 'vue';
 
 
 type UEMode = 'design' | 'json' | 'script' | 'tmpl' | 'preview' | 'other';
@@ -352,12 +353,13 @@ export class UEService {
       let _this = this;
       this.current.json = rootRender;
       this.current.mixin = {
-        data: function () {
-          return {
-            current: _this && _this.current || {}
-          };
-        },
+        // data: function () {
+        //   return {
+        //     current: _this && _this.current || {}
+        //   };
+        // },
         mounted() {
+          _makeThisDTS(this);
           if (_this) {
             _this && _this.$emit('on-set-json', { service: _this, json: jsonOrg });
             resolve(true);
@@ -1148,4 +1150,25 @@ function _makeResultJson(renderList: UERenderItem[], editing?: boolean, service?
 
     if (item.children) _makeResultJson(item.children as any, editing, service);
   });
+}
+
+function _makeThisDTS(cp: any) {
+
+  const cpKeys = _.keysIn(cp);
+  const vueKeys = _.keysIn(new Vue());
+  const keys = _.filter(cpKeys, function(item){
+    return !_.includes(vueKeys, item);
+  });
+  console.warn('keys', keys);
+
+
+  const dts = `
+
+class UIEditorThis extends Vue {
+ aaaa:string;
+}
+
+`;
+
+
 }
