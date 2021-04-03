@@ -324,7 +324,6 @@ export default class UieditorCpAttr extends UEVue {
     jo.on('click', '[ue-attr-codebtn]', function (e) {
       const name = $(e.target).attr('name');
       const attr = $this._attrs[name];
-      console.warn('ue-attr-codebtn')
       if (!attr) return;
       $this.service.setModeOther({
         content: $this._model[name],
