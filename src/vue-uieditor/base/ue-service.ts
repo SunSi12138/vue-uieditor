@@ -819,6 +819,7 @@ export class UEService {
     let id = newRender.editorId;
     this.$emit('on-add-component', { service: this, dragContent: pRender, render: newRender })
     children.splice(newIndex, 0, newRender);
+    this.history.addCur();
     this.current.refreshAttr = true;
     // this.setCurrent(id);
     return this.refresh().then(() => this.setCurrent(id));
