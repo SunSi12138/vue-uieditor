@@ -61,6 +61,7 @@ export default class Home extends UEVue {
               value: "测试文本",
               type: "select",
               datas: ["sm", "lg", "dd"],
+              desc:'TEST DESC',
               order: 0,
             },
             slider: {
