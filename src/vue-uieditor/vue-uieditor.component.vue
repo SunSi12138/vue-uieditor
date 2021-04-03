@@ -1,8 +1,8 @@
 <template>
-  <div class="layui-uieditor">
+  <div class="layui-uieditor" v-if="current">
     <div class="layui-tab layui-tab-card">
       <!-- tool-bar -->
-      <div class="tool-bar" v-if="current.mode == 'design' && !current.isMonacoEditorOther">
+      <div class="tool-bar" v-if="current.mode == 'design' && !current.monacoEditorOther.show">
         <div class="layui-btn-group">
           <button
             type="button"
@@ -69,7 +69,7 @@
       </div>
       <div
         class="tool-bar"
-        v-if="['script', 'json', 'tmpl'].indexOf(current.mode) >= 0  && !current.isMonacoEditorOther"
+        v-if="['script', 'json', 'tmpl'].indexOf(current.mode) >= 0  && !current.monacoEditorOther.show"
       >
         <div class="layui-btn-group">
           <button
@@ -94,7 +94,7 @@
       </div>
       <div
         class="tool-bar"
-        v-if="current.isMonacoEditorOther"
+        v-if="current.monacoEditorOther.show"
       >
         <div class="layui-btn-group">
           <button
@@ -276,7 +276,7 @@
         </div>
         <div class="layui-tab-item">
           <uieditor-monaco-editor
-            v-if="current.isMonacoEditorOther"
+            v-if="current.monacoEditorOther.show"
             v-model="current.monacoEditorOther.content"
             :extraLib="current.monacoEditorOther.extraLib"
             :format-auto="current.monacoEditorOther.formatAuto"

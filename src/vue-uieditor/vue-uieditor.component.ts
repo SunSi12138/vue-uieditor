@@ -66,12 +66,11 @@ export default class VueUieditor extends UEVue {
     return this;
   }
 
-  current: any = {};
+  current: any = null;
 
   get isInited() {
     return !!this.current?.json;
   }
-
 
   private _initEvents() {
     const $: JQueryStatic = layui.$,

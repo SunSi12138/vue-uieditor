@@ -16,6 +16,7 @@ type MonacoEditorContext = {
   content?: string;
   extraLib?: string;
   formatAuto?: boolean;
+  show?: boolean;
   language?: "javascript" | 'json' | 'html' | 'css';
   save?(content?: string): Promise<void> | void;
   close?(): Promise<void> | void;
@@ -53,7 +54,7 @@ export class UEService {
     const _this: any = this;
     _this.current = _this.history =
       _this.options =
-      _this.$uieditor =
+      _this.$uieditor = this._lastcp =
       _this._editJson = null;
   }
 
@@ -133,14 +134,13 @@ export class UEService {
     /** 模式：design, json, script, tmpl, preview */
     mode: 'design' as UEMode,
     monacoEditor: null as MonacoEditorContext,
-    isMonacoEditorOther: false,
-    monacoEditorOther: null as MonacoEditorContext
+    monacoEditorOther: {} as MonacoEditorContext
   };
 
   private _clearMonacoEditor() {
     _.assign(this.current, {
       monacoEditor: null,
-      monacoEditorOther: null
+      monacoEditorOther: {}
     });
 
   }
@@ -176,11 +176,13 @@ export class UEService {
         break;
       case 'script':
         const extraLib = await this.options.extraLib();
+        const thisExtraLib = _makeThisDTS(this._lastcp);
+
         const scrtiptContent = await this.getScript();
         this._clearMonacoEditor();
         current.monacoEditor = {
           content: `UEEditorVueDef(${scrtiptContent})`,
-          extraLib,
+          extraLib: `${extraLib}; ${thisExtraLib}`,
           formatAuto: true,
           language: "javascript",
           save: async () => {
@@ -230,30 +232,37 @@ export class UEService {
    * 打开代码编辑
    * @param option 
    */
-  showMonacoEditorOther(option: MonacoEditorContext) {
+  async showMonacoEditorOther(option: MonacoEditorContext) {
     const current = this.current;
     const oldMode = current.mode;
+    let extraLibAll = '';
+    if (option.language == 'javascript') {
+      const extraLib = await this.options.extraLib();
+      const thisExtraLib = _makeThisDTS(this._lastcp, true);
+      extraLibAll = `${extraLib}; ${thisExtraLib}`;
+    }
     current.monacoEditorOther = _.assign({
       formatAuto: false,
       language: 'javascript'
     } as MonacoEditorContext, option, {
+      extraLib: extraLibAll,
+      show: true,
       save: async () => {
         if (option.save) {
           await option.save(current.monacoEditorOther.content);
         }
-        current.isMonacoEditorOther = false;
+        current.monacoEditorOther = {};
         this.setModeUI(oldMode);
       },
       close: async () => {
         if (option.close) {
           await option.close();
         }
-        current.isMonacoEditorOther = false;
+        current.monacoEditorOther = {};
         this.setModeUI(oldMode);
       }
     });
     this.setModeUI('other');
-    current.isMonacoEditorOther = true;
     // this.setModeUI('other');
   }
 
@@ -317,6 +326,7 @@ export class UEService {
     return this._setJson(json, false);
   }
 
+  private _lastcp: Vue;
   private _setJson(json: UERenderItem, formHistory: boolean): Promise<any> {
     return new Promise((resolve) => {
       const jsonOrg = json;
@@ -359,8 +369,8 @@ export class UEService {
         //   };
         // },
         mounted() {
-          _makeThisDTS(this);
           if (_this) {
+            _this._lastcp = this;
             _this && _this.$emit('on-set-json', { service: _this, json: jsonOrg });
             resolve(true);
           } else {
@@ -1152,23 +1162,45 @@ function _makeResultJson(renderList: UERenderItem[], editing?: boolean, service?
   });
 }
 
-function _makeThisDTS(cp: any) {
+const privateVar = /^_/;
+function _makeThisDTS(cp: any, withThis?: boolean) {
+  if (!cp) return '';
 
   const cpKeys = _.keysIn(cp);
   const vueKeys = _.keysIn(new Vue());
-  const keys = _.filter(cpKeys, function(item){
-    return !_.includes(vueKeys, item);
+  const excludes = ["$uieditor", "$service", "$el"];
+  const keys = _.filter(cpKeys, function (key) {
+    return !_.includes(vueKeys, key) && !_.includes(excludes, key) && !privateVar.test(key);
   });
-  console.warn('keys', keys);
 
+  const types = _.map(keys, function (key) {
+    const item = cp[key];
+    let typeName = _.isNil(item) ? 'any' : typeof item;
+    if (typeName == 'function') {
+      let fnDts = /^[\s\r\n]*function[^\(]*(\([^\)]*\))/i.exec(item.valueOf().toString());
+      typeName = fnDts ? `${fnDts[1]}=>any` : '()=>any';
+    }
+    if (typeName == 'object') typeName = 'any';
+
+    return `${key}: ${typeName}`
+  });
+
+  const withThisDts = !withThis ? '' : `
+const {
+  ${_.filter(cpKeys, function (key) { return !privateVar.test(key); })}
+ }  = $this;
+`;
 
   const dts = `
 
 class UIEditorThis extends Vue {
- aaaa:string;
+ ${types.join(';')};
 }
 
+const $this = new UIEditorThis();
+${withThisDts}
 `;
 
+  return dts;
 
 }
