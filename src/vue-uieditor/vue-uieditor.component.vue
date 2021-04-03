@@ -46,6 +46,7 @@
             type="button"
             layui-tip="删除"
             layui-tip-direction="3"
+            :class="{'layui-disabled':!current.id}"
             class="layui-btn layui-btn-primary layui-btn-sm"
             @click="service.delCur()"
           >

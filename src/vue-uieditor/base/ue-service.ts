@@ -564,13 +564,17 @@ export class UEService {
    * @param norefresh 是否刷新
    */
   async delCur(cnf?: boolean, norefresh?: boolean) {
+    const current = this.current;
+    const id = current.id;
+    if (!id) return;
+    const parentId = current.parentId;
     if (cnf == false) {
-      this.deleteWidget(this.current.parentId, this.current.id, norefresh);
+      this.deleteWidget(parentId, id, norefresh);
       return;
     }
     const ok = await LayuiHelper.confirm('确定要删除吗？');
     if (!ok) return;
-    this.deleteWidget(this.current.parentId, this.current.id, norefresh);
+    this.deleteWidget(parentId, id, norefresh);
   }
 
   /** norefresh 是否刷新 */
@@ -592,6 +596,7 @@ export class UEService {
           } else
             curId = pRender.editorId
           children.splice(index, 1);
+          this.history.addCur();
           if (!norefresh) {
             this.current.refreshAttr = true;
             this.refresh().then(() => { curId && this.setCurrent(curId); });
