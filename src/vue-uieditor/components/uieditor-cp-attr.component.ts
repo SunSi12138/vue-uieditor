@@ -180,7 +180,7 @@ export default class UieditorCpAttr extends UEVue {
       const desc = attr.desc ? `<i name="${name}" class="layui-icon layui-icon-about"></i>` : '';
 
       const attrCode = attr.codeBtn !== false ? ' attr-code' : '';
-      const codeBtn = attr.codeBtn !== false ? '<i class="layui-icon layui-icon-form"></i>' : '';
+      const codeBtn = attr.codeBtn !== false ? `<i ue-attr-codebtn name="${name}" class="layui-icon layui-icon-form"></i>` : '';
       const htmlClose = isRow && !isClose ? '</div></div>' : '';
       const isAddBtn = attr['isAddBtn'];
       const htmlHead = isRow || colIndex == 1 ? `<div class="layui-form-item${isAddBtn ? ' uieditor-add-item' : ''}">
@@ -285,6 +285,8 @@ export default class UieditorCpAttr extends UEVue {
   private _initEvent() {
     const jo = $(this.$el);
     const $this = this;
+
+    //绑定切换
     jo.on('click', '.layui-bg-blue,.layui-bg-blue-active', function (e) {
       var jo = $(e.target);
       const name = $(e.target).attr('name');
@@ -301,12 +303,15 @@ export default class UieditorCpAttr extends UEVue {
       }
       $this._changeAttr(name, false);
     });
+
+    //禁止绑定切换按钮选择
     jo.on('selectstart', '.layui-bg-blue,.layui-bg-gray', function (e) {
       e.stopPropagation();
       e.preventDefault();
       return false;
     });
 
+    //属性描述
     jo.on('click', '.layui-icon-about', function (e) {
       const name = $(e.target).attr('name');
       const attr = $this._attrs[name];
@@ -315,7 +320,22 @@ export default class UieditorCpAttr extends UEVue {
       }
     });
 
-    //ue-attr-addbtn
+    // 属性代码编辑
+    jo.on('click', '[ue-attr-codebtn]', function (e) {
+      const name = $(e.target).attr('name');
+      const attr = $this._attrs[name];
+      console.warn('ue-attr-codebtn')
+      if (!attr) return;
+      $this.service.setModeOther({
+        content: $this._model[name],
+        language: attr.language as any || 'javascript',
+        save(content) {
+          $this._change(name, content);
+          layui.form.val('attrform', { [name]: content });
+        }
+      });
+    });
+
 
     const addAttr = function (e) {
       const inputName = $(e.target).attr('name');
@@ -328,8 +348,8 @@ export default class UieditorCpAttr extends UEVue {
       }
     };
 
-    jo.on('keydown', '[ue-attr-addinput]', function(e){
-      if (e.keyCode == 13){
+    jo.on('keydown', '[ue-attr-addinput]', function (e) {
+      if (e.keyCode == 13) {
         e.stopPropagation();
         e.preventDefault();
         addAttr(e);

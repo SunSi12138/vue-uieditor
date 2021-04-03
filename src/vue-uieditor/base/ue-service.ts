@@ -9,6 +9,18 @@ import { UERenderItem } from './ue-render-item';
 import { UEVue, UEVueMixin } from "./vue-extends";
 
 
+type UEMode = 'design' | 'json' | 'script' | 'tmpl' | 'preview' | 'other';
+
+type MonacoEditorContext = {
+  content?: string;
+  extraLib?: string;
+  formatAuto?: boolean;
+  language?: "javascript" | 'json' | 'html' | 'css';
+  save?(content?: string): Promise<void> | void;
+  close?(): Promise<void> | void;
+}
+
+
 const _editorType = 'uieditor-div';
 
 function _makeWrapRootDiv(json?: UERenderItem) {
@@ -118,35 +130,36 @@ export class UEService {
     /** 计算后用于显示的JSON */
     json: null,
     /** 模式：design, json, script, tmpl, preview */
-    mode: 'design',
-    monacoEditor: {
-      content: '',
-      extraLib: '',
-      formatAuto: false,
-      language: "javascript",
-      save() { }
-    }
+    mode: 'design' as UEMode,
+    monacoEditor: null as MonacoEditorContext,
+    monacoEditorOther: null as MonacoEditorContext
   };
 
   private _clearMonacoEditor() {
-    this.current.monacoEditor = {
-      content: '',
-      extraLib: '',
-      formatAuto: false,
-      language: "javascript",
-      save() { }
-    };
+    _.assign(this.current, {
+      monacoEditor: null,
+      monacoEditorOther: null
+    });
+
   }
 
-  setModeUI(mode) {
+  setModeUI(mode: UEMode) {
     const $: JQueryStatic = layui.$;
     $(this.$uieditor.$el).find('.layui-tab-title').children(`[${mode}]`).trigger('click');
   }
 
-  async setMode(mode: 'design' | 'json' | 'script' | 'tmpl' | 'preview') {
+  async setMode(mode: UEMode) {
     if (!mode) mode = 'design';
     const oldMode = this.current.mode;
     if (oldMode == mode) return;
+
+    const jTitle =  layui.$(this.$uieditor.$el).find('.layui-tab-title');
+    if (mode == 'other'){
+      jTitle.children().hide();
+    } else {
+      jTitle.children().show();
+      jTitle.children('[other]').hide();
+    }
 
     const current = this.current;
     switch (mode) {
@@ -155,10 +168,11 @@ export class UEService {
         break;
       case 'preview':
         this._clearMonacoEditor();
-        current.monacoEditor.content = this.getJson();
+        current.monacoEditor = { content: this.getJson() }
         break;
       case 'script':
         const scrtiptContent = await this.getScript();
+        this._clearMonacoEditor();
         current.monacoEditor = {
           content: `UEEditorVueDef(${scrtiptContent})`,
           extraLib: '',
@@ -174,6 +188,7 @@ export class UEService {
         break;
       case 'json':
         const json = JSON.stringify(this.getJson(), null, 2)
+        this._clearMonacoEditor();
         current.monacoEditor = {
           content: json,
           extraLib: '',
@@ -201,9 +216,40 @@ export class UEService {
           }
         };
         break;
+      case 'other':
+        if (!current.monacoEditorOther)
+          current.monacoEditorOther = {}
+        break;
     }
     this.current.mode = mode;
     this.$emit('on-change-mode', { service: this, mode, oldMode })
+  }
+
+  /**
+   * 设置其它模式，如：属性代码编辑
+   * @param option 
+   */
+  setModeOther(option: MonacoEditorContext) {
+    const current = this.current;
+    const oldMode = current.mode;
+    current.monacoEditorOther = _.assign({
+      formatAuto: false,
+      language: 'javascript'
+    } as MonacoEditorContext, option, {
+      save: async () => {
+        if (option.save) {
+          await option.save(current.monacoEditorOther.content);
+        }
+        this.setModeUI(oldMode);
+      },
+      close: async () => {
+        if (option.close) {
+          await option.close();
+        }
+        this.setModeUI(oldMode);
+      }
+    });
+    this.setModeUI('other');
   }
 
   async getTmpl() {

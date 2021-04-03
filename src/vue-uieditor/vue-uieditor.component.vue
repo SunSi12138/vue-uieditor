@@ -94,6 +94,40 @@
       </div>
       <div
         class="tool-bar"
+        v-if="current.mode == 'other'"
+      >
+        <div class="layui-btn-group">
+          <button
+            type="button"
+            layui-tip="格式化"
+            layui-tip-direction="3"
+            class="layui-btn layui-btn-primary layui-btn-sm"
+            @click="$refs.monacoEditorOther.formatCode()"
+          >
+            <i class="layui-icon layui-icon-align-left"></i>
+          </button>
+          <button
+            type="button"
+            layui-tip="应用"
+            layui-tip-direction="3"
+            class="layui-btn layui-btn-primary layui-btn-sm divided"
+            @click="current.monacoEditorOther.save()"
+          >
+            <i class="layui-icon layui-icon-ok"></i>
+          </button>
+          <button
+            type="button"
+            layui-tip="取消"
+            layui-tip-direction="3"
+            class="layui-btn layui-btn-primary layui-btn-sm"
+            @click="current.monacoEditorOther.close()"
+          >
+            <i class="layui-icon layui-icon-close"></i>
+          </button>
+        </div>
+      </div>
+      <div
+        class="tool-bar"
         v-if="current.mode == 'preview'"
       >
         <div class="layui-btn-group">
@@ -119,6 +153,7 @@
         <li tmpl @click="service.setMode('tmpl')">模板</li>
         <li json @click="service.setMode('json')">JSON</li>
         <li preview @click="service.setMode('preview')">预览</li>
+        <li other @click="service.setMode('other')" style="display:none">其他</li>
       </ul>
       <div class="layui-tab-content">
         <div class="layui-tab-item layui-show">
@@ -237,6 +272,16 @@
             :options="options"
             :json="current.monacoEditor.content"
             preview
+          />
+        </div>
+        <div class="layui-tab-item">
+          <uieditor-monaco-editor
+            v-if="current.mode == 'other'"
+            v-model="current.monacoEditorOther.content"
+            :extraLib="current.monacoEditorOther.extraLib"
+            :format-auto="current.monacoEditorOther.formatAuto"
+            :language="current.monacoEditorOther.language"
+            ref="monacoEditorOther"
           />
         </div>
       </div>
