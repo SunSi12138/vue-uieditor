@@ -87,15 +87,19 @@ export class UEService {
       history.curList[pos] = this.current.id;
       history._cacle();
     },
+    addCur: () => {
+      this.history.add(this._editJson);
+    },
     next: async () => {
       let history = this.history;
       if (!history.canNext) return;
       let list = history.list;
       let pos = ++history.pos;
-      this._editJson = _.cloneDeep(list[pos]);
       history._cacle();
-      await this.refresh();
-      // this.setCurrent('');
+      this._resetCurrent();
+      await this._setJson(_.cloneDeep(list[pos]));
+      const id = history.curList[pos];
+      id && this.setCurrent(id);
     },
     pre: async () => {
       let history = this.history;
@@ -104,9 +108,10 @@ export class UEService {
       let list = history.list;
       history.pos = --pos;
       history._cacle();
-      this._editJson = _.cloneDeep(list[pos]);
-      await this.refresh();
-      // this.setCurrent('');
+      this._resetCurrent();
+      await this._setJson(_.cloneDeep(list[pos]));
+      const id = history.curList[pos];
+      id && this.setCurrent(id);
     }
   };
 
@@ -323,22 +328,18 @@ export class UEService {
 
   setJson(json: UERenderItem): Promise<any> {
     this._resetCurrent();
-    return this._setJson(json, false);
+    this.history.add(_.cloneDeep(json));
+    return this._setJson(json);
   }
 
   private _lastcp: Vue;
-  private _setJson(json: UERenderItem, formHistory: boolean): Promise<any> {
+  private _setJson(json: UERenderItem): Promise<any> {
     return new Promise((resolve) => {
       const jsonOrg = json;
       json = _.cloneDeep(json);
       if (json.type != _editorType) {
         json = _makeWrapRootDiv(json);
       }
-
-      if (!formHistory) {
-        this.history.add(json);
-      }
-
       //初始化render，初始化Id, attrs等
       _initRender([json], null, this.options?.editor, this);
 
@@ -628,6 +629,7 @@ export class UEService {
     if (newText != oldText) this.$uieditor['_drager'].select(id, true);
     if (!refresh || !attr.effect || !!attr.demoValue) return;
     _setRenderAttrs(render, render.editor, true, this);
+    this.history.addCur();
     this.refresh().then(() => {
       this.refresBreadcrumbs(render);
     });
@@ -685,7 +687,7 @@ export class UEService {
   async refresh(): Promise<any> {
     if (this._isRrefreshing) return
     this._isRrefreshing = true;
-    await this._setJson(this._editJson, true);
+    await this._setJson(this._editJson);
     this._isRrefreshing = false;
   }
 
