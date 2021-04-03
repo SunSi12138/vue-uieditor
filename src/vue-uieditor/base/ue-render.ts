@@ -61,6 +61,13 @@ function _mergeDefaultOption(options: UEOption): UEOption {
   return _.assign({}, options, {
     mixins: (defaultOptions.mixins || []).concat(options.mixins || []),
     transfer: _.assign({}, defaultOptions.transfer, options.transfer),
+    async extraLib() {
+      let optExtraLib;
+      if (options?.extraLib)
+        optExtraLib = await options.extraLib();
+      let { ExtraLib } = await import('./extraLib');
+      return `${ExtraLib};${optExtraLib || ''}`;
+    },
     transferBefore(render, extend) {
       render = defaultOptions.transferBefore(render, extend);
       render = transferBefore.call(options, render, extend);
@@ -71,7 +78,7 @@ function _mergeDefaultOption(options: UEOption): UEOption {
       render = transferAfter.call(options, render, extend);
       return render;
     }
-  });
+  } as UEOption);
 }
 
 

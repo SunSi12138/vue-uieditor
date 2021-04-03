@@ -151,7 +151,7 @@ export class UEService {
 
   async setMode(mode: UEMode) {
     if (!mode) mode = 'design';
-    
+
     const jTitle = layui.$(this.$uieditor.$el).find('.layui-tab-title');
     if (mode == 'other') {
       jTitle.children().hide();
@@ -174,11 +174,12 @@ export class UEService {
         current.monacoEditor = { content: this.getJson() }
         break;
       case 'script':
+        const extraLib = await this.options.extraLib();
         const scrtiptContent = await this.getScript();
         this._clearMonacoEditor();
         current.monacoEditor = {
           content: `UEEditorVueDef(${scrtiptContent})`,
-          extraLib: '',
+          extraLib,
           formatAuto: true,
           language: "javascript",
           save: async () => {
