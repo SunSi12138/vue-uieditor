@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
 import { UEOption, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem } from './ue-base';
@@ -7,7 +8,6 @@ import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
 import { UERenderItem } from './ue-render-item';
 import { UEVue, UEVueMixin } from "./vue-extends";
-import Vue from 'vue';
 
 
 type UEMode = 'design' | 'json' | 'script' | 'tmpl' | 'preview' | 'other';
@@ -1205,6 +1205,31 @@ function _makeResultJson(renderList: UERenderItem[], editing?: boolean, service?
   });
 }
 
+function _makeTypeDts(obj, keys, lv = 1) {
+
+  const types = _.map(keys, function (key) {
+    const item = obj[key];
+    let typeName = _.isNil(item) ? 'any' : typeof item;
+    if (typeName == 'function') {
+      let fnDts = /^[\s\r\n]*function[^\(]*(\([^\)]*\))/i.exec(item.valueOf().toString());
+      typeName = fnDts ? `${fnDts[1]}=>any` : '()=>any';
+    }
+    if (_.isArray(item)) {
+      typeName = 'any[]';
+    } else if (typeName == 'object') {
+      const oKeys = Object.keys(item);
+      if (oKeys && oKeys.length > 0 && lv == 1) {
+        typeName = `{${_makeTypeDts(item, oKeys, 2).join(';')};}`;
+      } else {
+        typeName = 'any';
+      }
+    }
+
+    return `${key}: ${typeName}`
+  });
+  return types;
+}
+
 const privateVar = /^_/;
 function _makeThisDTS(cp: any, withThis?: boolean) {
   if (!cp || cp._isDestroyed) return '';
@@ -1216,17 +1241,7 @@ function _makeThisDTS(cp: any, withThis?: boolean) {
     return !_.includes(vueKeys, key) && !_.includes(excludes, key) && !privateVar.test(key);
   });
 
-  const types = _.map(keys, function (key) {
-    const item = cp[key];
-    let typeName = _.isNil(item) ? 'any' : typeof item;
-    if (typeName == 'function') {
-      let fnDts = /^[\s\r\n]*function[^\(]*(\([^\)]*\))/i.exec(item.valueOf().toString());
-      typeName = fnDts ? `${fnDts[1]}=>any` : '()=>any';
-    }
-    if (typeName == 'object') typeName = 'any';
-
-    return `${key}: ${typeName}`
-  });
+  const types = _makeTypeDts(cp, keys);
 
   const withThisDts = !withThis ? '' : `
 const {
