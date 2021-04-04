@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import './layui-import';
 
 // const form = layui.form
@@ -9,7 +8,6 @@ import './layui-import';
 //   , slider = layui.slider
 //   , selectInput = layui.selectInput;
 
-const tree = layui.tree;
 const $: JQueryStatic = layui.$;
 
 
@@ -66,20 +64,6 @@ export class LayuiRender {
       jo.off('vue_uieditor_linkdom', callback);
     else
       jo.off('vue_uieditor_linkdom');
-  }
-
-  static renderTree(p: { elem: any, data: any }) {
-
-    tree.render(_.assign({
-      elem: null
-      , data: []
-      , showCheckbox: false  //是否显示复选框
-      , accordion: false  //是否开启手风琴模式
-      , onlyIconControl: false //是否仅允许节点左侧图标控制展开收缩
-      , isJump: false  //点击文案跳转地址
-      , edit: false  //操作节点图标
-    }, p));
-
   }
 
 }
