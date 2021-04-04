@@ -679,6 +679,15 @@ const _other = `
 
 declare function UEEditorVueDef(def:UEVueMixin):UEVueMixin;
 
+declare function UEPreviewOptionDef(p:{
+  /** 模拟 $query */
+  query:any;
+  /** 模拟 $param */
+  param:any;
+  /** 模拟 vue def */
+  vueDef:UEVueMixin;
+}):any;
+
 `;
 
 export const ExtraLib = `

@@ -241,7 +241,7 @@ export class UEService {
     const current = this.current;
     const oldMode = current.mode;
     let extraLibAll = '';
-    if (option.language == 'javascript') {
+    if (!option.language || option.language == 'javascript') {
       const extraLib = await this.options.extraLib();
       const thisExtraLib = _makeThisDTS(this._lastcp, true);
       extraLibAll = `${extraLib}; ${thisExtraLib}`;
@@ -302,6 +302,41 @@ export class UEService {
   }
 
 
+  /** 获取预览参数 */
+  getPreviewOpt() {
+    const render = this.getRenderByType('preview-opt');
+    return render ? render.children[0] as string : "{\n  query: {},\n  param: {},\n  vueDef: {\n    created() {\n\n    }\n  }\n}";
+  }
+  async setPreviewOpt(content: string) {
+    const render = this.getRenderByType('preview-opt');
+    if (render) {
+      render.children = [content || '{}'];
+    } else {
+      this._editJson.children = [{
+        type: 'preview-opt',
+        children: [content || '{}'],
+        // "editor-attrs": {
+        //   "editor_design_hide": "true"
+        // }
+      }].concat(this._editJson.children as any || []);
+    }
+    const json = this.getJson();
+    await this.setJson(json);
+    this.current.monacoEditor = { content: this.getJson() };
+  }
+  showPreviewOpt() {
+    const content = `UEPreviewOptionDef(${this.getPreviewOpt()})`;
+    this.showMonacoEditorOther({
+      content,
+      save: async (content) => {
+        content = content.replace(/^[\s\r\n]*UEPreviewOptionDef\s*\(\s*/i, '').replace(/\)[\s\r\n]*$/i, '');
+        await this.setPreviewOpt(content);
+      }
+    });
+  }
+
+
+
   private _resetCurrent() {
     if (!this.current.json) return;
     _.assign(this.current, {
@@ -332,7 +367,7 @@ export class UEService {
     return this._setJson(json);
   }
 
-  private _lastcp: Vue;
+  _lastcp: Vue;
   private _setJson(json: UERenderItem): Promise<any> {
     return new Promise((resolve) => {
       const jsonOrg = json;
@@ -1172,7 +1207,7 @@ function _makeResultJson(renderList: UERenderItem[], editing?: boolean, service?
 
 const privateVar = /^_/;
 function _makeThisDTS(cp: any, withThis?: boolean) {
-  if (!cp) return '';
+  if (!cp || cp._isDestroyed) return '';
 
   const cpKeys = _.keysIn(cp);
   const vueKeys = _.keysIn(new Vue());

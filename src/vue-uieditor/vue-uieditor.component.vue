@@ -139,6 +139,7 @@
             layui-tip="设置模拟参数"
             layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm"
+            @click="service.showPreviewOpt()"
           >
             <i class="layui-icon layui-icon-set-fill"></i>
           </button>

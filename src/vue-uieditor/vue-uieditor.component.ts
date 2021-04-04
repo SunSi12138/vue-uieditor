@@ -52,7 +52,6 @@ export default class VueUieditor extends UEVue {
   private _service: UEService;
   get service(): UEService {
     if (!this.$isBeingDestroyed && !this._service) {
-      console.log('this.optionEx', this.optionEx);
       this._service = new UEService(this, this.optionEx);
     }
     return this._service;

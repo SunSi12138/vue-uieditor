@@ -278,6 +278,9 @@ export default class VueUieditorRender extends UEVue {
       },
       mounted() {
         $uieditorRender.$emit('on-render-mounted', this);
+        if ($uieditorRender.preview) {
+          $uieditorRender.service._lastcp = this;
+        }
       },
       destroyed() {
         $uieditorRender.$emit('on-render-destroy', this);
@@ -285,8 +288,10 @@ export default class VueUieditorRender extends UEVue {
       }
     } as UEVueMixin]);
 
-    if (_.size(previewOpt?.vueDef) > 0)
+    if (_.size(previewOpt?.vueDef) > 0) {
+      console.warn('previewOpt.vueDef', previewOpt, vueDef)
       vueDef.mixins.push(previewOpt.vueDef);
+    }
   }
 
 
