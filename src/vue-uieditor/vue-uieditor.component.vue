@@ -164,34 +164,7 @@
           <div class="editor-pane">
             <div class="left">
               <div class="left-content">
-                <form
-                  class="layui-form uieditor-searchform"
-                  action=""
-                  lay-filter="first"
-                >
-                  <input
-                    type="text"
-                    placeholder="请输入搜索关键字"
-                    autocomplete="off"
-                    class="layui-input"
-                  />
-                  <i class="layui-icon layui-icon-search"></i>
-                </form>
-                <div
-                  class="layui-collapse editor-pane-collapse"
-                  lay-filter="test"
-                >
-                  <!-- 组件 -->
-                  <div class="layui-colla-item">
-                    <h2 class="layui-colla-title">
-                      <span class="editor-pane-collapse-title">组件</span>
-                      <i class="layui-icon layui-colla-icon"></i>
-                    </h2>
-                    <div class="layui-colla-content layui-show">
-                      <uieditor-cp-tree />
-                    </div>
-                  </div>
-                </div>
+                <uieditor-cp-tree />
               </div>
             </div>
             <div class="center">
