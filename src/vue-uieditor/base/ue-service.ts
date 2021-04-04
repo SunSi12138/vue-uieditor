@@ -1177,6 +1177,9 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
     render.props[rClassNameB ? ':class' : 'class'] = className;
     render.props['id'] = id;
 
+    if (collapse)
+      render.children = [];
+
     return render;
 
   });
