@@ -120,9 +120,14 @@ layui.define(['jquery', 'laytpl', 'lay'], function(exports){
   
   //渲染
   Class.prototype.render = function(rerender){
+    var jueDropdown = $('#layui-dropdown-ue');
+    if (jueDropdown.size() == 0){
+      jueDropdown = $('<div id="layui-dropdown-ue" class="layui-uieditor"></div>');
+      $('body').append(jueDropdown);
+    }
     var that = this
     ,options = that.config
-    ,elemBody = $('body')
+    ,elemBody = jueDropdown//$('body')
     
     //默认菜单内容
     ,getDefaultView = function(){

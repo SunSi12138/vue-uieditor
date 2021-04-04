@@ -3,5 +3,9 @@ declare module '*.vue' {
   export default Vue
 }
 
-declare const layui: any;
+declare const layui: {
+  $: JQueryStatic;
+  form: any;
+  [key: string]: any;
+};
 

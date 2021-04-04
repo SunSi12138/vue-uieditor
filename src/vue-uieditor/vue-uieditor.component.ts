@@ -115,6 +115,7 @@ export default class VueUieditor extends UEVue {
     this.current = service.current;
     await service.setJson(this.json);
     await this.$nextTick();
+    this.contextmenu();
     // LayuiRender.render(this.$el);
 
     this.$on('on-refesh-select-box', ({ service, id }) => {
@@ -227,6 +228,60 @@ export default class VueUieditor extends UEVue {
       }
     });
 
+  }
+
+  private contextmenu(){
+    
+  //右键菜单
+  var inst = layui.dropdown.render({
+    elem: layui.$(this.$el) //也可绑定到 document，从而重置整个右键
+    ,trigger: 'contextmenu' //contextmenu
+    ,isAllowSpread: false //禁止菜单组展开收缩
+    ,style: 'width: 200px' //定义宽度，默认自适应
+    ,id: 'test777' //定义唯一索引
+    ,data: [{
+      title: 'menu item 1'
+      ,id: 'test'
+    }, {
+      title: 'Printing'
+      ,id: 'print'
+    },{
+      title: 'Reload'
+      ,id: 'reload'
+    },{type:'-'},{
+      title: 'menu item 3'
+      ,id: '#3'
+      ,child: [{
+        title: 'menu item 3-1'
+        ,id: '#1'
+      },{
+        title: 'menu item 3-2'
+        ,id: '#2'
+      },{
+        title: 'menu item 3-3'
+        ,id: '#3'
+      }]
+    },{type:'-'},{
+      title: 'menu item 4'
+      ,id: ''
+    },{
+      title: 'menu item 5'
+      ,id: '#1'
+    },{
+      title: 'menu item 6'
+      ,id: '#1'
+    }]
+    ,click: function(obj, othis){
+      if(obj.id === 'test'){
+        // layer.msg('click');
+      } else if(obj.id === 'print'){
+        window.print();
+      } else if(obj.id === 'reload'){
+        location.reload();
+      }
+    }
+  });
+  
   }
 
   @UEVueLife('destroyed')
