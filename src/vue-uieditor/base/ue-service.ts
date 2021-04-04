@@ -896,6 +896,17 @@ export class UEService {
   }
 
 
+  collapse(id) {
+    let render = this.getRenderItem(id);
+    if (!render) return;
+    let attrs = render.attrs
+    let collapse = UERender.isCollapse(attrs);
+    UERender.setCollapse(attrs, collapse ? 'false' : 'true');
+    this.refresh();
+  }
+
+
+
 } //end UEService
 
 
@@ -1101,14 +1112,6 @@ function _getEditorRender(render: UERenderItem): UERenderItem {
 
 const _collapseKey = '_editor_collapse';
 
-function _getCollapse(attrs: UETransferEditorAttrs): 'false' | 'true' {
-  return attrs[_collapseKey].value;
-}
-
-function _setCollapse(attrs: UETransferEditorAttrs, value: 'false' | 'true') {
-  attrs[_collapseKey].value = value;
-}
-
 /**
  * 返回可拖动的render
  * @param renderList 
@@ -1125,7 +1128,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
     let collapse = false;
     let attrs = render.attrs
     if (!editor.base || editor.collapse) {
-      collapse = _getCollapse(attrs) == 'true';
+      collapse = UERender.isCollapse(attrs);
     }
 
     const select = true;

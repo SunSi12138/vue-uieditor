@@ -204,7 +204,6 @@ function _dragStart($el, options: UEDragOptions) {
     const control = options?.control(_makeEvent({ fromEl: element })) || {};
     const title = control?.title || {};
     const toolbars = control.toolbars || [];
-    const collapse = title.collapse;
 
     const toolbarHtmlList = [];
     let right = -20;
@@ -220,6 +219,7 @@ function _dragStart($el, options: UEDragOptions) {
     if (title.show === false) {
       jSelectBox.html(toolbarHtmlList.join(''));
     } else {
+      const collapse = title.collapse;
       const collapseHtml = !collapse ? '' :
         `<i class="container-extand-icon layui-icon ${title.isCollapse ? 'layui-icon-down' : 'layui-icon-right'}"></i>`
       const html = `<div class="title">
@@ -228,6 +228,7 @@ function _dragStart($el, options: UEDragOptions) {
       ${toolbarHtmlList.join('')}
     </div>`;
       jSelectBox.html(html);
+      jSelectBox.data('ue-collapse-fn', collapse);
     }
     jSelectBox.data(_data_toolbarsKey, toolbars);
 
@@ -268,6 +269,10 @@ function _dragStart($el, options: UEDragOptions) {
       const item = toolbars[index];
       item?.click(item, e);
     }
+  });
+  jSelectBox.on('mousedown', '.container-extand-icon', function (e) {
+    const collapse =  jSelectBox.data('ue-collapse-fn');
+    if (collapse) collapse(e);
   });
 
   const isDragElement = function (element) {

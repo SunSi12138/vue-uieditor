@@ -182,30 +182,28 @@ export default class VueUieditor extends UEVue {
         // let containerBox = editor.containerBox;
         // // if (containerBox) pContainerBox = true;
         // const title = containerBox ? '' : editor.textFormat(editor, _getRenderAttrs(render));
-        // let collapse = false;
-        // let collapseFn;
-        // let attrs = _getRenderAttrs(render);
-        // if (!editor.base || editor.collapse) {
-        //   collapse = _getCollapse(attrs) == 'true';
-        //   collapseFn = (e) => {
-        //     this.collapse(renderId)
-        //     // BgLogger.debug('collapse', e);
-        //   };
-        // }
+        let isCollapse = false;
+        let collapseFn;
+        if (!editor.base || editor.collapse) {
+          isCollapse = UERender.isCollapse(attrs);
+          collapseFn = (e) => {
+            this.service.collapse(renderId)
+          };
+        }
 
         // BgLogger.debug('fromEl', fromEl)
         const control = {
           title: {
             // show: !containerBox,
             // isCollapse: collapse,
-            // collapse: collapseFn
+            collapse: collapseFn,
             text,
             show: true,
-            isCollapse: true,
-            collapse(e) {
-              // this.collapse(renderId)
-              // BgLogger.debug('collapse', e);
-            }
+            isCollapse,
+            // collapse(e) {
+            //   // this.collapse(renderId)
+            //   // BgLogger.debug('collapse', e);
+            // }
           },
           toolbars: [{
             text: '复制',

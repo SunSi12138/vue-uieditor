@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { UEOption, UETransfer, UETransferEditor, UETransferEditorAttrsItem, UETransferExtend } from './ue-base';
+import { UEOption, UETransfer, UETransferEditor, UETransferEditorAttrsItem, UETransferExtend, UETransferEditorAttrs } from './ue-base';
 import { UEHelper } from './ue-helper';
 import { UERenderItem } from './ue-render-item';
 
@@ -377,6 +377,14 @@ export class UERender {
     return content && content.replace(/^[\s\r\n]*export default\s*/, '');
   }
 
+  static isCollapse(attrs: UETransferEditorAttrs): boolean {
+    return attrs[_collapseKey].value == 'true';
+  }
+
+  static setCollapse(attrs: UETransferEditorAttrs, value: 'false' | 'true') {
+    attrs[_collapseKey].value = value;
+  }
+
 }
 
 const _bindAttr = /^\s*[\:\@]/;
@@ -407,6 +415,9 @@ function _emptyEditor(component: string, defaultText: string) {
 }
 
 
+const _collapseKey = '_editor_collapse';
+
+
 function _defaultEditor(name: string): UETransferEditor {
   return {
     group: "公用组件库/基础组件",
@@ -435,7 +446,7 @@ function _defaultEditor(name: string): UETransferEditor {
     base: true,
     attrs: {
       '_meta_type': { group: 'Vue', editorOlny: true, show: false, text: 'type', effect: true, groupOrder: -50, order: -50, desc: '更改类型，注意：只保留v-model与ref内容' },
-      '_editor_collapse': { group: 'Vue', order: 999, show: false, value: 'false', editorOlny: true, desc: "editor内部使用" },
+      [_collapseKey]: { group: 'Vue', order: 999, show: false, value: 'false', editorOlny: true, desc: "editor内部使用" },
       'v-show': { group: 'Vue', vue: true, row: true, order: 102, groupOrder: -50 },
       'v-if': { group: 'Vue', vue: true, row: true, order: 103 },
       'v-for': { group: 'Vue', vue: true, row: true, order: 104 },
