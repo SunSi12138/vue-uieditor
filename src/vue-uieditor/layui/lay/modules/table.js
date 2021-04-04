@@ -1,7 +1,6 @@
 /**
 
- @Name：layui.table 表格操作
- @Author：贤心
+ @Name：layui.table 表格操作组件
  @License：MIT
     
  */
@@ -22,7 +21,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
   ,table = {
     config: {
       checkName: 'LAY_CHECKED' //是否选中状态的字段名
-      ,indexName: 'LAY_TABLE_INDEX' //下标索引名
+      ,indexName: 'LAY_TABLE_INDEX' //初始下标索引名，用于恢复排序
     } //全局配置项
     ,cache: {} //数据缓存
     ,index: layui.table ? (layui.table.index + 10000) : 0
@@ -34,7 +33,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
       return that;
     }
     
-    //事件监听
+    //事件
     ,on: function(events, callback){
       return layui.onevent.call(this, MOD_NAME, events, callback);
     }
@@ -53,8 +52,8 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
     
     return {
       config: options
-      ,reload: function(options){
-        that.reload.call(that, options);
+      ,reload: function(options, deep){
+        that.reload.call(that, options, deep);
       }
       ,setColsWidth: function(){
         that.setColsWidth.call(that);
@@ -68,7 +67,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
   //获取当前实例配置项
   ,getThisTableConfig = function(id){
     var config = thisTable.config[id];
-    if(!config) hint.error('The ID option was not found in the table instance');
+    if(!config) hint.error(id ? ('The table instance with ID \''+ id +'\' not found') : 'ID argument required');
     return config || null;
   }
   
@@ -229,11 +228,11 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
   ,Class = function(options){
     var that = this;
     that.index = ++table.index;
-    that.config = $.extend({}, that.config, table.config, options);
+    that.config = $.extend({}, that.config, table.config, options);;
     that.render();
   };
   
-  //默认配置
+  //初始默认配置
   Class.prototype.config = {
     limit: 10 //每页显示的数量
     ,loading: true //请求数据时，是否显示loading
@@ -638,15 +637,19 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
   };
   
   //表格重载
-  Class.prototype.reload = function(options){
+  Class.prototype.reload = function(options, deep){
     var that = this;
     
     options = options || {};
     delete that.haveInit;
     
+    //如果直接传入数组 data，则移除原来的数组，以免数组发生深度拷贝
     if(options.data && options.data.constructor === Array) delete that.config.data;
-    that.config = $.extend(true, {}, that.config, options);
     
+    //对参数进行深度或浅扩展
+    that.config = $.extend(deep, {}, that.config, options);
+
+    //执行渲染
     that.render();
   };
   
@@ -725,11 +728,13 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
           that.setColsWidth();
           typeof options.done === 'function' && options.done(res, curr, res[response.countName]);
         }
-        ,error: function(e, m){
-          that.errorView('数据接口请求异常：'+ m);
+        ,error: function(e, msg){
+          that.errorView('数据接口请求异常：'+ msg);
 
           that.renderForm();
           that.setColsWidth();
+          
+          typeof options.error === 'function' && options.error(e, msg);
         }
       });
     } else if(options.data && options.data.constructor === Array){ //已知数据
@@ -1033,6 +1038,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
     
     //字段匹配
     if(typeof th === 'string'){
+      field = th;
       that.layHeader.find('th').each(function(i, item){
         var othis = $(this)
         ,_field = othis.data('field');
@@ -1060,7 +1066,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
       elemSort.attr('lay-sort', type || null);
       that.layFixed.find('th')
     } catch(e){
-      return hint.error('Table modules: Did not match to field');
+      hint.error('Table modules: sort field \''+ field +'\' not matched');
     }
     
     //记录排序索引和类型
@@ -1476,7 +1482,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
       }
     });
     
-    //数据行中的事件监听返回的公共对象成员
+    //数据行中的事件返回的公共对象成员
     var commonMember = function(sets){
       var othis = $(this)
       ,index = othis.parents('tr').eq(0).data('index')
@@ -1490,7 +1496,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
         tr: tr //行元素
         ,data: table.clearCacheKey(data) //当前行数据
         ,del: function(){ //删除行数据
-          table.cache[that.key][index] = [];
+          table.cache[that.key][index] = []; 
           tr.remove();
           that.scrollPatch();
         }
@@ -1552,9 +1558,9 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
       //重置数据单选属性
       layui.each(thisData, function(i, item){
         if(index === i){
-          item.LAY_CHECKED = true;
+          item[options.checkName] = true;
         } else {
-          delete item.LAY_CHECKED;
+          delete item[options.checkName];
         }
       });
       that.setThisRowChecked(index);
@@ -1581,7 +1587,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
       setRowEvent.call(this, 'rowDouble');
     });
     
-    //创建行单击、双击事件监听
+    //创建行单击、双击事件
     var setRowEvent = function(eventType){
       var othis = $(this);
       if(othis.data('off')) return; //不触发事件
@@ -1758,7 +1764,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
       try{
         tableData = new Function('return '+ tableData)();
       } catch(e){
-        hint.error(errorTips + tableData)
+        hint.error(errorTips + tableData, 'error')
       }
       
       var cols = [], options = $.extend({
@@ -1890,6 +1896,19 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
     };
   };
   
+  //获取表格当前页的所有行数据
+  table.getData = function(id){
+    var arr = []
+    ,data = table.cache[id] || [];
+    layui.each(data, function(i, item){
+      if(item.constructor === Array){
+        return;
+      };
+      arr.push(table.clearCacheKey(item));
+    });
+    return arr;
+  };
+  
   //表格导出
   table.exportFile = function(id, data, type){
     var that = this;
@@ -1964,12 +1983,12 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
   };
   
   //表格重载
-  table.reload = function(id, options){
+  table.reload = function(id, options, deep){
     var config = getThisTableConfig(id); //获取当前实例配置项
     if(!config) return;
     
     var that = thisTable.that[id];
-    that.reload(options);
+    that.reload(options, deep);
     
     return thisTable.call(that);
   };

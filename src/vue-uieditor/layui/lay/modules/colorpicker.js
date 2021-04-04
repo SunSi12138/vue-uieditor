@@ -1,7 +1,6 @@
 /**
 
- @Title: layui.colorpicker 颜色选择器
- @Author: star1029
+ @Title: layui.colorpicker 颜色选择器组件
  @License：MIT
 
  */
@@ -23,7 +22,7 @@ layui.define('jquery', function(exports){
       return that;
     }
     
-    //事件监听
+    //事件
     ,on: function(events, callback){
       return layui.onevent.call(this, 'colorpicker', events, callback);
     }
@@ -218,7 +217,7 @@ layui.define('jquery', function(exports){
     ,elemColorBox = that.elemColorBox[0]
     
     //颜色选择器对象
-    ,elemPicker = that.elemPicker = $(['<div class="layui-uieditor"><div id="layui-colorpicker'+ that.index +'" data-index="'+ that.index +'" class="layui-anim layui-anim-upbit layui-colorpicker-main">'
+    ,elemPicker = that.elemPicker = $(['<div id="layui-colorpicker'+ that.index +'" data-index="'+ that.index +'" class="layui-anim layui-anim-upbit layui-colorpicker-main">'
       //颜色面板
       ,'<div class="layui-colorpicker-main-wrapper">'
         ,'<div class="layui-colorpicker-basis">'
@@ -266,7 +265,7 @@ layui.define('jquery', function(exports){
           ,'<button class="layui-btn layui-btn-sm" colorpicker-events="confirm">确定</button>'
         ,'</div'
       ,'</div>'
-    ,'</div></div>'].join(''))
+    ,'</div>'].join(''))
     
     ,elemColorBoxSpan = that.elemColorBox.find('.' + PICKER_TRIG_SPAN)[0];
     
@@ -276,7 +275,6 @@ layui.define('jquery', function(exports){
     } else { //插入颜色选择器
       that.removePicker(Class.thisElemInd); 
       $('body').append(elemPicker);
-      elemPicker = that.elemPicker = elemPicker.children().first();
     }
     
     Class.thisElemInd = that.index; //记录最新打开的选择器索引
@@ -290,11 +288,7 @@ layui.define('jquery', function(exports){
   Class.prototype.removePicker = function(index){
     var that = this
     ,options = that.config;
-    var jo = $('#layui-colorpicker'+ (index || that.index));
-    var jParent = jo.parent();
-    if (jParent.hasClass('layui-uieditor')) jo = jParent;
-    jo.remove();
-    // $('#layui-colorpicker'+ (index || that.index)).remove();
+    $('#layui-colorpicker'+ (index || that.index)).remove();
     return that;
   };
   
