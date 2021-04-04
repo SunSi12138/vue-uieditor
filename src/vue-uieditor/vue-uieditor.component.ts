@@ -230,58 +230,67 @@ export default class VueUieditor extends UEVue {
 
   }
 
-  private contextmenu(){
-    
-  //右键菜单
-  var inst = layui.dropdown.render({
-    elem: layui.$(this.$el) //也可绑定到 document，从而重置整个右键
-    ,trigger: 'contextmenu' //contextmenu
-    ,isAllowSpread: false //禁止菜单组展开收缩
-    ,style: 'width: 200px' //定义宽度，默认自适应
-    ,id: 'test777' //定义唯一索引
-    ,data: [{
-      title: 'menu item 1'
-      ,id: 'test'
-    }, {
-      title: 'Printing'
-      ,id: 'print'
-    },{
-      title: 'Reload'
-      ,id: 'reload'
-    },{type:'-'},{
-      title: 'menu item 3'
-      ,id: '#3'
-      ,child: [{
-        title: 'menu item 3-1'
-        ,id: '#1'
-      },{
-        title: 'menu item 3-2'
-        ,id: '#2'
-      },{
-        title: 'menu item 3-3'
-        ,id: '#3'
-      }]
-    },{type:'-'},{
-      title: 'menu item 4'
-      ,id: ''
-    },{
-      title: 'menu item 5'
-      ,id: '#1'
-    },{
-      title: 'menu item 6'
-      ,id: '#1'
-    }]
-    ,click: function(obj, othis){
-      if(obj.id === 'test'){
-        // layer.msg('click');
-      } else if(obj.id === 'print'){
-        window.print();
-      } else if(obj.id === 'reload'){
-        location.reload();
+  private contextmenu() {
+
+    //右键菜单
+    var inst = layui.dropdown.render({
+      elem: '.uieditor-drag-item,.uieditor-drag-content' //也可绑定到 document，从而重置整个右键
+      , trigger: 'contextmenu' //contextmenu
+      , isAllowSpread: false //禁止菜单组展开收缩
+      // , style: 'width: 200px' //定义宽度，默认自适应
+      , id: 'test777' //定义唯一索引
+      , data: (p) => {
+        console.log('data', p);
+        return [{
+          title: '复 制'
+          , id: 'copyCur'
+        }, {
+          title: '剪 切'
+          , id: 'cutCur'
+        }, {
+          title: '粘 贴'
+          , id: 'pasteCur'
+        }, { type: '-' }, {
+          title: '粘贴到...'
+          , id: '#3'
+          , child: [{
+            title: '前 面'
+            , id: '#1'
+          }, {
+            title: '后 面'
+            , id: '#2'
+          }]
+        }, { type: '-' }, {
+          title: '删 除'
+          , id: ''
+        }, {
+          title: '引 用'
+          , id: '#1'
+        }];
       }
-    }
-  });
-  
+      , click: function (obj, othis) {
+        if (obj.id === 'test') {
+          // layer.msg('click');
+        } else if (obj.id === 'print') {
+          window.print();
+        } else if (obj.id === 'reload') {
+          location.reload();
+        }
+      }
+    });
+
+    // inst.reload({
+    //   data:[{
+    //     title: 'menu item 6'
+    //     , id: '#1'
+    //   }]
+    //   , click: function (obj, othis) {
+    //     console.warn('click' ,obj, othis);
+    //   }
+    // })
+
+    // console.log('inst', inst);
+
   }
 
   @UEVueLife('destroyed')
