@@ -900,14 +900,14 @@ export class UEService {
    * 折叠内容
    * @param id 
    */
-  collapse(id) {
+  async collapse(id) {
     let render = this.getRenderItem(id);
     if (!render) return;
     let attrs = render.attrs
     let collapse = UERender.isCollapse(attrs);
     UERender.setCollapse(attrs, collapse ? 'false' : 'true');
     this.history.addCur();
-    this.refresh();
+    await this.refresh();
   }
 
 
