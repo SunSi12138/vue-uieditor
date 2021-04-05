@@ -2,13 +2,29 @@
   <div class="layui-uieditor" v-if="current">
     <div class="layui-tab layui-tab-card">
       <!-- tool-bar -->
-      <div class="tool-bar" v-if="current.mode == 'design' && !current.monacoEditorOther.show">
+      <div
+        class="tool-bar"
+        v-if="current.mode == 'design' && !current.monacoEditorOther.show"
+      >
         <div class="layui-btn-group">
+          <button
+            v-for="(item, index) in toolbar"
+            type="button"
+            :layui-tip="item.title"
+            layui-tip-direction="3"
+            class="layui-btn layui-btn-primary layui-btn-sm"
+            :class="{'layui-diabled':toolbarDisabled(item) && current.id}"
+            @click="toolbarClick($event, item)"
+          >
+            <i v-if="item.icon" :class="item.icon"></i>
+            <span v-else>{{ item.title }}</span>
+          </button>
           <button
             type="button"
             layui-tip="新建"
             layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm"
+            :class="{ divided: hasToolbar }"
             @click="service.empty()"
           >
             <i class="layui-icon layui-icon-file-b"></i>
@@ -27,7 +43,7 @@
             layui-tip="撤销"
             layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm"
-            :class="{'layui-disabled':!service.history.canPre}"
+            :class="{ 'layui-disabled': !service.history.canPre }"
             @click="service.history.pre()"
           >
             <i class="layui-icon layui-icon-left"></i>
@@ -37,7 +53,7 @@
             layui-tip="恢复"
             layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm"
-            :class="{'layui-disabled':!service.history.canNext}"
+            :class="{ 'layui-disabled': !service.history.canNext }"
             @click="service.history.next()"
           >
             <i class="layui-icon layui-icon-right"></i>
@@ -46,7 +62,7 @@
             type="button"
             layui-tip="删除"
             layui-tip-direction="3"
-            :class="{'layui-disabled':!current.id}"
+            :class="{ 'layui-disabled': !current.id }"
             class="layui-btn layui-btn-primary layui-btn-sm"
             @click="service.delCur()"
           >
@@ -72,7 +88,10 @@
       </div>
       <div
         class="tool-bar"
-        v-if="['script', 'json', 'tmpl'].indexOf(current.mode) >= 0  && !current.monacoEditorOther.show"
+        v-if="
+          ['script', 'json', 'tmpl'].indexOf(current.mode) >= 0 &&
+          !current.monacoEditorOther.show
+        "
       >
         <div class="layui-btn-group">
           <button
@@ -95,10 +114,7 @@
           </button>
         </div>
       </div>
-      <div
-        class="tool-bar"
-        v-if="current.monacoEditorOther.show"
-      >
+      <div class="tool-bar" v-if="current.monacoEditorOther.show">
         <div class="layui-btn-group">
           <button
             type="button"
@@ -134,7 +150,7 @@
         v-if="current.mode == 'preview' && !current.monacoEditorOther.show"
       >
         <div class="layui-btn-group">
-           <button
+          <button
             type="button"
             layui-tip="设置模拟参数"
             layui-tip-direction="3"
@@ -153,11 +169,19 @@
         >
           设计
         </li>
-        <li script @click="service.setMode('script')" v-if="hasMode('script')">代码</li>
-        <li tmpl @click="service.setMode('tmpl')" v-if="hasMode('tmpl')">模板</li>
-        <li json @click="service.setMode('json')" v-if="hasMode('json')">JSON</li>
+        <li script @click="service.setMode('script')" v-if="hasMode('script')">
+          代码
+        </li>
+        <li tmpl @click="service.setMode('tmpl')" v-if="hasMode('tmpl')">
+          模板
+        </li>
+        <li json @click="service.setMode('json')" v-if="hasMode('json')">
+          JSON
+        </li>
         <li preview @click="service.setMode('preview')">预览</li>
-        <li other style="display:none" @click="service.setMode('other')">其他</li>
+        <li other style="display: none" @click="service.setMode('other')">
+          其他
+        </li>
       </ul>
       <div class="layui-tab-content">
         <div class="layui-tab-item layui-show">

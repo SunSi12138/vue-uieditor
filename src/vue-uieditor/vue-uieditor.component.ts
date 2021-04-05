@@ -76,10 +76,25 @@ export default class VueUieditor extends UEVue {
   get modes(): UEMode[] {
     return this.themeEx.modes;
   }
-  get toolBar(): UEToolBar[] {
+  get toolbar(): UEToolBar[] {
     return this.themeEx.toolBar;
   }
-  hasMode(mode:UEMode){
+  get hasToolbar() {
+    return _.size(this.toolbar) > 0;
+  }
+  toolbarDisabled(item) {
+    let disabled = item.disabled;
+    if (_.isFunction(disabled)) {
+      disabled = disabled.call(item, { item, service: this.service });
+    }
+    item._ue_disabled;
+    return disabled;
+  }
+  toolbarClick(event, item) {
+    if (item._ue_disabled || !item.click) return;
+    item.click({ item, event, service: this.service });
+  }
+  hasMode(mode: UEMode) {
     return !this.modes || _.includes(this.modes, mode);
   }
 

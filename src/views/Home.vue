@@ -58,11 +58,11 @@ export default class Home extends UEVue {
             text: {
               effect: true,
               enabledBind: true,
-              row:true,
+              row: true,
               value: "测试文本",
               type: "select",
               datas: ["sm", "lg", "dd"],
-              desc:'TEST DESC',
+              desc: "TEST DESC",
               order: 0,
             },
             slider: {
@@ -85,7 +85,7 @@ export default class Home extends UEVue {
               effect: false,
               row: false,
               value: "true",
-              type: 'boolean',
+              type: "boolean",
               order: 2,
             },
             click: { event: true, order: 30 },
@@ -93,21 +93,42 @@ export default class Home extends UEVue {
         },
       },
     },
-    templates:[
+    templates: [
       {
-        title:'JSON',
-        group:'测试模板库/测试模板',
-        json:'{"type":"uieditor-div","children":[{"type":"uieditor-text","props":{"text":"test1","name":"name1"}},{"type":"uieditor-div","children":[{"type":"uieditor-text","props":{"text":"test1222"}},{"type":"test-text","props":{"text":"测试文本","slider":"0","select":"sm",":boolean":"true"}}]}]}'
+        title: "JSON",
+        group: "测试模板库/测试模板",
+        json:
+          '{"type":"uieditor-div","children":[{"type":"uieditor-text","props":{"text":"test1","name":"name1"}},{"type":"uieditor-div","children":[{"type":"uieditor-text","props":{"text":"test1222"}},{"type":"test-text","props":{"text":"测试文本","slider":"0","select":"sm",":boolean":"true"}}]}]}',
       },
       {
-        title:'JSON Object',
-        group:'测试模板库/测试模板',
-        json:{"type":"uieditor-div","children":[{"type":"uieditor-text","props":{"text":"test1","name":"name1"}},{"type":"uieditor-div","children":[{"type":"uieditor-text","props":{"text":"test1222"}},{"type":"test-text","props":{"text":"测试文本","slider":"0","select":"sm",":boolean":"true"}}]}]}
+        title: "JSON Object",
+        group: "测试模板库/测试模板",
+        json: {
+          type: "uieditor-div",
+          children: [
+            { type: "uieditor-text", props: { text: "test1", name: "name1" } },
+            {
+              type: "uieditor-div",
+              children: [
+                { type: "uieditor-text", props: { text: "test1222" } },
+                {
+                  type: "test-text",
+                  props: {
+                    text: "测试文本",
+                    slider: "0",
+                    select: "sm",
+                    ":boolean": "true",
+                  },
+                },
+              ],
+            },
+          ],
+        },
       },
       {
-        title:'Tmpl',
-        group:'测试模板库/测试模板',
-        template:`<template>
+        title: "Tmpl",
+        group: "测试模板库/测试模板",
+        template: `<template>
 	<uieditor-div>
 		<uieditor-text text="test1" name="name1" />
 		<uieditor-div>
@@ -115,8 +136,8 @@ export default class Home extends UEVue {
 			<test-text text="测试文本" slider="0" select="sm" :boolean="true" />
 		</uieditor-div>
 	</uieditor-div>
-</template>`
-      }
+</template>`,
+      },
     ],
     transferBefore(render) {
       return render;
@@ -133,7 +154,7 @@ export default class Home extends UEVue {
         type: "uieditor-text",
         props: {
           text: "test1",
-          name:'name1'
+          name: "name1",
         },
       },
       {
@@ -156,14 +177,23 @@ export default class Home extends UEVue {
     ],
   };
 
-  theme:UETheme;
+  theme: UETheme;
   @UEVueData()
-  private initData(){
+  private initData() {
     return {
-      theme:{
-        modes:['json', 'script', 'tmpl']
-      } as UETheme
-    }
+      theme: {
+        modes: ["json", "script", "tmpl"],
+        toolBar: [
+          {
+            title: "测试",
+            disabled: ({ service }) => !service.getCurRender(),
+            click: ({ service }) => {
+              console.warn("测试", service.getCurRender());
+            },
+          },
+        ],
+      } as UETheme,
+    };
   }
 
   @UEVueLife("mounted")

@@ -275,7 +275,7 @@ export interface UETemplate {
 
 export type UEThemeMode = 'json' | 'script' | 'tmpl';
 
-export type UEMode = UEThemeMode  | 'design' | 'json' | 'script' | 'tmpl' | 'preview' | 'other';
+export type UEMode = UEThemeMode | 'design' | 'json' | 'script' | 'tmpl' | 'preview' | 'other';
 
 
 export interface UEThemeEvent {
@@ -285,8 +285,9 @@ export interface UEThemeEvent {
 }
 
 export interface UEToolBar {
-  title: string;
-  icon: string;
+  title?: string;
+  icon?: string;
+  disabled?: boolean | ((e: UEThemeEvent) => boolean);
   /** 点击, 返回 false 不处理默认行为 */
   click?(e: UEThemeEvent): void | boolean | Promise<void | boolean>;
 }
