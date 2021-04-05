@@ -66,6 +66,7 @@ export default class UieditorCpTree extends UEVue {
   }
   removeSearchText() {
     this.searchText = '';
+    this.search();
   }
 
   @UEVueLife('destroyed')
