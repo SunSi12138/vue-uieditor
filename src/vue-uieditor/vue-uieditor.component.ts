@@ -117,6 +117,7 @@ export default class VueUieditor extends UEVue {
     await service.setJson(this.json);
     await this.$nextTick();
     this.contextmenu();
+    this.keys();
     // LayuiRender.render(this.$el);
 
     this.$on('on-refesh-select-box', ({ service, id }) => {
@@ -168,22 +169,6 @@ export default class VueUieditor extends UEVue {
         const { editor, attrs } = curRender;
         const text = curRender.editor?.textFormat(editor, attrs);
 
-        // const fromEl = ev.fromEl;
-        // const renderId = _getIdByContent(fromEl);
-        // let render = this.getRenderItem(renderId);
-        // let editor = _getRenderEditor(render);
-        // if (!editor) return;
-        // const operation = editor.operation;
-        // const pRender = this.getParentRenderItem(render);
-        // const parentId = _getRenderId(pRender);
-        // // let pContainerBox = false;
-        // const pEditor = _getRenderEditor(pRender);
-        // if (!pEditor) return;
-        // const pOperation = pEditor.operation;
-        // if (editor.containerBox) editor = pEditor;
-        // let containerBox = editor.containerBox;
-        // // if (containerBox) pContainerBox = true;
-        // const title = containerBox ? '' : editor.textFormat(editor, _getRenderAttrs(render));
         let isCollapse = false;
         let collapseFn;
         if (!editor.base || editor.collapse) {
@@ -193,19 +178,12 @@ export default class VueUieditor extends UEVue {
           };
         }
 
-        // BgLogger.debug('fromEl', fromEl)
         const control = {
           title: {
-            // show: !containerBox,
-            // isCollapse: collapse,
             collapse: collapseFn,
             text,
             show: true,
-            isCollapse,
-            // collapse(e) {
-            //   // this.collapse(renderId)
-            //   // BgLogger.debug('collapse', e);
-            // }
+            isCollapse
           },
           toolbars: [{
             text: '复制',
@@ -298,6 +276,85 @@ export default class VueUieditor extends UEVue {
       }
     });
 
+  }
+
+  private keys() {
+    const jContent = layui.$(this.$el).find('.editor-json-content');
+    jContent.keyup((e) => {
+      if (this.service.current.mode != 'design' || this.$isRouteActived === false || this.$isDestroyed) return;
+      let isDone = false;
+      const keyCode = e.keyCode;
+      if (!e.ctrlKey) {
+        switch (keyCode) {
+          //del
+          case 46:
+            this.service.delCur(false);
+            isDone = true;
+            break;
+          //向左选择（父）
+          case 37:
+            this.service.selectParent();
+            isDone = true;
+            break;
+          //向上选择
+          case 38:
+            this.service.selectPre();
+            isDone = true;
+            break;
+          //向右选择(第一个子节点)
+          case 39:
+            this.service.selectChild();
+            isDone = true;
+            break;
+          //向下选择
+          case 40:
+            //tab
+            // case 9:
+            this.service.selectNext();
+            isDone = true;
+            break;
+        }
+      } else {
+        switch (keyCode) {
+          //ctrl + f
+          // case 70:
+          //   this.showSearchList();
+          //   isDone = true;
+          //   break;
+          //ctrl + c
+          case 67:
+            this.service.copyCur();
+            isDone = true;
+            break;
+          //ctrl + x
+          case 88:
+            this.service.cutCur();
+            isDone = true;
+            break;
+          //ctrl + v
+          case 86:
+            this.service.pasteCur('after');
+            isDone = true;
+            break;
+          //ctrl + z
+          case 90:
+            this.service.history.pre();
+            isDone = true;
+            break;
+          //ctrl + y
+          case 89:
+            this.service.history.next();
+            isDone = true;
+            break;
+        }
+      }
+      if (isDone) {
+        this.$el['focus']();
+        e.stopPropagation();
+        e.preventDefault();
+        return false;
+      }
+    });
   }
 
   @UEVueLife('destroyed')

@@ -988,6 +988,77 @@ export class UEService {
   }
 
 
+  
+  private selectById(curId: string) {
+    if (!curId) return;
+    const jo = layui.$(`#${curId}`);
+    jo.trigger('mousedown');
+    jo.trigger('mouseup');
+  }
+
+  selectNext() {
+    const render = this.getCurRender();
+    const pRender = this.getParentRenderItem(render, false);
+    if (!pRender) return;
+    let selRender:UERenderItem;
+    const children = pRender.children;
+    let curId;
+    if (children.length > 1) {
+      let index = children.indexOf(render);
+      let max = children.length - 1;
+      selRender = children[index == max ? 0 : index + 1] as any;
+    }
+    if (selRender && selRender != render) {
+      this.current.refreshAttr = true;
+      curId = selRender.editorId
+      curId && this.selectById(curId);
+
+      // this.refresh().then(() => { curId && this.setCurrent(curId); });
+    }
+  }
+
+  selectPre() {
+    const render = this.getCurRender();
+    const pRender = this.getParentRenderItem(render, false);
+    if (!pRender) return;
+    let selRender;
+    const children = pRender.children;
+    let curId;
+    if (children.length > 1) {
+      let index = children.indexOf(render);
+      selRender = children[index == 0 ? children.length - 1 : index - 1];
+    }
+    if (selRender && selRender != render) {
+      this.current.refreshAttr = true;
+      curId = selRender.editorId;
+      curId && this.selectById(curId);
+      // this.refresh().then(() => { curId && this.setCurrent(curId); });
+    }
+  }
+
+  selectParent() {
+    const render = this.getCurRender();
+    const pRender = this.getParentRenderItem(render, false);
+    if (pRender) {
+      this.current.refreshAttr = true;
+      let curId = pRender.editorId;
+      curId && this.selectById(curId);
+      // this.refresh().then(() => { curId && this.setCurrent(curId); });
+    }
+  }
+
+  selectChild() {
+    const render = this.getCurRender();
+    if (!render || !render.children) return;
+    let selRender: any = render.children[0];
+    if (selRender) {
+      this.current.refreshAttr = true;
+      let curId = selRender.editorId;
+      curId && this.selectById(curId);
+      // this.refresh().then(() => { curId && this.setCurrent(curId); });
+    }
+  }
+
 
 } //end UEService
 
