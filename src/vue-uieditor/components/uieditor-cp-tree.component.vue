@@ -22,7 +22,7 @@
       <!-- 组件 -->
       <div class="layui-colla-item">
         <h2 class="layui-colla-title">
-          <span class="editor-pane-collapse-title">组件</span>
+          <span class="editor-pane-collapse-title">组件 & 模板</span>
           <i class="layui-icon layui-colla-icon"></i>
         </h2>
         <div class="layui-colla-content layui-show">

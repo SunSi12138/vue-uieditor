@@ -815,10 +815,11 @@ export class UEService {
         return item;
       }
     }
-    let editor = this.options.editor;
+    //添加 cp editor
+    const editor = this.options.editor;
     if (_.size(editor) > 0) {
       _.forEach(editor, function (item, type) {
-        const newItem = { id: UEHelper.makeAutoId(), uedrag: true, icon: item.icon, title: item.text, type, item };
+        const newItem = { id: UEHelper.makeAutoId(), $isTmpl: false, uedrag: true, icon: item.icon, title: item.text, type, item };
         if (item.show !== false) {
           const group = getTreeGroup(tree, (item.group || '').split('/'));
           group?.children.push(newItem);
@@ -826,12 +827,23 @@ export class UEService {
         components.push(newItem);
       });
     }
+
+    const tmpls = this.options.templates;
+    if (_.size(tmpls) > 0) {
+      _.forEach(tmpls, function (item, type) {
+        const newItem = { id: UEHelper.makeAutoId(), $isTmpl: true, uedrag: true, icon: item.icon, title: item.title, type, item };
+        const group = getTreeGroup(tree, (item.group || '').split('/'));
+        group?.children.push(newItem);
+        components.push(newItem);
+      });
+    }
+
     this._components = components;
     this._components_tree = tree;
     return { list: this._components, tree: this._components_tree };
   }
 
-  addComponent(cpId: string, renderId: string, type2: string) {
+  async addComponent(cpId: string, renderId: string, type2: string) {
 
     let component = _.find(this._components, { id: cpId });
     if (!component) return;
@@ -855,14 +867,38 @@ export class UEService {
     const parentId = pRender.editorId;
     const children = (pRender.children || (pRender.children = []));
 
-    let newRender = this.createRender(component.type, parentId);
-    let id = newRender.editorId;
-    this.$emit('on-add-component', { service: this, dragContent: pRender, render: newRender })
+    let newRender
+    if (component.$isTmpl) {
+      const cpItem = component.item;
+      let json = cpItem.json;
+      if (json) {
+        if (_.isString(json))
+          json = JSON.parse(json);
+        else
+          json = _.cloneDeep(json);
+      } else if (cpItem.template) {
+        json = await UECompiler.htmlToRenderAsync(cpItem.template);
+      }
+      newRender = json;
+      if (newRender && newRender.type) {
+        const type = newRender.type;
+        if (type && this.options.editor[type]) {
+          _.assign(newRender, {
+            editorId: _getId(),
+            editorPId: parentId
+          } as UERenderItem);
+        }
+      }
+    } else {
+      newRender = this.createRender(component.type, parentId);
+    }
+    if (!newRender) return;
+    let id = newRender.editorId || '';
     children.splice(newIndex, 0, newRender);
     this.history.addCur();
     this.current.refreshAttr = true;
     this.foucs();
-    // this.setCurrent(id);
+    this.$emit('on-add-component', { service: this, dragContent: pRender, render: newRender })
     return this.refresh().then(() => this.setCurrent(id));
   }
 

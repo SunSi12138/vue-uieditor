@@ -1,7 +1,14 @@
 import _ from 'lodash';
-import { UEOption, UETransfer, UETransferEditor, UETransferEditorAttrsItem, UETransferExtend, UETransferEditorAttrs } from './ue-base';
+import { UEOption, UETransfer, UETransferEditor, UETransferEditorAttrsItem, UETransferExtend, UETransferEditorAttrs, UETemplate } from './ue-base';
 import { UEHelper } from './ue-helper';
 import { UERenderItem } from './ue-render-item';
+
+
+/**
+ * 公共模板
+ */
+let _globalTemplates = [];
+
 
 /** 公共 transfer */
 const _globalTransfer = {};
@@ -179,6 +186,15 @@ export class UERender {
   }
 
   /**
+   * 添加公共模板，传入参数会被亏染
+   * @param options 
+   * @param transfer 
+   */
+  static AddGlobalTemplates(templates: UETemplate[]) {
+    _globalTemplates = _globalTemplates.concat(templates);
+  }
+
+  /**
    * 添加公共 transfer，传入参数会被亏染
    * @param options 
    * @param transfer 
@@ -192,10 +208,12 @@ export class UERender {
     });
   }
 
-  /** 将公共 transfer，放到option */
-  static GlobalTransferToOptions(options: UEOption): UEOption {
+  /** 将公共内容放到option */
+  static GlobalToOptions(options: UEOption): UEOption {
     if (options[_globalInitedKey]) return options;
     options[_globalInitedKey] = true;
+    if (_.size(_globalTemplates) > 0)
+      options.templates = _globalTemplates.concat(options.templates || []);
     (options as any).editor = _.assign({}, _globalEditor, options.editor);
     (options as any).transfer = _.assign({}, _globalTransfer, options.transfer);
     return options;

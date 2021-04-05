@@ -27,7 +27,7 @@ export default class VueUieditor extends UEVue {
 
   get optionEx() {
     const options = this.options;
-    return UERender.GlobalTransferToOptions(options);
+    return UERender.GlobalToOptions(options);
   }
 
   @UEVueProp()
@@ -121,14 +121,6 @@ export default class VueUieditor extends UEVue {
     layui.$(this.$el).on('click', '.tool-bar, .editor-json-content, .uieditor-mode-title', (e)=>{
       this.service.foucs();
     });
-    // layui.$(this.$refs.jsonContent).click((e) => {
-    //   e.stopPropagation();
-    //   e.preventDefault();
-    //   this.$refs.jsonFoucs['focus']();
-    //   console.warn('click', this, this.$refs.jsonFoucs)
-    //   return false;
-    // });
-    // LayuiRender.render(this.$el);
 
     this.$on('on-refesh-select-box', ({ service, id }) => {
       drager.select(id);

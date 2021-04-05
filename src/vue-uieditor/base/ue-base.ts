@@ -10,6 +10,8 @@ export interface UEOption {
   mixins?: UEVueMixin[];
   /** render 转换器 */
   transfer?: UETransfer;
+  /** 模板 */
+  templates?: UETemplate[];
   /** 编辑器设置 */
   readonly editor?: { [type: string]: UETransferEditor };
   /** render 转换 之前 */
@@ -243,4 +245,32 @@ export interface UETransfer {
 export async function UEGetExtraLib(): Promise<string> {
   const { ExtraLib } = await import('./extraLib');
   return ExtraLib;
+}
+
+export interface UETemplate {
+  /**
+   * 分组
+   */
+  group?: string;
+  /**
+   * 分组顺序，同分组的第一个groupOrder生效
+   */
+  groupOrder?: number;
+  /**
+   * 标题
+   */
+  title?: string;
+  icon?: string;
+  /**
+   * 描述
+   */
+  desc?: string;
+  /**
+   * json 模板，可以json字串或json对像
+   */
+  json?: string | UEObject;
+  /**
+   * html 模板，如果有json内容，优先使用json内容
+   */
+  template?: string;
 }
