@@ -109,7 +109,6 @@ export default class VueUieditor extends UEVue {
 
   @UEVueLife('mounted')
   private async _mounted1() {
-    this._initEvents();
     const options = this.optionEx || {};
     await UECompiler.init({ bable: options.babel !== false });
     const service = this.service;
@@ -118,6 +117,7 @@ export default class VueUieditor extends UEVue {
     await this.$nextTick();
     this.contextmenu();
     this.keys();
+    this._initEvents();
     layui.$(this.$el).on('click', '.tool-bar, .editor-json-content, .uieditor-mode-title', (e)=>{
       this.service.foucs();
     });
