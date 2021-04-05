@@ -1383,7 +1383,12 @@ function _makeTypeDts(obj, keys, lv = 1) {
     } else if (typeName == 'object') {
       const oKeys = Object.keys(item);
       if (oKeys && oKeys.length > 0 && lv == 1) {
-        typeName = `{${_makeTypeDts(item, oKeys, 2).join(';')};}`;
+        if (key == '$refs') {
+          typeName = `{${_.map(oKeys, (item) => `${item}:Vue`).join(';')};}`;
+
+        } else {
+          typeName = `{${_makeTypeDts(item, oKeys, 2).join(';')};}`;
+        }
       } else {
         typeName = 'any';
       }
@@ -1403,7 +1408,7 @@ function _makeThisDTS(cp: any, withThis?: boolean) {
   const excludes = ["$uieditor", "$service", "$el"];
   const keys = _.filter(cpKeys, function (key) {
     return !_.includes(vueKeys, key) && !_.includes(excludes, key) && !privateVar.test(key);
-  });
+  }).concat(['$refs']);
 
   const types = _makeTypeDts(cp, keys);
 

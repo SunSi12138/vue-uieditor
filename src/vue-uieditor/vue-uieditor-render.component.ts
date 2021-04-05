@@ -278,8 +278,8 @@ export default class VueUieditorRender extends UEVue {
       },
       mounted() {
         $uieditorRender.$emit('on-render-mounted', this);
-        if ($uieditorRender.preview) {
-          $uieditorRender.service._lastcp = this;
+        if ($uieditorRender.preview || $uieditorRender.editing) {
+          if ($uieditorRender.service) $uieditorRender.service._lastcp = this;
         }
       },
       destroyed() {

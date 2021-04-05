@@ -131,7 +131,7 @@
       </div>
       <div
         class="tool-bar"
-        v-if="current.mode == 'preview'"
+        v-if="current.mode == 'preview' && !current.monacoEditorOther.show"
       >
         <div class="layui-btn-group">
            <button

@@ -451,7 +451,7 @@ function _defaultEditor(name: string): UETransferEditor {
       'v-if': { group: 'Vue', vue: true, row: true, order: 103 },
       'v-for': { group: 'Vue', vue: true, row: true, order: 104 },
       'v-model': { group: 'Vue', vue: true, order: 105 },
-      'ref': { group: 'Vue', vue: true, codeBtn: false, order: 106 },
+      'ref': { group: 'Vue', vue: true, effect: true, codeBtn: false, order: 106 },
       'slot': { group: 'Vue', vue: true, order: 107 },
       'slot-scope': { group: 'Vue', vue: true, order: 108 },
       'class': {
