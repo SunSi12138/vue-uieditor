@@ -23,11 +23,17 @@ layui.define(['jquery'], function (exports) {
         x = e.pageX;
         y = e.pageY;
     });
+    var _id = 0;
+    var _getId = function () {
+        if (_id == Number.MAX_VALUE) _id = 0;
+        _id++;
+        return _id;
+    };
     var selectInput = function (opt) {
         this.version = 'selectInput-1.0';
-        this.tmpId = new Date().getTime();
-        this._input = 'input-' + this.tmpId;
-        this._select = 'select-' + this.tmpId;
+        this.tmpId = _getId();
+        this._input = 'ue-input-' + this.tmpId;
+        this._select = 'ue-select-' + this.tmpId;
         this._class = 'dd' + this.tmpId;
         // 配置项
         this.options = $.extend(true, {

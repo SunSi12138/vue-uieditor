@@ -861,6 +861,7 @@ export class UEService {
     children.splice(newIndex, 0, newRender);
     this.history.addCur();
     this.current.refreshAttr = true;
+    this.foucs();
     // this.setCurrent(id);
     return this.refresh().then(() => this.setCurrent(id));
   }
@@ -935,7 +936,7 @@ export class UEService {
     this._isCut = true;
   }
 
-  get canPaste(){ return !!this._copyId; }
+  get canPaste() { return !!this._copyId; }
 
   pasteCur(pos?: 'before' | 'after', keepCur?: boolean, currentId?: string, focus?: boolean) {
 
@@ -952,13 +953,13 @@ export class UEService {
 
     let children: any[] = pRender.children;
 
-    let copyRender:UERenderItem = _.cloneDeep(this.getJson(false, this._copyId));
+    let copyRender: UERenderItem = _.cloneDeep(this.getJson(false, this._copyId));
     const id = _getId();
     _.assign(copyRender, {
-      editorId:id,
-      editorPId:pRender.editorId
+      editorId: id,
+      editorPId: pRender.editorId
     } as UERenderItem);
-    const copyRenderOrg= this.getRenderItem(this._copyId);
+    const copyRenderOrg = this.getRenderItem(this._copyId);
     const copyEditor = copyRenderOrg.editor;
     if (copyEditor && copyEditor.coping) {
       if (copyEditor.coping({ render: copyRender, parent: pRender, editor: copyEditor, service: this }) === false) return;
@@ -988,7 +989,7 @@ export class UEService {
   }
 
 
-  
+
   private selectById(curId: string) {
     if (!curId) return;
     const jo = layui.$(`#${curId}`);
@@ -1000,7 +1001,7 @@ export class UEService {
     const render = this.getCurRender();
     const pRender = this.getParentRenderItem(render, false);
     if (!pRender) return;
-    let selRender:UERenderItem;
+    let selRender: UERenderItem;
     const children = pRender.children;
     let curId;
     if (children.length > 1) {
@@ -1057,6 +1058,10 @@ export class UEService {
       curId && this.selectById(curId);
       // this.refresh().then(() => { curId && this.setCurrent(curId); });
     }
+  }
+
+  foucs() {
+    this.$uieditor?.$refs.jsonFoucs['focus']();
   }
 
 
@@ -1289,17 +1294,17 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
     let id;
     if (collapse || editor.base) {
       let collapseCalss = collapse ? ' uieditor-drag-collapse' : '';
-      if (select) {
-        render.props['tabindex'] = '-1';
-      }
+      // if (select) {
+      //   render.props['tabindex'] = '-1';
+      // }
       className = `uieditor-drag-item${collapseCalss}`;
       id = renderId;
     } else {
       id = renderId;// _makeEditorContentId(renderId);
       let emptyCls = !render.children || render.children as any == 0 ? ' uieditor-drag-empty' : '';
-      if (select) {
-        render.props['tabindex'] = '-1';
-      }
+      // if (select) {
+      //   render.props['tabindex'] = '-1';
+      // }
       const overCls = '';// !operation.selectChild ? ' over' : '';
       className = `uieditor-drag-content${emptyCls}${overCls}`;
     }

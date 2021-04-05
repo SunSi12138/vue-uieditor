@@ -145,7 +145,7 @@
           </button>
         </div>
       </div>
-      <ul class="layui-tab-title">
+      <ul class="layui-tab-title uieditor-mode-title">
         <li
           design
           class="layui-tab-first layui-this"
@@ -192,7 +192,8 @@
                       >
                     </span>
                   </div>
-                  <div class="editor-json-content">
+                  <div class="editor-json-content" ref="jsonContent">
+                    <input class="editor-json-focus" ref="jsonFoucs" />
                     <vue-uieditor-render
                       v-if="current && current.json && current.mode == 'design'"
                       :options="options"
