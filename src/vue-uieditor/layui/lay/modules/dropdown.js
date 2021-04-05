@@ -196,7 +196,8 @@ layui.define(['jquery', 'laytpl', 'lay'], function (exports) {
 
               //是否存在子级
               if (isChild) {
-                return '<div class="' + STR_MENU_TITLE + '">' + viewText + function () {
+
+                return '<div class="' + STR_MENU_TITLE + (item.disabled ? ' layui-disabled' : '') + '">' + viewText + function () {
                   if (type === 'parent') {
                     return '<i class="layui-icon layui-icon-right"></i>';
                   } else if (type === 'group' && options.isAllowSpread) {
@@ -207,7 +208,7 @@ layui.define(['jquery', 'laytpl', 'lay'], function (exports) {
                 }() + '</div>'
 
               }
-              return '<div class="' + STR_MENU_TITLE + '">' + viewText + '</div>';
+              return '<div class="' + STR_MENU_TITLE + (item.disabled ? ' layui-disabled' : '') + '">' + viewText + '</div>';
             }()
             , '</li>'].join(''));
 

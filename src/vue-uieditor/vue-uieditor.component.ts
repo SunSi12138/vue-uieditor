@@ -123,6 +123,7 @@ export default class VueUieditor extends UEVue {
     });
     this.$on('on-set-json', ({ service, json }) => {
       drager.select(service.current.id);
+      this.contextmenu();
     });
     this.$on('on-change-mode', ({ service, mode, oldMode }) => {
       if (mode != 'design') {
@@ -231,63 +232,72 @@ export default class VueUieditor extends UEVue {
   private contextmenu() {
 
     //右键菜单
-    var inst = layui.dropdown.render({
-      elem: '.uieditor-drag-item,.uieditor-drag-content' //也可绑定到 document，从而重置整个右键
-      , trigger: 'contextmenu' //contextmenu
-      , isAllowSpread: false //禁止菜单组展开收缩
-      // , style: 'width: 200px' //定义宽度，默认自适应
-      , id: 'test777' //定义唯一索引
-      , data: (p) => {
+    layui.dropdown.render({
+      elem: '.uieditor-drag-item,.uieditor-drag-content', //也可绑定到 document，从而重置整个右键
+      trigger: 'contextmenu', //contextmenu
+      isAllowSpread: false, //禁止菜单组展开收缩
+      //style: 'width: 200px', //定义宽度，默认自适应
+      id: 'ue-contextmenu', //定义唯一索引
+      data: (p) => {
+        const current = this.service.current;
+        const id = current.id;
+        const canPaste = this.service.canPaste;
+
         console.log('data', p);
-        return [{
-          title: '复 制'
-          , id: 'copyCur'
-        }, {
-          title: '剪 切'
-          , id: 'cutCur'
-        }, {
-          title: '粘 贴'
-          , id: 'pasteCur'
-        }, { type: '-' }, {
-          title: '粘贴到...'
-          , id: '#3'
-          , child: [{
-            title: '前 面'
-            , id: '#1'
-          }, {
-            title: '后 面'
-            , id: '#2'
-          }]
-        }, { type: '-' }, {
-          title: '删 除'
-          , id: ''
-        }, {
-          title: '引 用'
-          , id: '#1'
-        }];
-      }
-      , click: function (obj, othis) {
-        if (obj.id === 'test') {
-          // layer.msg('click');
-        } else if (obj.id === 'print') {
-          window.print();
-        } else if (obj.id === 'reload') {
-          location.reload();
-        }
+        return [
+          {
+            title: '复 制',
+            disabled: !id,
+            click: (item) => {
+              this.service.copyCur();
+            }
+          },
+          {
+            title: '剪 切',
+            disabled: !id,
+            click: (item) => {
+              this.service.cutCur();
+            }
+          },
+          {
+            title: '粘 贴',
+            disabled: !canPaste,
+            click: (item) => {
+              this.service.pasteCur();
+            }
+          },
+          {
+            title: '粘贴到...',
+            disabled: !canPaste || !id,
+            child: [
+              {
+                title: '前 面',
+                click: (item) => {
+                  this.service.pasteCur('before');
+                }
+              },
+              {
+                title: '后 面',
+                click: (item) => {
+                  this.service.pasteCur('after');
+                }
+              }
+            ]
+          },
+          { type: '-' }, {
+            title: '删 除',
+            disabled: !id,
+            click: (item) => {
+              this.service.delCur();
+            }
+          }
+        ];
+      },
+      click: function (obj, jo) {
+        if (!obj.disabled)
+          obj?.click(obj, jo);
       }
     });
-
-    // inst.reload({
-    //   data:[{
-    //     title: 'menu item 6'
-    //     , id: '#1'
-    //   }]
-    //   , click: function (obj, othis) {
-    //     console.warn('click' ,obj, othis);
-    //   }
-    // })
-
-    // console.log('inst', inst);
 
   }
 

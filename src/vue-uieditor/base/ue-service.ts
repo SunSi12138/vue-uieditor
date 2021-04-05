@@ -911,6 +911,84 @@ export class UEService {
   }
 
 
+  private _copyId;
+  private _copyParentId;
+  private _isCut: boolean;
+  copyCur() {
+    let id = this.current.id;
+    let parentId = this.current.parentId;
+
+    this._copyId = id;
+    this._copyParentId = parentId;
+    this._isCut = false;
+  }
+
+  copyCurToNext(parentId, id, focus?: boolean) {
+    this._copyId = id;
+    this._copyParentId = parentId;
+    this._isCut = false;
+    this.pasteCur('after', true, id, focus);
+  }
+
+  /** 剪切 */
+  cutCur() {
+    this.copyCur();
+    this._isCut = true;
+  }
+
+  get canPaste(){ return !!this._copyId; }
+
+  pasteCur(pos?: 'before' | 'after', keepCur?: boolean, currentId?: string, focus?: boolean) {
+
+    currentId || (currentId = this.current.id || this.rootRender.editorId);
+    let render = this.getRenderItem(currentId);
+    let editor = render.editor
+
+    let notPos = !pos;
+
+    let pRender = editor.container && notPos ? render : (this.getParentRenderItem(render, true) || this.rootRender);
+
+    if (!pRender.children) pRender.children = [];
+
+
+    let children: any[] = pRender.children;
+
+    let copyRender:UERenderItem = _.cloneDeep(this.getJson(false, this._copyId));
+    const id = _getId();
+    _.assign(copyRender, {
+      editorId:id,
+      editorPId:pRender.editorId
+    } as UERenderItem);
+    const copyRenderOrg= this.getRenderItem(this._copyId);
+    const copyEditor = copyRenderOrg.editor;
+    if (copyEditor && copyEditor.coping) {
+      if (copyEditor.coping({ render: copyRender, parent: pRender, editor: copyEditor, service: this }) === false) return;
+    }
+
+    if (focus !== true && !_canMoving({ dragEditor: copyEditor, pEditor: pRender.editor, dragContent: pRender, service: this })) return;
+
+    if (this._isCut) {
+      this.deleteWidget(this._copyParentId, this._copyId, true);
+      this._copyId = null;
+    }
+    let index = children.indexOf(render);
+    if (index < 0) {
+      children.push(copyRender);
+    } else {
+      switch (pos) {
+        case 'before':
+          children.splice(index, 0, copyRender);
+          break;
+        default:
+          children.splice(index + 1, 0, copyRender);
+          break;
+      }
+    }
+    !keepCur && (this.current.refreshAttr = true);
+    this.refresh().then(() => !keepCur && this.setCurrent(id));
+  }
+
+
 
 } //end UEService
 
@@ -1272,4 +1350,30 @@ ${withThisDts}
 
   return dts;
 
+}
+
+
+
+function _canMoving(p: {
+  /** 容器render(父层) */
+  dragContent: UERenderItem;
+  /** 本render的editort */
+  dragEditor: UETransferEditor;
+  pEditor: UETransferEditor;
+  service: UEService;
+}) {
+  const { dragContent, dragEditor, pEditor, service } = p;
+  if (dragEditor) {
+    if (dragEditor.moving && !dragEditor.moving({ dragContent, dragEditor, service })) {
+      return false;
+    }
+    if (dragEditor.movingChild && !dragEditor.movingChild({ dragContent, dragEditor, service })) {
+      return false;
+    }
+  }
+
+  if (pEditor && pEditor.contenting && !pEditor.contenting({ dragContent, dragEditor, service })) {
+    return false;
+  }
+  return true;
 }
