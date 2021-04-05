@@ -150,17 +150,18 @@
           design
           class="layui-tab-first layui-this"
           @click="service.setMode('design')"
+          v-if="hasMode('design')"
         >
           设计
         </li>
-        <li script @click="service.setMode('script')">代码</li>
-        <li tmpl @click="service.setMode('tmpl')">模板</li>
-        <li json @click="service.setMode('json')">JSON</li>
-        <li preview @click="service.setMode('preview')">预览</li>
+        <li script @click="service.setMode('script')" v-if="hasMode('script')">代码</li>
+        <li tmpl @click="service.setMode('tmpl')" v-if="hasMode('tmpl')">模板</li>
+        <li json @click="service.setMode('json')" v-if="hasMode('json')">JSON</li>
+        <li preview @click="service.setMode('preview')" v-if="hasMode('preview')">预览</li>
         <li other style="display:none">其他</li>
       </ul>
       <div class="layui-tab-content">
-        <div class="layui-tab-item layui-show">
+        <div class="layui-tab-item layui-show" v-if="hasMode('design')">
           <div class="editor-pane">
             <div class="left">
               <div class="left-content">
@@ -214,7 +215,7 @@
             </div>
           </div>
         </div>
-        <div class="layui-tab-item">
+        <div class="layui-tab-item" v-if="hasMode('script')">
           <uieditor-monaco-editor
             v-if="current.mode == 'script'"
             v-model="current.monacoEditor.content"
@@ -224,7 +225,7 @@
             ref="modeMonacoEditor"
           />
         </div>
-        <div class="layui-tab-item">
+        <div class="layui-tab-item" v-if="hasMode('tmpl')">
           <uieditor-monaco-editor
             v-if="current.mode == 'tmpl'"
             v-model="current.monacoEditor.content"
@@ -234,7 +235,7 @@
             ref="modeMonacoEditor"
           />
         </div>
-        <div class="layui-tab-item">
+        <div class="layui-tab-item" v-if="hasMode('json')">
           <uieditor-monaco-editor
             v-if="current.mode == 'json'"
             v-model="current.monacoEditor.content"
@@ -244,7 +245,7 @@
             ref="modeMonacoEditor"
           />
         </div>
-        <div class="layui-tab-item">
+        <div class="layui-tab-item" v-if="hasMode('preview')">
           <vue-uieditor-render
             v-if="current.mode == 'preview'"
             :options="options"

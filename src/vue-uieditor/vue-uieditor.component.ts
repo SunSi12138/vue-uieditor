@@ -1,4 +1,4 @@
-import { UEOption } from './base/ue-base';
+import { UEOption, UETheme, UEMode, UEToolBar } from './base/ue-base';
 import { UECompiler } from './base/ue-compiler';
 import { UERender } from './base/ue-render';
 import { UEService } from './base/ue-service';
@@ -11,6 +11,7 @@ import { LayuiRender } from './layui/layui-render';
 import './transfer';
 import { UEDrag } from './ue-drag';
 import { UEHelper } from './base/ue-helper';
+import _ from 'lodash';
 
 
 @UEVueComponent({
@@ -30,9 +31,6 @@ export default class VueUieditor extends UEVue {
     return UERender.GlobalToOptions(options);
   }
 
-  @UEVueProp()
-  private json!: UEOption;
-
   @UEVueWatch('optionEx')
   private _wOptions(options) {
     if (this.service) {
@@ -41,6 +39,9 @@ export default class VueUieditor extends UEVue {
       this.service.setJson(json);
     }
   }
+
+  @UEVueProp()
+  private json!: UEOption;
 
   @UEVueWatch('json')
   private _wJson(json) {
@@ -64,6 +65,22 @@ export default class VueUieditor extends UEVue {
   @UEVueProvide('uieditor')
   private _pUiEditor() {
     return this;
+  }
+
+
+  @UEVueProp()
+  private theme!: UETheme;
+  get themeEx(): UETheme {
+    return this.theme || {};
+  }
+  get modes(): UEMode[] {
+    return this.themeEx.modes;
+  }
+  get toolBar(): UEToolBar[] {
+    return this.themeEx.toolBar;
+  }
+  hasMode(mode:UEMode){
+    return !this.modes || _.includes(this.modes, mode);
   }
 
   current: any = null;
@@ -118,7 +135,7 @@ export default class VueUieditor extends UEVue {
     this.contextmenu();
     this.keys();
     this._initEvents();
-    layui.$(this.$el).on('click', '.tool-bar, .editor-json-content, .uieditor-mode-title', (e)=>{
+    layui.$(this.$el).on('click', '.tool-bar, .editor-json-content, .uieditor-mode-title', (e) => {
       this.service.foucs();
     });
 

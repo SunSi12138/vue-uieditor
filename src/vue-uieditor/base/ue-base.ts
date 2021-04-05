@@ -20,8 +20,6 @@ export interface UEOption {
   transferAfter?: (render: UERenderItem, extend?: UETransferExtend) => UERenderItem;
   /** 扩展代码编辑器代码声明 */
   extraLib?(): Promise<string>;
-  /** 选中组件的添加快捷菜单 */
-  contextmenus?(p: { render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[];
   /** 添加全局变量，object对象 */
   global?(): UEObject;
   /** 是否开启 babel 在线编译（要加载babel-standalone js），默认为 true */
@@ -273,4 +271,29 @@ export interface UETemplate {
    * html 模板，如果有json内容，优先使用json内容
    */
   template?: string;
+}
+
+
+export type UEMode = 'design' | 'json' | 'script' | 'tmpl' | 'preview' | 'other';
+
+
+export interface UEThemeEvent {
+  item: any;
+  event: any;
+  service: UEService;
+}
+
+export interface UEToolBar {
+  title: string;
+  icon: string;
+  /** 点击, 返回 false 不处理默认行为 */
+  click?(e: UEThemeEvent): void | boolean | Promise<void | boolean>;
+}
+
+export interface UETheme {
+  modes?: UEMode[],
+  /** 顶部工具栏 */
+  toolBar?: UEToolBar[];
+  /** 选中组件的添加快捷菜单 */
+  contextmenus?(p: { render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[];
 }

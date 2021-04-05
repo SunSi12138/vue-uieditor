@@ -2,15 +2,12 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UEOption, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem } from './ue-base';
+import { UEOption, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem, UEMode } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
 import { UERenderItem } from './ue-render-item';
 import { UEVue, UEVueMixin } from "./vue-extends";
-
-
-type UEMode = 'design' | 'json' | 'script' | 'tmpl' | 'preview' | 'other';
 
 type MonacoEditorContext = {
   content?: string;

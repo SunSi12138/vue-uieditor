@@ -3,7 +3,7 @@
     <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/> -->
     <div class="uieditor-div">
-      <vue-uieditor :options="options" :json="json" />
+      <vue-uieditor :options="options" :json="json" :theme="theme" />
     </div>
   </div>
 </template>
@@ -19,12 +19,13 @@
 </style>
 <script lang="ts">
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
-import { UEOption } from "../vue-uieditor/base/ue-base";
+import { UEOption, UETheme } from "../vue-uieditor/base/ue-base";
 import { UERender } from "../vue-uieditor/base/ue-render";
 import { UERenderItem } from "../vue-uieditor/base/ue-render-item";
 import {
   UEVue,
   UEVueComponent,
+  UEVueData,
   UEVueLife,
 } from "../vue-uieditor/base/vue-extends";
 const groupOrder = 10;
@@ -154,6 +155,16 @@ export default class Home extends UEVue {
       },
     ],
   };
+
+  theme:UETheme;
+  @UEVueData()
+  private initData(){
+    return {
+      theme:{
+        modes:['design', 'json']
+      } as UETheme
+    }
+  }
 
   @UEVueLife("mounted")
   private _mounted1() {
