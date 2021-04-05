@@ -10,6 +10,7 @@ import { LayuiHelper } from './layui/layui-helper';
 import { LayuiRender } from './layui/layui-render';
 import './transfer';
 import { UEDrag } from './ue-drag';
+import { UEHelper } from './base/ue-helper';
 
 
 @UEVueComponent({
@@ -211,8 +212,7 @@ export default class VueUieditor extends UEVue {
             icon: 'layui-icon layui-icon-file-b',
             show: true,
             click: (item, e) => {
-              LayuiHelper.msg('复制! - ' + this.service.current.id);
-              // this.copyCurToNext(parentId, renderId, true);
+              this.service.copyCurToNext()
             }
           }, {
             text: '删除',
@@ -233,11 +233,11 @@ export default class VueUieditor extends UEVue {
 
     //右键菜单
     layui.dropdown.render({
-      elem: '.uieditor-drag-item,.uieditor-drag-content', //也可绑定到 document，从而重置整个右键
-      trigger: 'contextmenu', //contextmenu
+      elem: '.uieditor-drag-item,.uieditor-drag-content',
+      trigger: 'contextmenu',
       isAllowSpread: false, //禁止菜单组展开收缩
       //style: 'width: 200px', //定义宽度，默认自适应
-      id: 'ue-contextmenu', //定义唯一索引
+      id: 'ue-cxtmenu-' + UEHelper.makeAutoId(), //定义唯一索引
       data: (p) => {
         const current = this.service.current;
         const id = current.id;

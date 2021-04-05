@@ -917,17 +917,16 @@ export class UEService {
   copyCur() {
     let id = this.current.id;
     let parentId = this.current.parentId;
-
     this._copyId = id;
     this._copyParentId = parentId;
     this._isCut = false;
   }
 
-  copyCurToNext(parentId, id, focus?: boolean) {
-    this._copyId = id;
-    this._copyParentId = parentId;
+  copyCurToNext() {
+    this._copyId = this.current.id;
+    this._copyParentId = this.current.parentId;
     this._isCut = false;
-    this.pasteCur('after', true, id, focus);
+    this.pasteCur('after', true, this._copyId, true);
   }
 
   /** 剪切 */
