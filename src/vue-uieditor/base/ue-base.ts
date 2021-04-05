@@ -273,8 +273,9 @@ export interface UETemplate {
   template?: string;
 }
 
+export type UEThemeMode = 'json' | 'script' | 'tmpl';
 
-export type UEMode = 'design' | 'json' | 'script' | 'tmpl' | 'preview' | 'other';
+export type UEMode = UEThemeMode  | 'design' | 'json' | 'script' | 'tmpl' | 'preview' | 'other';
 
 
 export interface UEThemeEvent {
@@ -291,7 +292,7 @@ export interface UEToolBar {
 }
 
 export interface UETheme {
-  modes?: UEMode[],
+  modes?: UEThemeMode[],
   /** 顶部工具栏 */
   toolBar?: UEToolBar[];
   /** 选中组件的添加快捷菜单 */

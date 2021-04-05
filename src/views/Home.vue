@@ -161,7 +161,7 @@ export default class Home extends UEVue {
   private initData(){
     return {
       theme:{
-        modes:['design', 'json']
+        modes:['json', 'script', 'tmpl']
       } as UETheme
     }
   }
