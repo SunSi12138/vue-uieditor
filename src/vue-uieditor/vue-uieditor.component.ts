@@ -243,7 +243,6 @@ export default class VueUieditor extends UEVue {
         const id = current.id;
         const canPaste = this.service.canPaste;
 
-        console.log('data', p);
         return [
           {
             title: '复 制',
