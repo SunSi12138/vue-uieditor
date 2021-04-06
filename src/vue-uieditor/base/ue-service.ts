@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UEMode, UEOption, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
+import { UEMode, UEOption, UETransferEditor, UETransferEditorAttrsItem, UEDragType2 } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -840,9 +840,36 @@ export class UEService {
     return { list: this._components, tree: this._components_tree };
   }
 
-  async addComponent(cpId: string, renderId: string, type2: string) {
+  /**
+   * 通过拖动添加
+   * @param cpId 
+   * @param renderId 
+   * @param type2 
+   */
+  async addByDrag(cpId: string, renderId: string, type2: UEDragType2) {
 
     let component = _.find(this._components, { id: cpId });
+    if (!component) return;
+
+    await this._addComponent(component, renderId, type2);
+  }
+
+  /**
+   * 通过类型添加
+   * @param type 
+   * @param renderId 
+   * @param type2 
+   */
+  async addByType(type: string, renderId: string, type2: UEDragType2) {
+
+    let component = _.find(this._components, { type });
+    if (!component) return;
+
+    await this._addComponent(component, renderId, type2);
+  }
+
+  private async _addComponent(component: any, renderId: string, type2: UEDragType2) {
+
     if (!component) return;
 
     const toRender = this.getRenderItem(renderId);

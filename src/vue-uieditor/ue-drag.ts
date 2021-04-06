@@ -92,7 +92,6 @@ function getMousePos(body, el, e) {
   return { x: e.pageX - bodyLeft, y: e.pageY - bodyTop };
 }
 
-
 /** 位置线（上下左右）决定边距 */
 const _posLineAbs = 20;
 /** 位置线厚度 */

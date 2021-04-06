@@ -217,7 +217,7 @@ export default class VueUieditor extends UEVue {
         if (isTreeNode) {
           const cpId = $(fromEl).data('id');
           const renderId = toEl.id;
-          this.service.addComponent(cpId, renderId, pos.type2);
+          this.service.addByDrag(cpId, renderId, pos.type2);
         } else {
           const fromId = fromEl.id;
           const toId = toEl.id;

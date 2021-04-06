@@ -302,3 +302,7 @@ export interface UETheme {
   /** 选中组件的添加快捷菜单 */
   contextmenus?(p: { render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[];
 }
+
+
+export type UEDragType = 'in' | 'top' | 'bottom' | 'left' | 'right';
+export type UEDragType2 = 'in' | 'before' | 'after';
