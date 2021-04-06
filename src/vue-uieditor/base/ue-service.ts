@@ -19,6 +19,16 @@ type MonacoEditorContext = {
   close?(): Promise<void> | void;
 }
 
+type UEAddComponent = {
+  id?: string;
+  $isTmpl?: boolean;
+  uedrag?: boolean;
+  icon?: string;
+  title?: string;
+  type?: string;
+  item: any;
+}
+
 
 const _editorType = 'uieditor-div';
 
@@ -790,7 +800,7 @@ export class UEService {
   }
 
 
-  private _components: any[];
+  private _components: UEAddComponent[];
   private _components_tree: any[]
   /** 组件栏数据 */
   get components(): { list: any[]; tree: any[] } {
@@ -851,7 +861,7 @@ export class UEService {
     let component = _.find(this._components, { id: cpId });
     if (!component) return;
 
-    await this._addComponent(component, renderId, type2);
+    await this.addByComponent(component, renderId, type2);
   }
 
   /**
@@ -865,10 +875,16 @@ export class UEService {
     let component = _.find(this._components, { type });
     if (!component) return;
 
-    await this._addComponent(component, renderId, type2);
+    await this.addByComponent(component, renderId, type2);
   }
 
-  private async _addComponent(component: any, renderId: string, type2: UEDragType2) {
+  /**
+   * 添加组件 或 模板
+   * @param component 
+   * @param renderId 
+   * @param type2 
+   */
+  async addByComponent(component: UEAddComponent, renderId: string, type2: UEDragType2) {
 
     if (!component) return;
 
