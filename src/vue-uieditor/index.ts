@@ -4,6 +4,10 @@
 export * from './base/ue-base';
 export * from './base/ue-render';
 export * from './base/vue-extends';
+export * from './base/ue-render-item';
+export * from './base/ue-helper';
+export * from './base/ue-contextmenu-item';
+export * from './base/ue-compiler';
 
 
 // 存储组件列表
