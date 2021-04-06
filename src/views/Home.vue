@@ -73,8 +73,16 @@ export default class Home extends UEVue {
                 title: "添加",
                 icon: "layui-icon layui-icon-addition",
                 click() {
-                  LayuiHelper.msg(
-                    JSON.stringify(service.getJson(false, render) || {})
+                  service.addByComponent(
+                    {
+                      $isTmpl: true,
+                      item: {
+                        json:
+                          '{"type":"uieditor-text","props":{"text":"test1222"}}',
+                      },
+                    },
+                    render.editorId,
+                    'after'
                   );
                 },
               },
