@@ -1,5 +1,15 @@
 <template>
   <div class="layui-uieditor" v-if="current">
+    <div class="editor-json-content-out">
+      <input class="editor-json-focus" ref="jsonFoucs" />
+      <vue-uieditor-render
+        v-if="current && current.json && current.mode == 'design'"
+        :options="options"
+        :json="current.json"
+        :mixin="current.mixin"
+        editing
+      />
+    </div>
     <div class="layui-tab layui-tab-card">
       <!-- tool-bar -->
       <div
@@ -13,7 +23,10 @@
             :layui-tip="item.title"
             layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm"
-            :class="{ 'layui-disabled': item.disabledEx, 'divided': item.divided }"
+            :class="{
+              'layui-disabled': item.disabledEx,
+              divided: item.divided,
+            }"
             v-show="item.showEx"
             @click="toolbarClick($event, item)"
           >
@@ -218,16 +231,7 @@
                       >
                     </span>
                   </div>
-                  <div class="editor-json-content" ref="jsonContent">
-                    <input class="editor-json-focus" ref="jsonFoucs" />
-                    <vue-uieditor-render
-                      v-if="current && current.json && current.mode == 'design'"
-                      :options="options"
-                      :json="current.json"
-                      :mixin="current.mixin"
-                      editing
-                    />
-                  </div>
+                  <div class="editor-json-content"></div>
                 </div>
               </div>
             </div>

@@ -142,6 +142,20 @@ export default class VueUieditor extends UEVue {
       layer = layui.layer;
     const jo = $(this.$el);
 
+    const jEditorJsonContentOut = jo.find('.editor-json-content-out');
+    const jEditorJsonContent = jo.find('.editor-json-content');
+    let jEditorJsonContentRest = null;
+    let jEditorJsonContentH= null;
+    let jEditorJsonContentW= null;
+    var syncEditorContentSize = () => {
+      let rest = jEditorJsonContent.offset();
+      let height = jEditorJsonContent.outerHeight();
+      let width = jEditorJsonContent.outerWidth();
+      _.assign(rest, {height, width});
+      if (_.isEqual(jEditorJsonContentRest, rest)) return;
+      jEditorJsonContentRest = rest;
+    }
+
     jo.click(() => {
       closeTip();
       this._makeToolbarDisabled();
