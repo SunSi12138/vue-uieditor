@@ -6,6 +6,7 @@
     "serve": "rimraf ./dist && vue-cli-service serve",
     "build": "rimraf ./lib && vue-cli-service build && npm run lib-file",
     "buildToNM": "npm run build && npm run NM-file",
+    "PU":"npm run build && npm publish ./lib",
     "dev": "npm run serve",
     "output": "vue-cli-service inspect --mode production > output.js",
     "lib-file": "cpy ./*/** ../../../../lib/@types --cwd=./lib/@types-build/src/vue-uieditor --parents && cpy ./lib-build ./lib && rimraf ./lib/@types-build",

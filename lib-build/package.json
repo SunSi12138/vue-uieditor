@@ -1,15 +1,16 @@
 {
   "name": "vue-uieditor",
   "version": "0.1.0",
-  "description": "Vue UI 编辑器(UIEditor)",
+  "description": "Vue UI 编辑器",
   "main": "./index.js",
   "keyword": "vue uieditor vue-uieditor",
   "types": "@types/index.d.ts",
-  "private": true,
+  "homepage": "https://gitee.com/days2020/vue-uieditor",
   "scripts": {},
   "dependencies": {
     "vue": "^2.6.10",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {}
 }

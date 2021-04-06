@@ -42,6 +42,20 @@ module.exports = {
         library: 'VueUieditor',
         umdNamedDefine: true
       });
+      if (!config.externals) config.externals = {};
+      config.externals['vue'] = {
+        root: 'Vue',
+        commonjs: 'vue',
+        commonjs2: 'vue',
+        amd: 'vue'
+      }
+      config.externals['lodash'] = {
+        root: '_',
+        commonjs: 'lodash',
+        commonjs2: 'lodash',
+        amd: 'lodash'
+      };
+      config.externals['vue-template-compiler'] = 'vue-template-compiler'
       // console.log('config.output AA', { ...config.output });
     }
   },
@@ -57,13 +71,13 @@ module.exports = {
       .end();
 
 
-      
-  config.plugin('copy-assets').use(CopyWebpackPlugin, [
-    [{
-      from: './src/vue-uieditor/assets/',
-      to: './vue-uieditor/assets/'
-    }]
-  ]);
+
+    config.plugin('copy-assets').use(CopyWebpackPlugin, [
+      [{
+        from: './src/vue-uieditor/assets/',
+        to: './vue-uieditor/assets/'
+      }]
+    ]);
 
     if (process.env.NODE_ENV === 'production') {
       // 为生产环境修改配置...
