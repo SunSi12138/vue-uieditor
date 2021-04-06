@@ -6,19 +6,20 @@
 @editorRightWidth: 300px;
 
 .layui-uieditor {
-  height: 100%;
-  width: 100%;
+  height  : 100%;
+  width   : 100%;
   position: relative;
 
-  margin: 0; padding: 0;
-  -webkit-tap-highlight-color:rgba(0,0,0,0);
+  margin                     : 0;
+  padding                    : 0;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   // line-height: 24px;
   // font: 14px Helvetica Neue,Helvetica,PingFang SC,Tahoma,Arial,sans-serif;
 
   .layui-disabled {
     pointer-events: none;
-    cursor: not-allowed !important;
-    color: #d2d2d2 !important;
+    cursor        : not-allowed !important;
+    color         : #d2d2d2 !important;
   }
 
   // *,:after,:before {
@@ -26,21 +27,21 @@
   // }
 
   & ::-webkit-scrollbar {
-    width: 8px;
+    width : 8px;
     height: 8px;
   }
 
   >.layui-tab {
-    height: 100%;
-    width: 100%;
+    height  : 100%;
+    width   : 100%;
     position: relative;
 
     >.layui-tab-title {
       position: absolute;
-      width: 100%;
-      top: 0;
-      left: 0;
-      z-index: 1;
+      width   : 100%;
+      top     : 0;
+      left    : 0;
+      z-index : 1;
 
       >.layui-tab-first {
         margin-left: 20px; // calc(@editorLeftWidth + 5px);
@@ -48,70 +49,90 @@
 
       >.layui-this {
         background-color: transparent;
-        color: #1E9FFF;
+        color           : #1E9FFF;
 
         &:after {
-          border-width: 0 0 2px 0;
-          border-style: solid;
+          border-width       : 0 0 2px 0;
+          border-style       : solid;
           border-bottom-color: #1886e6;
         }
       }
 
       >li {
         min-width: 50px;
-        padding: 0 5px;
+        padding  : 0 5px;
         font-size: 13px;
       }
     }
 
     >.layui-tab-content {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 0;
+      position  : absolute;
+      top       : 0;
+      left      : 0;
+      z-index   : 0;
       box-sizing: border-box;
-      width: 100%;
-      height: 100%;
-      padding: 40px 0 0 0 !important;
+      width     : 100%;
+      height    : 100%;
+      padding   : 40px 0 0 0 !important;
 
       >.layui-tab-item {
-        height: 100%;
+        height          : 100%;
         background-color: white;
       }
     }
   }
 
-  .editor-json-content-out {
-    position:absolute;
+  .editor-json-content {
+    position: absolute;
+    z-index : 100;
+
+    padding : 0;
+    overflow: hidden auto;
+
+    >.editor-json-focus {
+      position: fixed;
+      top     : 0;
+      left    : 0;
+      overflow: hidden;
+      width   : 0;
+      height  : 0;
+      padding : 0;
+      margin  : 0;
+      border  : 0;
+
+      &:focus {
+        outline: none;
+      }
+    }
   }
 
   //面版
   .editor-pane {
-    height: 100%;
-    width: 100%;
+    height  : 100%;
+    width   : 100%;
     overflow: hidden;
     position: relative;
 
     .layui-colla-content {
       font-size: 12px;
-      padding: 6px;
+      padding  : 6px;
     }
 
     //左
     >.left {
-      position: absolute;
-      top: 0;
-      left: 0;
-      overflow: hidden;
-      width: @editorLeftWidth;
-      height: 100%;
-      z-index: 1;
+      position    : absolute;
+      top         : 0;
+      left        : 0;
+      overflow    : hidden;
+      width       : @editorLeftWidth;
+      height      : 100%;
+      z-index     : 1;
       border-right: solid 1px #e6e6e6;
 
       >.left-content {
         overflow: hidden auto;
-        width: 100%;
-        height: 100%;
+        width   : 100%;
+        height  : 100%;
         position: relative;
       }
 
@@ -119,87 +140,77 @@
 
     //中
     >.center {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 0;
-      overflow: hidden;
-      padding-left: @editorLeftWidth;
+      position     : absolute;
+      top          : 0;
+      left         : 0;
+      z-index      : 0;
+      overflow     : hidden;
+      padding-left : @editorLeftWidth;
       padding-right: @editorRightWidth;
-      box-sizing: border-box;
-      height: 100%;
-      width: 100%;
+      box-sizing   : border-box;
+      height       : 100%;
+      width        : 100%;
 
       >.center-content {
         overflow: hidden;
-        width: 100%;
-        height: 100%;
+        width   : 100%;
+        height  : 100%;
         position: relative;
       }
 
       .editor-content {
         position: relative;
         overflow: hidden;
-        width: 100%;
-        height: 100%;
+        width   : 100%;
+        height  : 100%;
 
 
-        >.editor-json-content {
-          position: absolute;
+        >.editor-json-content-in {
+          position  : absolute;
           box-sizing: border-box;
-          height: 100%;
-          width: 100%;
-          bottom: 0;
-          left: 0;
-          padding: 34px 0 0 0;
-          overflow: hidden auto;
+          height    : 100%;
+          width     : 100%;
+          bottom    : 0;
+          left      : 0;
+          padding   : 34px 0 0 0;
+          overflow  : hidden;
 
-          >.editor-json-focus {
-            position: fixed;
-            top: 0;
-            left: 0;
-            overflow: hidden;
-            width: 0;
-            height: 0;
-            padding: 0;
-            margin: 0;
-            border: 0;
-
-            &:focus {
-              outline: none;
-            }
+          >div {
+            height: 100%;
+            width : 100%;
           }
+
         }
 
 
         >.center-breadcrumb {
-          color: #999;
-          font-size: 12px;
-          height: 34px;
-          line-height: 34px;
-          padding-left: 5px;
-          border-bottom: 1px solid #e6e6e6;
-          position: absolute;
-          box-sizing: border-box;
-          top: 0;
-          left: 0;
-          width: 100%;
+          color           : #999;
+          font-size       : 12px;
+          height          : 34px;
+          line-height     : 34px;
+          padding-left    : 5px;
+          border-bottom   : 1px solid #e6e6e6;
+          position        : absolute;
+          box-sizing      : border-box;
+          top             : 0;
+          left            : 0;
+          width           : 100%;
           background-color: white;
-          z-index: 9991;
+          z-index         : 9991;
 
           .center-breadcrumb-item {
-            color: #515a6e;
+            color     : #515a6e;
             transition: color .2s ease-in-out;
 
             &.link {
               font-weight: bold;
-              cursor: pointer;
+              cursor     : pointer;
             }
           }
 
           .center-breadcrumb-item-separator {
             margin: 0;
-            color: #dcdee2;
+            color : #dcdee2;
           }
 
         }
@@ -209,19 +220,19 @@
 
     //右
     >.right {
-      position: absolute;
-      top: 0;
-      right: 0;
-      z-index: 1;
-      overflow: hidden;
-      width: @editorRightWidth;
-      height: 100%;
+      position   : absolute;
+      top        : 0;
+      right      : 0;
+      z-index    : 1;
+      overflow   : hidden;
+      width      : @editorRightWidth;
+      height     : 100%;
       border-left: solid 1px #e6e6e6;
 
       >.right-content {
         overflow: hidden auto;
-        width: 100%;
-        height: 100%;
+        width   : 100%;
+        height  : 100%;
         position: relative;
       }
     }
@@ -231,15 +242,15 @@
 
   .tool-bar {
     position: absolute;
-    z-index: 2;
-    top: 5px;
-    right: 12px;
+    z-index : 2;
+    top     : 5px;
+    right   : 12px;
 
     .layui-btn-group {
       // border: none;
 
       .layui-btn {
-        border: none !important;
+        border          : none !important;
         background-color: transparent;
       }
 
@@ -257,10 +268,10 @@
       height: 30px;
 
       >li {
-        font-size: 12px;
+        font-size  : 12px;
         line-height: 30px;
-        min-width: auto;
-        padding: 0 12px;
+        min-width  : auto;
+        padding    : 0 12px;
       }
 
       >.layui-this {
@@ -272,8 +283,8 @@
       }
 
       >.layui-tab-bar {
-        width: 16px;
-        height: 27px;
+        width      : 16px;
+        height     : 27px;
         line-height: 27px;
 
         >i {
@@ -292,9 +303,9 @@
     border: 0;
 
     .layui-colla-title {
-      font-size: 12px;
-      height: 30px;
-      line-height: 30px;
+      font-size       : 12px;
+      height          : 30px;
+      line-height     : 30px;
       background-color: #f5f5f5;
     }
 
@@ -306,25 +317,25 @@
 
   .uieditor-searchform {
     font-size: 12px;
-    position: relative;
-    height: 34px;
+    position : relative;
+    height   : 34px;
 
     >input {
-      height: 34px;
-      border-top: 0;
-      border-left: 0;
-      border-right: 0;
-      box-sizing: border-box;
-      position: absolute;
+      height       : 34px;
+      border-top   : 0;
+      border-left  : 0;
+      border-right : 0;
+      box-sizing   : border-box;
+      position     : absolute;
       padding-right: 28px;
     }
 
     >i {
       position: absolute;
-      right: 4px;
-      top: 8px;
-      color: #c2c2c2;
-      cursor: pointer;
+      right   : 4px;
+      top     : 8px;
+      color   : #c2c2c2;
+      cursor  : pointer;
     }
   }
 
@@ -345,8 +356,8 @@
 
       input {
         padding-right: 50px;
-        position: absolute;
-        border-color: #1E9FFF;
+        position     : absolute;
+        border-color : #1E9FFF;
 
         &:hover,
         &:focus {
@@ -357,7 +368,7 @@
 
       .layui-btn-group {
         position: absolute;
-        right: 0;
+        right   : 0;
       }
     }
 
@@ -365,91 +376,91 @@
       margin-bottom: 2px;
 
       .layui-form-select dl {
-        top: 32px;
-        padding: 5px 0;
-        z-index: 899;
-        min-width: 100%;
-        border: 1px solid #d2d2d2;
-        max-height: 300px;
-        overflow-y: auto;
+        top             : 32px;
+        padding         : 5px 0;
+        z-index         : 899;
+        min-width       : 100%;
+        border          : 1px solid #d2d2d2;
+        max-height      : 300px;
+        overflow-y      : auto;
         background-color: #fff;
-        border-radius: 2px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, .12);
-        box-sizing: border-box;
+        border-radius   : 2px;
+        box-shadow      : 0 2px 4px rgba(0, 0, 0, .12);
+        box-sizing      : border-box;
       }
 
       .layui-form-selectup dl {
-        top: auto;
+        top   : auto;
         bottom: 32px;
 
         dd {
-          padding: 0 10px;
-          line-height: 30px;
-          white-space: nowrap;
-          overflow: hidden;
+          padding      : 0 10px;
+          line-height  : 30px;
+          white-space  : nowrap;
+          overflow     : hidden;
           text-overflow: ellipsis;
         }
       }
 
 
       .layui-form-label {
-        float: none;
-        padding: 2px;
-        width: auto;
-        font-weight: 400;
-        line-height: 20px;
-        text-align: left;
-        font-size: 12px;
-        overflow: hidden;
+        float        : none;
+        padding      : 2px;
+        width        : auto;
+        font-weight  : 400;
+        line-height  : 20px;
+        text-align   : left;
+        font-size    : 12px;
+        overflow     : hidden;
         text-overflow: ellipsis;
-        white-space: nowrap;
+        white-space  : nowrap;
 
         >i {
-          font-size: 12px;
+          font-size   : 12px;
           margin-right: 2px;
-          cursor: pointer;
+          cursor      : pointer;
         }
       }
 
       .layui-form-mid {
-        position: relative;
-        float: none;
-        display: block;
-        padding: 2px 0 !important;
-        line-height: 20px;
+        position    : relative;
+        float       : none;
+        display     : block;
+        padding     : 2px 0 !important;
+        line-height : 20px;
         margin-right: 0;
-        font-size: 12px;
+        font-size   : 12px;
       }
 
 
       .layui-input-block {
         margin-left: 0;
-        min-height: 30px;
+        min-height : 30px;
 
         div[ue-slider] {
           padding: 13px 14px;
         }
 
         div[colorpicker] {
-          height: 30px;
+          height  : 30px;
           position: relative;
 
           >input {
-            position: absolute;
-            z-index: 0;
-            box-sizing: border-box;
-            top: 0;
-            left: 0;
+            position     : absolute;
+            z-index      : 0;
+            box-sizing   : border-box;
+            top          : 0;
+            left         : 0;
             padding-right: 30px;
           }
 
           >div {
-            position: absolute;
-            z-index: 0;
+            position  : absolute;
+            z-index   : 0;
             box-sizing: border-box;
-            top: 0;
-            right: 0;
-            margin: 0;
+            top       : 0;
+            right     : 0;
+            margin    : 0;
 
             >div {
               padding: 1px;
@@ -459,19 +470,19 @@
 
         &.attr-bind {
           >.layui-badge {
-            position: absolute;
-            z-index: 1;
-            top: 0;
-            left: 0;
-            padding: 0;
-            height: 100%;
+            position   : absolute;
+            z-index    : 1;
+            top        : 0;
+            left       : 0;
+            padding    : 0;
+            height     : 100%;
             padding-top: 5px;
-            cursor: pointer;
-            box-sizing: border-box;
-            min-width: 12px;
+            cursor     : pointer;
+            box-sizing : border-box;
+            min-width  : 12px;
 
             &.layui-bg-gray {
-              cursor: default;
+              cursor          : default;
               background-color: #d6d6d6 !important;
             }
 
@@ -498,9 +509,9 @@
           }
 
           input {
-            position: absolute;
+            position    : absolute;
             padding-left: 18px;
-            z-index: 0;
+            z-index     : 0;
           }
 
           .layui-form-selected .layui-edge {
@@ -516,19 +527,19 @@
         &.attr-code {
 
           input {
-            position: absolute;
+            position     : absolute;
             padding-right: 22px;
-            z-index: 0;
+            z-index      : 0;
           }
 
           >i {
-            position: absolute;
-            z-index: 1;
-            right: 3px;
-            top: 0;
+            position : absolute;
+            z-index  : 1;
+            right    : 3px;
+            top      : 0;
             font-size: 20px;
-            color: #c2c2c2;
-            cursor: pointer;
+            color    : #c2c2c2;
+            cursor   : pointer;
 
             &:hover {
               color: #686868;
@@ -537,58 +548,58 @@
         }
 
         button {
-          height: 30px;
+          height     : 30px;
           line-height: 30px;
-          padding: 0px 10px;
+          padding    : 0px 10px;
         }
 
         .layui-form-radio {
-          margin: 1px 2px 0 0;
+          margin       : 1px 2px 0 0;
           padding-right: 2px;
 
           >i {
             margin-right: 4px;
-            font-size: 18px;
+            font-size   : 18px;
           }
         }
 
         .layui-form-switch {
-          height: 20px;
-          line-height: 20px;
-          min-width: 32px;
-          padding: 0 5px;
-          margin-top: 2px;
+          height       : 20px;
+          line-height  : 20px;
+          min-width    : 32px;
+          padding      : 0 5px;
+          margin-top   : 2px;
           border-radius: 10px;
 
           &.layui-form-onswitch {
             >em {
-              left: 0 !important;
-              margin-left: 2px;
+              left        : 0 !important;
+              margin-left : 2px;
               margin-right: 18px;
             }
 
             >i {
-              left: 100%;
+              left       : 100%;
               margin-left: -20px;
             }
           }
 
           >em {
-            left: 14px;
-            margin-left: 2px;
+            left        : 14px;
+            margin-left : 2px;
             margin-right: 18px;
           }
 
           >i {
-            width: 14px;
+            width : 14px;
             height: 14px;
           }
         }
 
         .layui-form-checkbox {
-          height: 26px;
-          line-height: 26px;
-          margin-right: 2px;
+          height       : 26px;
+          line-height  : 26px;
+          margin-right : 2px;
           padding-right: 26px;
 
           &.layui-form-checked {
@@ -598,40 +609,40 @@
           }
 
           >span {
-            padding: 0 10px;
-            font-size: 12px;
+            padding      : 0 10px;
+            font-size    : 12px;
             border-radius: 2px 0 0 2px;
           }
 
           >i {
-            right: 1px;
-            top: 0;
-            width: 24px;
-            height: 24px;
+            right        : 1px;
+            top          : 0;
+            width        : 24px;
+            height       : 24px;
             border-radius: 0 2px 2px 0;
-            font-size: 20px;
+            font-size    : 20px;
           }
 
           &[lay-skin="primary"] {
-            margin-top: 5px;
-            padding-left: 24px;
+            margin-top   : 5px;
+            padding-left : 24px;
             padding-right: 0;
 
             >span {
-              padding-left: 0;
+              padding-left : 0;
               padding-right: 5px;
-              line-height: 18px;
-              background: none;
-              color: #666;
+              line-height  : 18px;
+              background   : none;
+              color        : #666;
             }
 
             >i {
-              left: 0;
-              width: 16px;
-              height: 16px;
-              line-height: 16px;
-              border: 1px solid #d2d2d2;
-              font-size: 12px;
+              left         : 0;
+              width        : 16px;
+              height       : 16px;
+              line-height  : 16px;
+              border       : 1px solid #d2d2d2;
+              font-size    : 12px;
               border-radius: 2px;
             }
           }
@@ -641,15 +652,21 @@
         .layui-input,
         .layui-textarea,
         .layui-select {
-          height: 30px;
-          line-height: 1.3;
-          font-size: 12px;
-          border-width: 1px;
-          border-style: solid;
+          height          : 30px;
+          line-height     : 1.3;
+          font-size       : 12px;
+          border-width    : 1px;
+          border-style    : solid;
           background-color: #fff;
-          border-radius: 2px;
+          border-radius   : 2px;
         }
       }
+    }
+  }
+
+  &#layui-dropdown-ue {
+    >.layui-dropdown {
+      position: fixed;
     }
   }
 

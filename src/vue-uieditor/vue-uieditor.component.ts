@@ -142,19 +142,21 @@ export default class VueUieditor extends UEVue {
       layer = layui.layer;
     const jo = $(this.$el);
 
-    const jEditorJsonContentOut = jo.find('.editor-json-content-out');
     const jEditorJsonContent = jo.find('.editor-json-content');
+    const jEditorJsonContentIn = jo.find('.editor-json-content-in').children();
     let jEditorJsonContentRest = null;
-    let jEditorJsonContentH= null;
-    let jEditorJsonContentW= null;
     var syncEditorContentSize = () => {
-      let rest = jEditorJsonContent.offset();
-      let height = jEditorJsonContent.outerHeight();
-      let width = jEditorJsonContent.outerWidth();
-      _.assign(rest, {height, width});
+      if (this.$isBeingDestroyed) return;
+      let rest = jEditorJsonContentIn.offset();
+      let height = jEditorJsonContentIn.outerHeight();
+      let width = jEditorJsonContentIn.outerWidth();
+      _.assign(rest, { height, width });
+      requestAnimationFrame(syncEditorContentSize);
       if (_.isEqual(jEditorJsonContentRest, rest)) return;
       jEditorJsonContentRest = rest;
+      jEditorJsonContent.offset(rest).width(width).height(height);
     }
+    requestAnimationFrame(syncEditorContentSize);
 
     jo.click(() => {
       closeTip();
@@ -398,7 +400,7 @@ export default class VueUieditor extends UEVue {
     if (!this._isContextMenuInit) {
       this._isContextMenuInit = true;
       //右键菜单
-      const aaa = layui.dropdown.render({
+      layui.dropdown.render({
         elem: '.uieditor-drag-sel-box',
         trigger: 'contextmenu',
         isAllowSpread: false, //禁止菜单组展开收缩

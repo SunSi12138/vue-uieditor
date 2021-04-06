@@ -1,6 +1,6 @@
 <template>
   <div class="layui-uieditor" v-if="current">
-    <div class="editor-json-content-out">
+    <div class="editor-json-content">
       <input class="editor-json-focus" ref="jsonFoucs" />
       <vue-uieditor-render
         v-if="current && current.json && current.mode == 'design'"
@@ -231,7 +231,9 @@
                       >
                     </span>
                   </div>
-                  <div class="editor-json-content"></div>
+                  <div class="editor-json-content-in">
+                    <div></div>
+                  </div>
                 </div>
               </div>
             </div>
