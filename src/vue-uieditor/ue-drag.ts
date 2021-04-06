@@ -308,6 +308,7 @@ function _dragStart($el, options: UEDragOptions) {
       stopEvent(e);
       select(element);
       element.focus();
+      jUieditor.trigger('mousedown');
       return false;
     }
   });

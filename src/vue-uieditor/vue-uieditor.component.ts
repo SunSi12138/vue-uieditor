@@ -312,7 +312,7 @@ export default class VueUieditor extends UEVue {
     if (!this._isContextMenuInit) {
       this._isContextMenuInit = true;
       //右键菜单
-      layui.dropdown.render({
+      const aaa = layui.dropdown.render({
         elem: '.uieditor-drag-sel-box',
         trigger: 'contextmenu',
         isAllowSpread: false, //禁止菜单组展开收缩
@@ -326,6 +326,7 @@ export default class VueUieditor extends UEVue {
             obj?.click(obj, jo);
         }
       });
+      console.warn('aaa', aaa);
     }
 
 
