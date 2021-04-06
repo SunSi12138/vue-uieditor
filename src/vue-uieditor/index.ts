@@ -3,6 +3,7 @@
 
 export * from './base/ue-base';
 export * from './base/ue-render';
+export * from './base/vue-extends';
 
 
 // 存储组件列表
