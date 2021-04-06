@@ -147,7 +147,6 @@ export default class VueUieditor extends UEVue {
     this.current = service.current;
     await service.setJson(this.json);
     await this.$nextTick();
-    this.contextmenu();
     this.keys();
     this._initEvents();
     layui.$(this.$el).on('click', '.tool-bar, .editor-json-content, .uieditor-mode-title', (e) => {
@@ -238,10 +237,87 @@ export default class VueUieditor extends UEVue {
         return control;
       }
     });
+    this.contextmenu();
 
   }
 
+  private contextmenuFn() {
+    const current = this.service.current;
+    const id = current.id;
+    const canPaste = this.service.canPaste;
+
+    return [
+      {
+        title: '复 制',
+        disabled: !id,
+        click: (item) => {
+          this.service.copyCur();
+        }
+      },
+      {
+        title: '剪 切',
+        disabled: !id,
+        click: (item) => {
+          this.service.cutCur();
+        }
+      },
+      {
+        title: '粘 贴',
+        disabled: !canPaste,
+        click: (item) => {
+          this.service.pasteCur();
+        }
+      },
+      {
+        title: '粘贴到...',
+        disabled: !canPaste || !id,
+        child: [
+          {
+            title: '前 面',
+            click: (item) => {
+              this.service.pasteCur('before');
+            }
+          },
+          {
+            title: '后 面',
+            click: (item) => {
+              this.service.pasteCur('after');
+            }
+          }
+        ]
+      },
+      { type: '-' }, {
+        title: '删 除',
+        disabled: !id,
+        click: (item) => {
+          this.service.delCur();
+        }
+      }
+    ];
+  }
+
+  private _isContextMenuInit;
   private contextmenu() {
+
+    if (!this._isContextMenuInit) {
+      this._isContextMenuInit = true;
+      //右键菜单
+      layui.dropdown.render({
+        elem: '.uieditor-drag-sel-box',
+        trigger: 'contextmenu',
+        isAllowSpread: false, //禁止菜单组展开收缩
+        //style: 'width: 200px', //定义宽度，默认自适应
+        id: 'ue-cxtmenu-' + UEHelper.makeAutoId(), //定义唯一索引
+        data: (p) => {
+          return this.contextmenuFn();
+        },
+        click: function (obj, jo) {
+          if (!obj.disabled)
+            obj?.click(obj, jo);
+        }
+      });
+    }
+
 
     //右键菜单
     layui.dropdown.render({
@@ -251,58 +327,7 @@ export default class VueUieditor extends UEVue {
       //style: 'width: 200px', //定义宽度，默认自适应
       id: 'ue-cxtmenu-' + UEHelper.makeAutoId(), //定义唯一索引
       data: (p) => {
-        const current = this.service.current;
-        const id = current.id;
-        const canPaste = this.service.canPaste;
-
-        return [
-          {
-            title: '复 制',
-            disabled: !id,
-            click: (item) => {
-              this.service.copyCur();
-            }
-          },
-          {
-            title: '剪 切',
-            disabled: !id,
-            click: (item) => {
-              this.service.cutCur();
-            }
-          },
-          {
-            title: '粘 贴',
-            disabled: !canPaste,
-            click: (item) => {
-              this.service.pasteCur();
-            }
-          },
-          {
-            title: '粘贴到...',
-            disabled: !canPaste || !id,
-            child: [
-              {
-                title: '前 面',
-                click: (item) => {
-                  this.service.pasteCur('before');
-                }
-              },
-              {
-                title: '后 面',
-                click: (item) => {
-                  this.service.pasteCur('after');
-                }
-              }
-            ]
-          },
-          { type: '-' }, {
-            title: '删 除',
-            disabled: !id,
-            click: (item) => {
-              this.service.delCur();
-            }
-          }
-        ];
+        return this.contextmenuFn();
       },
       click: function (obj, jo) {
         if (!obj.disabled)
