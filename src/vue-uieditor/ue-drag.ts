@@ -32,7 +32,7 @@ interface UEDragOptions {
       collapse?(e: MouseEvent): void;
     };
     toolbars?: {
-      text?: string;
+      title?: string;
       icon?: string;
       color?: string;
       show?: boolean;
@@ -210,7 +210,7 @@ function _dragStart($el, options: UEDragOptions) {
     if (toolbars && toolbars.length > 0) {
       _.forEach(toolbars, function (item, index) {
         if (item.show === false) return;
-        toolbarHtmlList.push(`<a href="javascript:void(0);" title="${item.text}" class="select-toolbar ${item.icon}"
+        toolbarHtmlList.push(`<a href="javascript:void(0);" layui-tip="${item.title}" class="select-toolbar ${item.icon}"
       tIndex="${index}" style="right:${right}px" />`);
         right -= 18;
       });
@@ -271,7 +271,7 @@ function _dragStart($el, options: UEDragOptions) {
     }
   });
   jSelectBox.on('mousedown', '.container-extand-icon', function (e) {
-    const collapse =  jSelectBox.data('ue-collapse-fn');
+    const collapse = jSelectBox.data('ue-collapse-fn');
     if (collapse) collapse(e);
   });
 

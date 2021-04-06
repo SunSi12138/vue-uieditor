@@ -19,14 +19,20 @@ function _toolbarDisabled(item, service) {
   if (_.isFunction(disabled)) {
     disabled = disabled.call(item, { item, service });
   }
-  item._ue_disabled;
   return disabled;
 }
-
+function _toolbarShow(item, service) {
+  let show = item.show;
+  if (_.isFunction(show)) {
+    show = show.call(item, { item, service });
+  }
+  return show !== false;
+}
 
 function _makeMenuDivided(menus) {
   const newMenus = [];
   _.forEach(menus, function (item) {
+    if (item.show === false) return;
     if (item.divided) {
       newMenus.push({ type: '-' });
     }
@@ -110,6 +116,7 @@ export default class VueUieditor extends UEVue {
   private _makeToolbarDisabled() {
     _.forEach(this.themeEx.toolBar, (item) => {
       item['disabledEx'] = _toolbarDisabled(item, this.service);
+      item['showEx'] = _toolbarShow(item, this.service);
       return item;
     });
   }
@@ -238,6 +245,15 @@ export default class VueUieditor extends UEVue {
           };
         }
 
+        //editor contextmenus
+        const editorToolbars = editor?.toolbar;
+        const editorToolbarMenus = editorToolbars && editorToolbars({
+          render: curRender,
+          service,
+          attrs: curRender?.attrs,
+          editor
+        }) || [];
+
         const control = {
           title: {
             collapse: collapseFn,
@@ -245,21 +261,23 @@ export default class VueUieditor extends UEVue {
             show: true,
             isCollapse
           },
-          toolbars: [{
-            text: '复制',
-            icon: 'layui-icon layui-icon-file-b',
-            show: true,
-            click: (item, e) => {
-              this.service.copyCurToNext()
-            }
-          }, {
-            text: '删除',
-            icon: 'layui-icon layui-icon-close',
-            show: true,
-            click: (item, e) => {
-              this.service.delCur();
-            }
-          }]
+          toolbars: [
+            ...editorToolbarMenus,
+            {
+              title: '复制',
+              icon: 'layui-icon layui-icon-file-b',
+              show: true,
+              click: (item, e) => {
+                this.service.copyCurToNext()
+              }
+            }, {
+              title: '删除',
+              icon: 'layui-icon layui-icon-close',
+              show: true,
+              click: (item, e) => {
+                this.service.delCur();
+              }
+            }]
         };
         return control;
       }
@@ -480,7 +498,7 @@ export default class VueUieditor extends UEVue {
     });
   }
 
-  about(){
+  about() {
     LayuiHelper.alert('Vue-UiEditor 2021');
   }
 

@@ -211,6 +211,7 @@ export interface UETransferEditor {
    */
   transferAttr?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; editing: boolean; service: UEService; }) => void;
   contextmenu?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; service: UEService; }) => UEContextmenuItem[];
+  toolbar?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; service: UEService; }) => UEContextmenuItem[];
   /** 隐藏attr，如: ['class'] */
   hideAttrs?: string[];
   /** 隐藏attr group，如: ['Vue'] */
@@ -287,7 +288,9 @@ export interface UEThemeEvent {
 export interface UEToolBar {
   title?: string;
   icon?: string;
+  divided?: boolean;
   disabled?: boolean | ((e: UEThemeEvent) => boolean);
+  show?: boolean | ((e: UEThemeEvent) => boolean);
   /** 点击, 返回 false 不处理默认行为 */
   click?(e: UEThemeEvent): void | boolean | Promise<void | boolean>;
 }

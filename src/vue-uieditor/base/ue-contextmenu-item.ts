@@ -4,6 +4,7 @@ export interface UEContextmenuItem<> {
     title: string;
     disabled?: boolean;
     divided?: boolean;
+    show?: boolean;
     click?: (item: UEContextmenuItem) => void;
     child?: UEContextmenuItem[];
 }

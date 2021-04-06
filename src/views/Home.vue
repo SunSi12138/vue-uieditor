@@ -67,6 +67,19 @@ export default class Home extends UEVue {
               },
             ];
           },
+          toolbar({ render, service }) {
+            return [
+              {
+                title: "添加",
+                icon: "layui-icon layui-icon-addition",
+                click() {
+                  LayuiHelper.msg(
+                    JSON.stringify(service.getJson(false, render) || {})
+                  );
+                },
+              },
+            ];
+          },
           attrs: {
             text: {
               effect: true,
@@ -199,7 +212,7 @@ export default class Home extends UEVue {
         toolBar: [
           {
             title: "测试",
-            disabled: ({ service }) => !service.getCurRender(),
+            show: ({ service }) => !!service.getCurRender(),
             click: ({ service }) => {
               const render = service.getCurRender();
               console.warn("测试", service.getJson(false, render));
