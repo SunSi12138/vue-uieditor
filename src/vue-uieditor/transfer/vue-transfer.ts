@@ -1,7 +1,6 @@
 import { UETransfer } from '../base/ue-base';
-import _ from 'lodash';
-import { UERender } from '../base/ue-render';
 import { UECompiler } from '../base/ue-compiler';
+import { UERender } from '../base/ue-render';
 
 const groupOrder = 3;
 const group = '公用组件库/Vue 组件';
@@ -53,7 +52,7 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       icon: 'layui-icon layui-icon-template-1',
       base: false,
       container: true,
-      className: 'drawing-item p-sm',
+      containerBorder: true,
       attrs: {
         'include,exclude,max': {
           group: '组件',
@@ -89,7 +88,7 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       base: false,
       container: true,
       inline: true,
-      className: 'drawing-item p-sm',
+      containerBorder: true,
       attrs: {
         to: {
           group: '组件',

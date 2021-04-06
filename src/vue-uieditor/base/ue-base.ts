@@ -170,6 +170,8 @@ export interface UETransferEditor {
   groupOrder?: number;
   /** 是否容器组件（可以插入子节点），默认为 false */
   container?: boolean;
+  /** 是否显示容器边框，默认为 false */
+  containerBorder?: boolean;
   /** 是否基础组件，编辑时作为独立组件，内容不能拖动，默认：true */
   base?: boolean;
   /** 编辑时使用div代替显示 */

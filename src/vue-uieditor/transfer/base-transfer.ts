@@ -1,7 +1,6 @@
-import { UETransfer } from '../base/ue-base';
 import _ from 'lodash';
+import { UETransfer } from '../base/ue-base';
 import { UERender } from '../base/ue-render';
-import { UECompiler } from '../base/ue-compiler';
 
 const groupOrder = 2;
 const group = '公用组件库/基础组件';
@@ -17,7 +16,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       icon: 'layui-icon layui-icon-template-1',
       base: false,
       container: true,
-      className: 'drawing-item p-sm'
+      containerBorder: true
     }
   },
   'uieditor-span': {
@@ -31,7 +30,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       base: false,
       inline: true,
       container: true,
-      className: 'drawing-item p-sm'
+      containerBorder: true
     }
   },
   'uieditor-img': {

@@ -1410,6 +1410,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
     }
 
     if (editor.inline) className = `${className} inline`;
+    if (editor.containerBorder) className = `${className} drawing-item-border`;
 
     if (editor.className) {
       let eClassName = editor.className;
