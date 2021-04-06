@@ -12,6 +12,7 @@ import uieditorMonacoEditor from './components/uieditor-monaco-editor.component.
 import { LayuiRender } from './layui/layui-render';
 import './transfer';
 import { UEDrag } from './ue-drag';
+import { LayuiHelper } from './layui/layui-helper';
 
 function _toolbarDisabled(item, service) {
   let disabled = item.disabled;
@@ -477,6 +478,10 @@ export default class VueUieditor extends UEVue {
         return false;
       }
     });
+  }
+
+  about(){
+    LayuiHelper.alert('Vue-UiEditor 2021');
   }
 
   @UEVueLife('destroyed')

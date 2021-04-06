@@ -81,6 +81,7 @@
             layui-tip="关于"
             layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm divided"
+            @click="about()"
           >
             <i class="layui-icon layui-icon-about"></i>
           </button>
