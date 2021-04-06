@@ -1,13 +1,9 @@
 
-export interface UEContextmenuItem<T=any> {
-    id?:string;
-    name: string;
+export interface UEContextmenuItem<> {
+    id?: string;
+    title: string;
     disabled?: boolean;
     divided?: boolean;
-    selected?: boolean;
-    /** 是否有权限 */
-    permission?: string | string[];
-    datas?: T;
-    click?: (item: UEContextmenuItem<T>) => void;
-    children?: UEContextmenuItem<T>[];
+    click?: (item: UEContextmenuItem) => void;
+    child?: UEContextmenuItem[];
 }

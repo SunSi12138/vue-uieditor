@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { UEMode, UEOption, UETheme, UEToolBar } from './base/ue-base';
 import { UECompiler } from './base/ue-compiler';
+import { UEContextmenuItem } from './base/ue-contextmenu-item';
 import { UEHelper } from './base/ue-helper';
 import { UERender } from './base/ue-render';
 import { UEService } from './base/ue-service';
@@ -20,6 +21,20 @@ function _toolbarDisabled(item, service) {
   item._ue_disabled;
   return disabled;
 }
+
+
+function _makeMenuDivided(menus) {
+  const newMenus = [];
+  _.forEach(menus, function (item) {
+    if (item.divided) {
+      newMenus.push({ type: '-' });
+    }
+    newMenus.push(item);
+    if (_.size(item.child) > 0)
+      item.child = _makeMenuDivided(item.child);
+  });
+  return newMenus;
+};
 
 
 @UEVueComponent({
@@ -103,6 +118,9 @@ export default class VueUieditor extends UEVue {
   }
   hasMode(mode: UEMode) {
     return !this.modes || _.includes(this.modes, mode);
+  }
+  get themeContextmenus() {
+    return this.themeEx.contextmenus;
   }
 
   current: any = null;
@@ -250,23 +268,46 @@ export default class VueUieditor extends UEVue {
   }
 
   private contextmenuFn() {
-    const current = this.service.current;
-    const id = current.id;
-    const canPaste = this.service.canPaste;
-    const render = this.service.getCurRender();
+    const service = this.service;
+    const canPaste = service.canPaste;
+    const render = service.getCurRender();
     const editor = render?.editor;
 
-    return [
+    //editor contextmenus
+    const editorContextMenus = editor?.contextmenu;
+    const editorMenus = editorContextMenus && editorContextMenus({
+      render,
+      service,
+      attrs: render?.attrs,
+      editor
+    }) || [];
+
+    //theme contextmens
+    const themeContextmenus = this.themeContextmenus;
+    const themeMenus = themeContextmenus && themeContextmenus({
+      render,
+      service,
+      parent: service.getParentRenderItem(render),
+      editor
+    }) || [];
+
+    if (_.size(editorMenus) > 0 && _.size(themeMenus) > 0) {
+      _.first(themeMenus).divided = true;
+    }
+    const addMenus = [...editorMenus, ...themeMenus];
+
+    const menus = [
+      ...addMenus,
       {
         title: '复 制',
-        disabled: !id,
+        divided: _.size(addMenus) > 0,
         click: (item) => {
           this.service.copyCur();
         }
       },
       {
         title: '剪 切',
-        disabled: !id,
+        disabled: !render,
         click: (item) => {
           this.service.cutCur();
         }
@@ -280,39 +321,42 @@ export default class VueUieditor extends UEVue {
       },
       {
         title: '粘贴到...',
-        disabled: !canPaste || !id,
+        disabled: !canPaste || !render,
         child: [
           {
             title: '前 面',
-            disabled: !canPaste || !id,
+            disabled: !canPaste || !render,
             click: (item) => {
               this.service.pasteCur('before');
             }
           },
           {
             title: '后 面',
-            disabled: !canPaste || !id,
+            disabled: !canPaste || !render,
             click: (item) => {
               this.service.pasteCur('after');
             }
           },
           {
             title: '子节点',
-            disabled: !canPaste || !id || !editor.container,
+            disabled: !canPaste || !render || !editor.container,
             click: (item) => {
               this.service.pasteCur('child');
             }
           }
         ]
       },
-      { type: '-' }, {
+      {
         title: '删 除',
-        disabled: !id,
+        disabled: !render,
+        divided: true,
         click: (item) => {
           this.service.delCur();
         }
       }
-    ];
+    ] as UEContextmenuItem[];
+
+    return _makeMenuDivided(menus);
   }
 
   private _isContextMenuInit;

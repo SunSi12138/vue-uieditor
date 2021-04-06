@@ -28,6 +28,7 @@ import {
   UEVueData,
   UEVueLife,
 } from "../vue-uieditor/base/vue-extends";
+import { LayuiHelper } from "../vue-uieditor/layui/layui-helper";
 const groupOrder = 10;
 const group = "测试组件库/基础组件";
 
@@ -48,12 +49,24 @@ export default class Home extends UEVue {
           return render;
         },
         editor: {
-          text: "Text 文本",
+          text: "测试 Text 文本",
           order: 0,
           groupOrder,
           group,
           inline: true,
           icon: "layui-icon layui-icon-align-left",
+          contextmenu({ render, service }) {
+            return [
+              {
+                title: "测试 Editor",
+                click() {
+                  LayuiHelper.msg(
+                    JSON.stringify(service.getJson(false, render) || {})
+                  );
+                },
+              },
+            ];
+          },
           attrs: {
             text: {
               effect: true,
@@ -192,7 +205,31 @@ export default class Home extends UEVue {
               console.warn("测试", service.getJson(false, render));
             },
           },
+          {
+            title: "测试",
+            icon: "layui-icon layui-icon-heart",
+            disabled: ({ service }) => !service.getCurRender(),
+            click: ({ service }) => {
+              const render = service.getCurRender();
+              LayuiHelper.msg(
+                JSON.stringify(service.getJson(false, render) || {})
+              );
+            },
+          },
         ],
+        contextmenus({ render, service }) {
+          return [
+            {
+              title: "测 试",
+              disabled: !render,
+              click: (item) => {
+                LayuiHelper.msg(
+                  JSON.stringify(service.getJson(false, render) || {})
+                );
+              },
+            },
+          ];
+        },
       } as UETheme,
     };
   }

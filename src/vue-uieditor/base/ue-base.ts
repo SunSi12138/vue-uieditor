@@ -210,7 +210,7 @@ export interface UETransferEditor {
    * 编辑渲染时转换 render 和 attr
    */
   transferAttr?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; editing: boolean; service: UEService; }) => void;
-  contextmenu?: (render: UERenderItem, attrs: UETransferEditorAttrs, editor: UETransferEditor, service: UEService) => any[];
+  contextmenu?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; service: UEService; }) => UEContextmenuItem[];
   /** 隐藏attr，如: ['class'] */
   hideAttrs?: string[];
   /** 隐藏attr group，如: ['Vue'] */
