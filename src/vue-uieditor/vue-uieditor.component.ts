@@ -1,17 +1,16 @@
-import { UEOption, UETheme, UEMode, UEToolBar } from './base/ue-base';
+import _ from 'lodash';
+import { UEMode, UEOption, UETheme, UEToolBar } from './base/ue-base';
 import { UECompiler } from './base/ue-compiler';
+import { UEHelper } from './base/ue-helper';
 import { UERender } from './base/ue-render';
 import { UEService } from './base/ue-service';
 import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueProvide, UEVueWatch } from './base/vue-extends';
 import uieditorCpAttr from './components/uieditor-cp-attr.component.vue';
 import uieditorCpTree from './components/uieditor-cp-tree.component.vue';
 import uieditorMonacoEditor from './components/uieditor-monaco-editor.component.vue';
-import { LayuiHelper } from './layui/layui-helper';
 import { LayuiRender } from './layui/layui-render';
 import './transfer';
 import { UEDrag } from './ue-drag';
-import { UEHelper } from './base/ue-helper';
-import _ from 'lodash';
 
 
 @UEVueComponent({
@@ -274,12 +273,14 @@ export default class VueUieditor extends UEVue {
         child: [
           {
             title: '前 面',
+            disabled: !canPaste || !id,
             click: (item) => {
               this.service.pasteCur('before');
             }
           },
           {
             title: '后 面',
+            disabled: !canPaste || !id,
             click: (item) => {
               this.service.pasteCur('after');
             }
