@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { UERender } from '../base/ue-render';
 import { UECompiler } from '../base/ue-compiler';
 
-const groupOrder = 1;
+const groupOrder = 3;
 const group = '公用组件库/Vue 组件';
 
 export const VueTransfer: UETransfer = UERender.DefineTransfer({
@@ -66,7 +66,7 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
   'router-view': {
     "editor": {
       text: 'router-view',
-      order: 0,
+      order: 1,
       groupOrder,
       group,
       icon: 'layui-icon layui-icon-app',
@@ -82,38 +82,21 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
     },
     "editor": {
       text: 'router-link',
-      order: 0,
+      order: 2,
       groupOrder,
       group,
       icon: 'layui-icon layui-icon-share',
       base: false,
       container: true,
+      inline: true,
       className: 'drawing-item p-sm',
-      transferAttr({ render }) {
-        if (_.size(render.children) == 0) {
-          render.children = [{ type: 'uieditor-text', props: { text: 'router-link' } }];
-        }
-      },
       attrs: {
         to: {
           group: '组件',
           enabledBind: true,
-          value:'/path1'
+          value: '/path1'
         }
       }
     }
-  },
-  // 'uieditor-span': {
-  //   type: 'span',
-  //   "editor": {
-  //     text: 'Span 行内标签',
-  //     order: 0,
-  //     groupOrder,
-  //     group,
-  //     icon: 'layui-icon layui-icon-more',
-  //     base: true,
-  //     container: false,
-  //     className: 'drawing-item p-sm'
-  //   }
-  // }
+  }
 });

@@ -805,41 +805,31 @@ export class UEService {
   /** 组件栏数据 */
   get components(): { list: any[]; tree: any[] } {
     if (this._components) return { list: this._components, tree: this._components_tree };
-    const components = [];
-    const tree = [];
-    const getTreeGroup = function (list: any[], groupList: string[]) {
-      const group = _.first(groupList);
-      groupList = groupList.slice(1);
-      let item = _.find(list, { group });
-      if (!item) {
-        item = { id: UEHelper.makeAutoId(), title: group, group, type: 'group', item: null, children: [] };
-        list.push(item);
-      }
-      if (!item.children) item.children = [];
-      if (_.size(groupList) > 0) {
-        return getTreeGroup(item.children, groupList);
-      } else {
-        return item;
-      }
-    }
+    let components = [];
+    let tree = [];
+
     //添加 cp editor
     const editor = this.options.editor;
     if (_.size(editor) > 0) {
       _.forEach(editor, function (item, type) {
         const newItem = { id: UEHelper.makeAutoId(), $isTmpl: false, uedrag: true, icon: item.icon, title: item.text, type, item };
         if (item.show !== false) {
-          const group = getTreeGroup(tree, (item.group || '').split('/'));
+          const group = _getCpTreeGroup(tree, (item.group || '').split('/'));
           group?.children.push(newItem);
         }
         components.push(newItem);
       });
     }
+    //排序
+    tree = _makeOrderCpTree(tree);
+    components = _.orderBy(components, 'order', 'asc');
 
+    //模板是数组，不用排序
     const tmpls = this.options.templates;
     if (_.size(tmpls) > 0) {
       _.forEach(tmpls, function (item, type) {
         const newItem = { id: UEHelper.makeAutoId(), $isTmpl: true, uedrag: true, icon: item.icon, title: item.title, type, item };
-        const group = getTreeGroup(tree, (item.group || '').split('/'));
+        const group = _getCpTreeGroup(tree, (item.group || '').split('/'));
         group?.children.push(newItem);
         components.push(newItem);
       });
@@ -1141,6 +1131,41 @@ export class UEService {
 
 
 } //end UEService
+
+function _getCpTreeGroup(list: any[], groupList: string[]) {
+  const group = _.first(groupList);
+  groupList = groupList.slice(1);
+  let item = _.find(list, { group });
+  if (!item) {
+    item = { id: UEHelper.makeAutoId(), title: group, group, type: 'group', item: null, children: [] };
+    list.push(item);
+  }
+  item.item = null;
+  if (!item.children) item.children = [];
+  if (_.size(groupList) > 0) {
+    return _getCpTreeGroup(item.children, groupList);
+  } else {
+    return item;
+  }
+}
+
+function _makeOrderCpTree(list: any[], isRoot?: boolean) {
+
+  _.forEach(list, function (item) {
+    let children = item.children;
+    if (_.size(children) > 0) {
+      children = _makeOrderCpTree(children, false);
+      item.children = _.orderBy(children, 'order', 'asc');
+      const first: any = _.first(item.children);
+      if (!first.item) {
+        item.order = first.order;
+      } else {
+        item.order = !_.has(first.item, 'groupOrder') ? 999 : (first.item.groupOrder || 0);
+      }
+    }
+  });
+  return isRoot !== false ? _.orderBy(list, 'order', 'asc') : list;
+}
 
 
 /**

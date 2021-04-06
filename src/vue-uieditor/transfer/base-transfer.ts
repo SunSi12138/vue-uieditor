@@ -24,7 +24,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
     type: 'span',
     "editor": {
       text: 'Span 行内标签',
-      order: 0,
+      order: 1,
       groupOrder,
       group,
       icon: 'layui-icon layui-icon-more',
@@ -38,7 +38,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
     type: 'img',
     "editor": {
       text: "Image 图片",
-      order: 0,
+      order: 2,
       groupOrder,
       group,
       icon: 'layui-icon layui-icon-picture',
@@ -57,7 +57,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
     type: 'iframe',
     editor: {
       text: 'Iframe 内框架',
-      order: 0,
+      order: 3,
       groupOrder,
       group,
       icon: 'layui-icon layui-icon-layer',
@@ -83,7 +83,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
     },
     "editor": {
       text: 'Text 文本',
-      order: 0,
+      order: 4,
       groupOrder,
       group,
       inline: true,
@@ -108,7 +108,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
     },
     "editor": {
       text: 'Link 超链接',
-      order: 0,
+      order: 5,
       groupOrder,
       group,
       inline: true,
@@ -156,7 +156,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
     },
     "editor": {
       text: 'Html 超文本',
-      order: 0,
+      order: 6,
       groupOrder,
       group,
       icon: 'layui-icon layui-icon-fonts-html',
