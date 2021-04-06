@@ -13,7 +13,7 @@
             :layui-tip="item.title"
             layui-tip-direction="3"
             class="layui-btn layui-btn-primary layui-btn-sm"
-            :class="{'layui-diabled':toolbarDisabled(item) && current.id}"
+            :class="{'layui-disabled':item.disabledEx}"
             @click="toolbarClick($event, item)"
           >
             <i v-if="item.icon" :class="item.icon"></i>

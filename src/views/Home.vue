@@ -188,7 +188,8 @@ export default class Home extends UEVue {
             title: "测试",
             disabled: ({ service }) => !service.getCurRender(),
             click: ({ service }) => {
-              console.warn("测试", service.getCurRender());
+              const render = service.getCurRender();
+              console.warn("测试", service.getJson(false, render));
             },
           },
         ],

@@ -12,6 +12,15 @@ import { LayuiRender } from './layui/layui-render';
 import './transfer';
 import { UEDrag } from './ue-drag';
 
+function _toolbarDisabled(item, service) {
+  let disabled = item.disabled;
+  if (_.isFunction(disabled)) {
+    disabled = disabled.call(item, { item, service });
+  }
+  item._ue_disabled;
+  return disabled;
+}
+
 
 @UEVueComponent({
   components: {
@@ -76,21 +85,20 @@ export default class VueUieditor extends UEVue {
     return this.themeEx.modes;
   }
   get toolbar(): UEToolBar[] {
+    this._makeToolbarDisabled();
     return this.themeEx.toolBar;
   }
   get hasToolbar() {
     return _.size(this.toolbar) > 0;
   }
-  toolbarDisabled(item) {
-    let disabled = item.disabled;
-    if (_.isFunction(disabled)) {
-      disabled = disabled.call(item, { item, service: this.service });
-    }
-    item._ue_disabled;
-    return disabled;
+  private _makeToolbarDisabled() {
+    _.forEach(this.themeEx.toolBar, (item) => {
+      item['disabledEx'] = _toolbarDisabled(item, this.service);
+      return item;
+    });
   }
   toolbarClick(event, item) {
-    if (item._ue_disabled || !item.click) return;
+    if (item.disabledEx || !item.click) return;
     item.click({ item, event, service: this.service });
   }
   hasMode(mode: UEMode) {
@@ -108,8 +116,9 @@ export default class VueUieditor extends UEVue {
       layer = layui.layer;
     const jo = $(this.$el);
 
-    jo.click(function () {
+    jo.click(() => {
       closeTip();
+      this._makeToolbarDisabled();
     });
     let tipId;
     const closeTip = function () {
@@ -326,7 +335,6 @@ export default class VueUieditor extends UEVue {
             obj?.click(obj, jo);
         }
       });
-      console.warn('aaa', aaa);
     }
 
 
