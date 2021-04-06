@@ -244,6 +244,8 @@ export default class VueUieditor extends UEVue {
     const current = this.service.current;
     const id = current.id;
     const canPaste = this.service.canPaste;
+    const render = this.service.getCurRender();
+    const editor = render?.editor;
 
     return [
       {
@@ -283,6 +285,13 @@ export default class VueUieditor extends UEVue {
             disabled: !canPaste || !id,
             click: (item) => {
               this.service.pasteCur('after');
+            }
+          },
+          {
+            title: '子节点',
+            disabled: !canPaste || !id || !editor.container,
+            click: (item) => {
+              this.service.pasteCur('child');
             }
           }
         ]
@@ -393,7 +402,7 @@ export default class VueUieditor extends UEVue {
             break;
           //ctrl + v
           case 86:
-            this.service.pasteCur('after');
+            this.service.pasteCur();
             isDone = true;
             break;
           //ctrl + z

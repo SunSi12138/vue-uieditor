@@ -971,16 +971,15 @@ export class UEService {
 
   get canPaste() { return !!this._copyId; }
 
-  pasteCur(pos?: 'before' | 'after', keepCur?: boolean, currentId?: string, focus?: boolean) {
+  pasteCur(pos?: 'before' | 'after' | 'child', keepCur?: boolean, currentId?: string, focus?: boolean) {
 
     currentId || (currentId = this.current.id || this.rootRender.editorId);
     let render = this.getRenderItem(currentId);
     let editor = render.editor
 
-    let notPos = !pos;
+    let notPos = !pos || pos == 'child';
 
     let pRender = editor.container && notPos ? render : (this.getParentRenderItem(render, true) || this.rootRender);
-
     if (!pRender.children) pRender.children = [];
 
 
