@@ -958,6 +958,7 @@ export class UEService {
       if (!pRender.children) pRender.children = [];
       pRender.children.splice(newIndex, 0, fromRender);
     }
+    this.history.addCur();
 
     return this.refresh().then(() => this.refresBreadcrumbs());
   }
