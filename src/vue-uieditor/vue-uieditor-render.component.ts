@@ -110,7 +110,7 @@ export default class VueUieditorRender extends UEVue {
     const editing = this.editing === true;
     const preview = this.preview === true;
     const json: UERenderItem = _.isString(this.json) ? JSON.parse(this.json) :
-      (!editing ? _.cloneDeep(this.json) : this.json);
+      _.cloneDeep(this.json);
     const options = _.assign(_defaultOptions(), this.optionEx);
 
     if (options?.mixins) vueDef.mixins = vueDef.mixins.concat(options.mixins);
