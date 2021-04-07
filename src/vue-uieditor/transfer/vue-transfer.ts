@@ -69,7 +69,7 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       order: 1,
       groupOrder,
       group,
-      icon: 'layui-icon layui-icon-app',
+      icon: 'layui-icon layui-icon-templeate-1',
       empty: 'router-view'
     }
   },
@@ -114,7 +114,7 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       return render;
     },
     "editor": {
-      order: 0,
+      order: 3,
       groupOrder,
       group,
       text: 'template',
@@ -127,5 +127,48 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
         'slot-scope': { effect: true, order: 1, enabledBind: false, bind: false }
       }
     }
+  },
+  component: {
+    "editor": {
+      order: 4,
+      groupOrder,
+      group,
+      text: 'component',
+      icon: 'layui-icon layui-icon-app',
+      empty: 'component',
+      inline: true,
+      attrs: {
+        'is': { order: 0, enabledBind: true },
+        'inline-template': { order: 1, type: 'boolean' }
+      }
+    }
+  },
+  transition: {
+    transfer(render, extend) {
+      const { editing, getPropText } = extend;
+      if (editing) {
+        render.type = 'div';
+      }
+      return render;
+    },
+    "editor": {
+      order: 3,
+      groupOrder,
+      group,
+      text: 'transition',
+      icon: 'layui-icon layui-icon-form',
+      base: false,
+      container: true,
+      containerBorder: true,
+      attrs: {
+        name: { order: 0 },
+        'appear,css': { order: 1, type: 'boolean' },
+        type: { order: 5, type: 'select', datas:['transition', 'animation'] },
+        mode: { order: 6, type: 'select', datas:['out-in', 'in-out'] },
+        'duration,enter-class,leave-class,appear-class,enter-to-class,leave-to-class,appear-to-class,enter-active-class,leave-active-class,appear-active-class': { order: 0 },
+        'before-enter,before-leave,before-appear,enter,leave,appear,after-enter,after-leave,after-appear,enter-cancelled,leave-cancelled,appear-cancelled': { order: 30, event:true }
+      }
+    }
   }
 });
+
