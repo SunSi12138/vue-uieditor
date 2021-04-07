@@ -327,7 +327,7 @@ export default class VueUieditor extends UEVue {
               icon: 'layui-icon layui-icon-close',
               show: true,
               click: (item, e) => {
-                this.service.delCur();
+                this.service.delCur(false);
               }
             }]
         };
