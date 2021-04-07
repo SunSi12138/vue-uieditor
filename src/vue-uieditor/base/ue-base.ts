@@ -90,8 +90,10 @@ type RenderProp = {
 };
 
 export interface UETransferEditorAttrsItem {
-  /** 名称 */
+  /** render属性props名称，一般与key相同，请参考transition appear事件与属性的定义 */
   readonly name?: string;
+  /** 定义attr的key */
+  readonly key?: string;
   /** 是否自定义属性，属性栏自定义的属性，可删除的属性 */
   readonly cust?: boolean;
   /** 显示名称 */

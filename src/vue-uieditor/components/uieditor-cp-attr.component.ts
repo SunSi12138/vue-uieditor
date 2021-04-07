@@ -173,7 +173,7 @@ export default class UieditorCpAttr extends UEVue {
       const isRow = attr.row || (isLast && isClose);//最后一个自动占一行
       const row = isRow ? '12' : '6';
       colIndex++;
-      const name = attr.name;
+      const name = attr.key;
 
       const attrBind = attr.enabledBind || attr.bind || attr['isPrefxV'] || attr.event ? ' attr-bind' : ''
       const attrBindColor = attr.enabledBind ? (attr.bind ? ' layui-bg-blue-active' : 'layui-bg-blue') : attr['isPrefxV'] || attr.event || attr.bind ? ` layui-bg-gray` : '';

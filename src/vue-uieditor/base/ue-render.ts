@@ -313,6 +313,7 @@ export class UERender {
     let hideAttrs = editor.hideAttrs;
     let hideAttrGroups = editor.hideAttrGroups;
     attr = _.assign({}, _defaultEditorAttrItem(name), attr);
+    name = attr.name;
     if (!attr.text) attr.text = name;
     if (_.isString(attr.editValue)) attr.editValue = UERender.newEditValue(attr.editValue);
 
@@ -487,6 +488,7 @@ const _defaultAttrGroupOrder = 99;
 function _defaultEditorAttrItem(name: string): UETransferEditorAttrsItem {
   return {
     name,
+    key: name,
     value: '',
     group: _defaultAttrGroup,
     groupOrder: _defaultAttrGroupOrder,

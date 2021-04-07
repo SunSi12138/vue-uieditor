@@ -649,9 +649,9 @@ export class UEService {
     }
   }
 
-  getAttr(id: string, attrName: string): UETransferEditorAttrsItem {
+  getAttr(id: string, key: string): UETransferEditorAttrsItem {
     const render = this.getRenderItem(id);
-    return render && render.attrs && render.attrs[attrName];
+    return render && render.attrs && render.attrs[key];
   }
 
   /**
@@ -662,16 +662,16 @@ export class UEService {
   setAttr(id: string, attr: UETransferEditorAttrsItem, refresh = true) {
     const render = this.getRenderItem(id);
 
-    let name = attr.name;
-    if (!render || !name) return;
-    if (name == '_meta_type') {
+    let key = attr.key;
+    if (!render || !key) return;
+    if (key == '_meta_type') {
       this.changeRenderType(render, attr.value);
       return;
     }
     const oldText = render.editor.textFormat(render.editor, render.attrs);
     let attrs = render.attrs
-    if (attrs[name])
-      _.assign(attrs[name], attr);
+    if (attrs[key])
+      _.assign(attrs[key], attr);
     const newText = render.editor.textFormat(render.editor, render.attrs);
     if (newText != oldText) this.$uieditor['_drager'].select(id, true);
     if (!refresh || !attr.effect || !!attr.demoValue) return;
@@ -1224,6 +1224,7 @@ function _initAttrsFromRender(render: UERenderItem) {
 
   let propName;
   _.forEach(attrs, function (item, name) {
+    name = item.name;
 
     let has = false;
     item['_initValue__'] = item.value;
@@ -1235,20 +1236,25 @@ function _initAttrsFromRender(render: UERenderItem) {
         delete props[name];
         break;
       default:
-        propName = `:${name}`;
-        let eventName = `@${name}`;
-        if (has = (name in props)) {
-          item.value = props[name];
-          delete props[name];
-          item.bind = false;
-        } else if (has = (propName in props)) {
-          item.value = props[propName];
-          delete props[propName];
-          item.bind = true;
-        } else if (has = (eventName in props)) {
-          item.value = props[eventName];
-          delete props[eventName];
+        if (item.event) {
+          let eventName = `@${name}`;
+          if (has = (eventName in props)) {
+            item.value = props[eventName];
+            delete props[eventName];
+          }
+        } else {
+          propName = `:${name}`;
+          if (has = (name in props)) {
+            item.value = props[name];
+            delete props[name];
+            item.bind = false;
+          } else if (has = (propName in props)) {
+            item.value = props[propName];
+            delete props[propName];
+            item.bind = true;
+          }
         }
+
         break;
     }
     if (!has) {
@@ -1298,6 +1304,7 @@ function _setRenderAttrs(render: UERenderItem, editor: UETransferEditor, editing
       let bakAttrs;
 
       _.forEach(attrs, function (item, name) {
+        name = item.name;
 
         if (editing) {
           if (!item.effect) return;
@@ -1330,7 +1337,7 @@ function _setRenderAttrs(render: UERenderItem, editor: UETransferEditor, editing
             if (!isRemoveAttr) {
               //editing 时 不处理事件
               if (generate || !item.event) {
-                const newName = item.event ? eventName.replace(/\@{2}/g, '@') : (isBind ? bindName : name);
+                const newName = item.event ? eventName : (isBind ? bindName : name);
                 props[newName] = value;
               }
             }
