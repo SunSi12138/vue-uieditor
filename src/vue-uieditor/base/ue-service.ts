@@ -812,7 +812,7 @@ export class UEService {
     const editor = this.options.editor;
     if (_.size(editor) > 0) {
       _.forEach(editor, function (item, type) {
-        const newItem = { id: UEHelper.makeAutoId(), $isTmpl: false, uedrag: true, icon: item.icon, title: item.text, type, item };
+        const newItem = { id: UEHelper.makeAutoId(), $isTmpl: false, uedrag: true, icon: item.icon, title: item.defaultText || item.text, type, item };
         if (item.show !== false) {
           const group = _getCpTreeGroup(tree, (item.group || '').split('/'));
           group?.children.push(newItem);

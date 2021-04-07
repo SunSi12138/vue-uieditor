@@ -53,7 +53,8 @@ export default class Home extends UEVue {
           return render;
         },
         editor: {
-          text: "测试 Text 文本",
+          text: "%text%",
+          defaultText:'Text 文本',
           order: 0,
           groupOrder,
           group,

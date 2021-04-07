@@ -156,6 +156,8 @@ export interface UETransferEditorAttrs {
 export interface UETransferEditor {
   /** 显示名称, 支持环境变量, 如:%label% */
   text?: string;
+  /** 默认显示名称 */
+  defaultText?: string;
   /** 格式化 text */
   textFormat?(editor: UETransferEditor, attrs: UETransferEditorAttrs): string;
   /** 名称 */
