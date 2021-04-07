@@ -95,4 +95,21 @@ export class LayuiHelper {
     });
   }
 
+  /**
+   * requestAnimationFrame, fn返回 false 停止
+   * @param fn 
+   * @param tick 
+   */
+  static requestAnimationFrame(fn, tick) {
+    if (fn() === false) return;
+    (function done() {
+      setTimeout(function () {
+        requestAnimationFrame(function () {
+          if (fn() === false) return;
+          done();
+        });
+      }, tick || 1);
+    })();
+  }
+
 }

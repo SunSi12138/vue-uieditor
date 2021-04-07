@@ -1,9 +1,9 @@
 <template>
   <div class="layui-uieditor" v-if="current">
-    <div class="editor-json-content">
+    <div class="editor-json-content" v-show="current.mode == 'design'">
       <input class="editor-json-focus" ref="jsonFoucs" />
       <vue-uieditor-render
-        v-if="current && current.json && current.mode == 'design'"
+        v-if="current.json && current.mode == 'design'"
         :options="options"
         :json="current.json"
         :mixin="current.mixin"

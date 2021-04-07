@@ -2,14 +2,18 @@
   <div class="home">
     <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/> -->
-    <div class="uieditor-div">
+    <div v-if="isRender">
+      <a href="javascript:void(0)" @click="isRender = false">设计</a>
+      <vue-uieditor-render :options="options" :json="json" />
+    </div>
+    <div v-else class="uieditor-div">
       <vue-uieditor :options="options" :json="json" :theme="theme" />
     </div>
   </div>
 </template>
 <style lang="less" scoped>
 .uieditor-div {
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 2px;
   left: 0;
@@ -82,7 +86,7 @@ export default class Home extends UEVue {
                       },
                     },
                     render.editorId,
-                    'after'
+                    "after"
                   );
                 },
               },
@@ -211,6 +215,8 @@ export default class Home extends UEVue {
     ],
   };
 
+  isRender = false;
+
   theme: UETheme;
   @UEVueData()
   private initData() {
@@ -220,14 +226,13 @@ export default class Home extends UEVue {
         toolBar: [
           {
             title: "测试",
-            show: ({ service }) => !!service.getCurRender(),
             click: ({ service }) => {
-              const render = service.getCurRender();
-              console.warn("测试", service.getJson(false, render));
+              this.json = service.getJson();
+              this.isRender = true;
             },
           },
           {
-            title: "测试",
+            title: "当前节点信息",
             icon: "layui-icon layui-icon-heart",
             disabled: ({ service }) => !service.getCurRender(),
             click: ({ service }) => {

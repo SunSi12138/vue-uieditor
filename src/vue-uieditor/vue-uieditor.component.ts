@@ -146,17 +146,17 @@ export default class VueUieditor extends UEVue {
     const jEditorJsonContentIn = jo.find('.editor-json-content-in').children();
     let jEditorJsonContentRest = null;
     var syncEditorContentSize = () => {
-      if (this.$isBeingDestroyed) return;
+      if (this.$isBeingDestroyed || !this.current) return false;
+      if (this.service.current.mode != 'design') return;
       let rest = jEditorJsonContentIn.offset();
       let height = jEditorJsonContentIn.outerHeight();
       let width = jEditorJsonContentIn.outerWidth();
       _.assign(rest, { height, width });
-      requestAnimationFrame(syncEditorContentSize);
       if (_.isEqual(jEditorJsonContentRest, rest)) return;
       jEditorJsonContentRest = rest;
       jEditorJsonContent.offset(rest).width(width).height(height);
     }
-    requestAnimationFrame(syncEditorContentSize);
+    LayuiHelper.requestAnimationFrame(syncEditorContentSize, 300);
 
     jo.click(() => {
       closeTip();
@@ -177,6 +177,9 @@ export default class VueUieditor extends UEVue {
       });
     });
     jo.on('mouseleave', '[layui-tip]', (e) => {
+      closeTip();
+    });
+    jo.on('mousedown', '[layui-tip]', (e) => {
       closeTip();
     });
 
@@ -522,7 +525,8 @@ export default class VueUieditor extends UEVue {
   private _destroyed1() {
     this._drager?.destroy();
     this._service?._destroy();
-    this._service = this._drager = null;
+    this._service = this._drager = 
+    this.current = null;
     LayuiRender.destroy(this.$el);
   }
 

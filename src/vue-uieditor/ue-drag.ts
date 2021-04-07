@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { LayuiHelper } from './layui/layui-helper';
 import './layui/layui-import';
 
 const $: JQueryStatic = layui.$;
@@ -184,14 +185,13 @@ function _dragStart($el, options: UEDragOptions) {
   //#region select
 
   var _selectElement: any = null;
-  var _selectTimeId, _selectRect;
+  var _selectRect;
   const _data_toolbarsKey = 'ue_drag_toolbars';
   const isSelect = function (element: any) {
     return element == _selectElement;
   };
   const unSelect = function () {
-    if (_selectTimeId) cancelAnimationFrame(_selectTimeId);
-    _selectElement = _selectTimeId = _selectRect = null;
+    _selectElement = _selectRect = null;
     jSelectBox.removeData(_data_toolbarsKey);
     jSelectBox.addClass(hideCls);
   };
@@ -233,8 +233,7 @@ function _dragStart($el, options: UEDragOptions) {
 
     function fn() {
       if (!_selectElement || _selectElement != element) {
-        cancelAnimationFrame(timeId);
-        return;
+        return false;
       };
       const rect = getOffsetRect(body, element);
       if (!_.isEqual(_selectRect, rect)) {
@@ -246,13 +245,12 @@ function _dragStart($el, options: UEDragOptions) {
           height: `${rect.height}px`,
         });
       }
-      timeId = _selectTimeId = window.requestAnimationFrame(fn);
     };
+
     _selectRect = null;
-    if (_selectTimeId) cancelAnimationFrame(_selectTimeId);
-    fn();
+    LayuiHelper.requestAnimationFrame(fn, 1000);
+
     jSelectBox.removeClass(hideCls);
-    let timeId = _selectTimeId = window.requestAnimationFrame(fn);
   };
 
   // select menu click
