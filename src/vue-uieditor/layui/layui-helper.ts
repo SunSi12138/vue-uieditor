@@ -102,13 +102,22 @@ export class LayuiHelper {
    */
   static requestAnimationFrame(fn, tick) {
     if (fn() === false) return;
+    let count = 0;
     (function done() {
-      setTimeout(function () {
+      if (count < 3) {
         requestAnimationFrame(function () {
           if (fn() === false) return;
           done();
         });
-      }, tick || 1);
+        count++;
+      } else {
+        setTimeout(function () {
+          requestAnimationFrame(function () {
+            if (fn() === false) return;
+            done();
+          });
+        }, tick || 1);
+      }
     })();
   }
 

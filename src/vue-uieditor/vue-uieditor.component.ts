@@ -158,6 +158,27 @@ export default class VueUieditor extends UEVue {
     }
     LayuiHelper.requestAnimationFrame(syncEditorContentSize, 300);
 
+
+    //editor-priview-content
+
+    (()=> {
+      const jPreviewJsonContent = jo.find('.editor-priview-content');
+      const jPreviewJsonContentIn = jo.find('.editor-priview-content-in');
+      let jPriviewJsonContentRest = null;
+      var syncEditorContentSize = () => {
+        if (this.$isBeingDestroyed || !this.current) return false;
+        if (this.service.current.mode != 'preview' ) return;
+        let rest = jPreviewJsonContentIn.offset();
+        let height = jPreviewJsonContentIn.outerHeight();
+        let width = jPreviewJsonContentIn.outerWidth();
+        _.assign(rest, { height, width });
+        if (_.isEqual(jPriviewJsonContentRest, rest)) return;
+        jPriviewJsonContentRest = rest;
+        jPreviewJsonContent.offset(rest).width(width).height(height);
+      }
+      LayuiHelper.requestAnimationFrame(syncEditorContentSize, 300);
+    })();
+
     jo.click(() => {
       closeTip();
       this._makeToolbarDisabled();
@@ -525,8 +546,8 @@ export default class VueUieditor extends UEVue {
   private _destroyed1() {
     this._drager?.destroy();
     this._service?._destroy();
-    this._service = this._drager = 
-    this.current = null;
+    this._service = this._drager =
+      this.current = null;
     LayuiRender.destroy(this.$el);
   }
 

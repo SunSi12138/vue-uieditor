@@ -10,6 +10,14 @@
         editing
       />
     </div>
+    <div class="editor-priview-content" v-show="current.mode == 'preview'">
+      <vue-uieditor-render
+        v-if="current.mode == 'preview'"
+        :options="options"
+        :json="current.monacoEditor.content"
+        preview
+      />
+    </div>
     <div class="layui-tab layui-tab-card">
       <!-- tool-bar -->
       <div
@@ -277,12 +285,14 @@
           />
         </div>
         <div class="layui-tab-item">
-          <vue-uieditor-render
-            v-if="current.mode == 'preview'"
-            :options="options"
-            :json="current.monacoEditor.content"
-            preview
-          />
+          <div class="editor-priview-content-in">
+            <vue-uieditor-render
+              v-if="current.mode == 'preview'"
+              :options="options"
+              :json="current.monacoEditor.content"
+              preview
+            />
+          </div>
         </div>
         <div class="layui-tab-item">
           <uieditor-monaco-editor
