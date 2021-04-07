@@ -21,10 +21,7 @@
     <div class="layui-uieditor">
       <div class="layui-tab layui-tab-card">
         <!-- tool-bar -->
-        <div
-          class="tool-bar"
-          v-if="isDesign"
-        >
+        <div class="tool-bar" v-if="isDesign">
           <div class="layui-btn-group">
             <button
               v-for="(item, index) in toolbar"
@@ -169,10 +166,7 @@
             </button>
           </div>
         </div>
-        <div
-          class="tool-bar"
-          v-if="isPreview"
-        >
+        <div class="tool-bar" v-if="isPreview">
           <div class="layui-btn-group">
             <button
               type="button"
@@ -263,49 +257,55 @@
             </div>
           </div>
           <div class="layui-tab-item" v-if="hasMode('script')">
-            <uieditor-monaco-editor
-              v-if="current.mode == 'script'"
-              v-model="current.monacoEditor.content"
-              :extraLib="current.monacoEditor.extraLib"
-              :format-auto="current.monacoEditor.formatAuto"
-              :language="current.monacoEditor.language"
-              ref="modeMonacoEditor"
-            />
+            <div class="layui-tab-codeeditor">
+              <uieditor-monaco-editor
+                v-if="current.mode == 'script'"
+                v-model="current.monacoEditor.content"
+                :extraLib="current.monacoEditor.extraLib"
+                :format-auto="current.monacoEditor.formatAuto"
+                :language="current.monacoEditor.language"
+                ref="modeMonacoEditor"
+              />
+            </div>
           </div>
           <div class="layui-tab-item" v-if="hasMode('tmpl')">
-            <uieditor-monaco-editor
-              v-if="current.mode == 'tmpl'"
-              v-model="current.monacoEditor.content"
-              :extraLib="current.monacoEditor.extraLib"
-              :format-auto="current.monacoEditor.formatAuto"
-              :language="current.monacoEditor.language"
-              ref="modeMonacoEditor"
-            />
+            <div class="layui-tab-codeeditor">
+              <uieditor-monaco-editor
+                v-if="current.mode == 'tmpl'"
+                v-model="current.monacoEditor.content"
+                :extraLib="current.monacoEditor.extraLib"
+                :format-auto="current.monacoEditor.formatAuto"
+                :language="current.monacoEditor.language"
+                ref="modeMonacoEditor"
+              />
+            </div>
           </div>
           <div class="layui-tab-item" v-if="hasMode('json')">
-            <uieditor-monaco-editor
-              v-if="current.mode == 'json'"
-              v-model="current.monacoEditor.content"
-              :extraLib="current.monacoEditor.extraLib"
-              :format-auto="current.monacoEditor.formatAuto"
-              :language="current.monacoEditor.language"
-              ref="modeMonacoEditor"
-            />
-          </div>
-          <div class="layui-tab-item">
-            <div class="editor-priview-content-in">
-              
+            <div class="layui-tab-codeeditor">
+              <uieditor-monaco-editor
+                v-if="current.mode == 'json'"
+                v-model="current.monacoEditor.content"
+                :extraLib="current.monacoEditor.extraLib"
+                :format-auto="current.monacoEditor.formatAuto"
+                :language="current.monacoEditor.language"
+                ref="modeMonacoEditor"
+              />
             </div>
           </div>
           <div class="layui-tab-item">
-            <uieditor-monaco-editor
-              v-if="current.monacoEditorOther.show"
-              v-model="current.monacoEditorOther.content"
-              :extraLib="current.monacoEditorOther.extraLib"
-              :format-auto="current.monacoEditorOther.formatAuto"
-              :language="current.monacoEditorOther.language"
-              ref="monacoEditorOther"
-            />
+            <div class="editor-priview-content-in"></div>
+          </div>
+          <div class="layui-tab-item">
+            <div class="layui-tab-codeeditor">
+              <uieditor-monaco-editor
+                v-if="current.monacoEditorOther.show"
+                v-model="current.monacoEditorOther.content"
+                :extraLib="current.monacoEditorOther.extraLib"
+                :format-auto="current.monacoEditorOther.formatAuto"
+                :language="current.monacoEditorOther.language"
+                ref="monacoEditorOther"
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -155,7 +155,7 @@ export default class VueUieditor extends UEVue {
       if (this.$isBeingDestroyed || !this.current) return false;
       if (this.service.current.mode != 'design') return;
       let rest = jEditorJsonContentIn.offset();
-      let height = jEditorJsonContentIn.outerHeight();
+      let height = jEditorJsonContentIn.outerHeight() - 5;
       let width = jEditorJsonContentIn.outerWidth();
       _.assign(rest, { height, width });
       if (_.isEqual(jEditorJsonContentRest, rest)) return;
@@ -181,8 +181,8 @@ export default class VueUieditor extends UEVue {
         if (this.$isBeingDestroyed || !this.current) return false;
         if (this.service.current.mode != 'preview') return;
         let rest = jPreviewJsonContentIn.offset();
-        let height = jPreviewJsonContentIn.outerHeight();
-        let width = jPreviewJsonContentIn.outerWidth();
+        let height = jPreviewJsonContentIn.outerHeight() - 15;
+        let width = jPreviewJsonContentIn.outerWidth() - 10;
         _.assign(rest, { height, width });
         if (_.isEqual(jPriviewJsonContentRest, rest)) return;
         jPriviewJsonContentRest = rest;
