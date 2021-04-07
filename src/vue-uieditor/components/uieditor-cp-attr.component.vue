@@ -5,9 +5,9 @@
     lay-filter="docDemoTabBrief"
   >
     <ul class="layui-tab-title">
-      <li class="layui-this">属性</li>
-      <li>事件</li>
-      <li>Vue</li>
+      <li class="layui-this" @click="setTab(0)">属性</li>
+      <li @click="setTab(1)">事件</li>
+      <li @click="setTab(2)">Vue</li>
     </ul>
     <div class="layui-tab-content">
       <!-- 属性 -->

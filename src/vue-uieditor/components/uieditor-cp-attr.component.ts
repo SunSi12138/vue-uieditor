@@ -43,6 +43,10 @@ export default class UieditorCpAttr extends UEVue {
 
   renderId: string;
 
+  setTab(index){
+    this.service['_attr_tabcurindex_'] = index;
+  }
+
   @UEVueLife('created')
   private _c1() {
     const current = this.service.current;
@@ -285,6 +289,11 @@ export default class UieditorCpAttr extends UEVue {
   private _initEvent() {
     const jo = $(this.$el);
     const $this = this;
+
+    const tabIndex = this.service['_attr_tabcurindex_'] || 0;
+    if (tabIndex > 0)
+      jo.find('.layui-tab-title').children().eq(tabIndex).trigger('click');
+
 
     //绑定切换
     jo.on('click', '.layui-bg-blue,.layui-bg-blue-active', function (e) {
