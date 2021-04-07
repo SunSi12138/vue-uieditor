@@ -166,7 +166,8 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
         type: { order: 5, type: 'select', datas:['transition', 'animation'] },
         mode: { order: 6, type: 'select', datas:['out-in', 'in-out'] },
         'duration,enter-class,leave-class,appear-class,enter-to-class,leave-to-class,appear-to-class,enter-active-class,leave-active-class,appear-active-class': { order: 0 },
-        'before-enter,before-leave,before-appear,enter,leave,appear,after-enter,after-leave,after-appear,enter-cancelled,leave-cancelled,appear-cancelled': { order: 30, event:true }
+        'before-enter,before-leave,before-appear,enter,leave,after-enter,after-leave,after-appear,enter-cancelled,leave-cancelled,appear-cancelled': { order: 30, event:true },
+        '@appear':{ event:true, text:'appear' }
       }
     }
   }

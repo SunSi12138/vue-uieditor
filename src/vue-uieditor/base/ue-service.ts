@@ -1330,7 +1330,7 @@ function _setRenderAttrs(render: UERenderItem, editor: UETransferEditor, editing
             if (!isRemoveAttr) {
               //editing 时 不处理事件
               if (generate || !item.event) {
-                const newName = item.event ? eventName : (isBind ? bindName : name);
+                const newName = item.event ? eventName.replace(/\@{2}/g, '@') : (isBind ? bindName : name);
                 props[newName] = value;
               }
             }
