@@ -137,6 +137,12 @@ export default class VueUieditor extends UEVue {
     return !!this.current?.json;
   }
 
+  get isDesign(){
+    return this.current.mode == 'design' && !this.current.monacoEditorOther.show;
+  }
+  get isPreview(){
+    return this.current.mode == 'preview' && !this.current.monacoEditorOther.show;
+  }
   private _initEvents() {
     const $: JQueryStatic = layui.$,
       layer = layui.layer;
@@ -153,6 +159,12 @@ export default class VueUieditor extends UEVue {
       let width = jEditorJsonContentIn.outerWidth();
       _.assign(rest, { height, width });
       if (_.isEqual(jEditorJsonContentRest, rest)) return;
+      // if (jEditorJsonContentIn.is(':hide')) {
+      //   // jEditorJsonContent.hide();
+      //   return;
+      // } else {
+      //   jEditorJsonContent.show();
+      // }
       jEditorJsonContentRest = rest;
       jEditorJsonContent.offset(rest).width(width).height(height);
     }
@@ -161,13 +173,13 @@ export default class VueUieditor extends UEVue {
 
     //editor-priview-content
 
-    (()=> {
+    (() => {
       const jPreviewJsonContent = jo.find('.editor-priview-content');
       const jPreviewJsonContentIn = jo.find('.editor-priview-content-in');
       let jPriviewJsonContentRest = null;
       var syncEditorContentSize = () => {
         if (this.$isBeingDestroyed || !this.current) return false;
-        if (this.service.current.mode != 'preview' ) return;
+        if (this.service.current.mode != 'preview') return;
         let rest = jPreviewJsonContentIn.offset();
         let height = jPreviewJsonContentIn.outerHeight();
         let width = jPreviewJsonContentIn.outerWidth();

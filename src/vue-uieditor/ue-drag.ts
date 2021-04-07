@@ -177,8 +177,8 @@ function _dragStart($el, options: UEDragOptions) {
 
   const hideCls = 'uieditor-drag-hide';
   const jEditorJsonContent = jUieditor.find('.editor-json-content').first();
-  const jSelectBox = $('<div class="uieditor-drag-sel-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
-  const jOverBox = $('<div class="uieditor-drag-over-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
+  const jSelectBox = $('<div class="uieditor-drag-sel-box layui-uieditor ' + hideCls + '" />').appendTo(jEditorJsonContent);
+  const jOverBox = $('<div class="uieditor-drag-over-box layui-uieditor ' + hideCls + '" />').appendTo(jEditorJsonContent);
   const jPosline = $('<div class="uieditor-drag-pos-line ' + hideCls + '" />').appendTo(jEditorJsonContent);
   const body = jEditorJsonContent[0];
 

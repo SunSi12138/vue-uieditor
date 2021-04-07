@@ -5,6 +5,43 @@
 @editorLeftWidth : 200px;
 @editorRightWidth: 300px;
 
+.vue-uieditor {
+  height  : 100%;
+  width   : 100%;
+  position: relative;
+
+  .editor-json-content {
+    position: absolute;
+    z-index : 100;
+
+    padding : 0;
+    overflow: hidden auto;
+
+    >.editor-json-focus {
+      position: fixed;
+      top     : 0;
+      left    : 0;
+      overflow: hidden;
+      width   : 0;
+      height  : 0;
+      padding : 0;
+      margin  : 0;
+      border  : 0;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  .editor-priview-content {
+    position: absolute;
+    z-index : 100;
+    padding : 4px;
+    overflow: hidden auto;
+  }
+}
+
 .layui-uieditor {
   height  : 100%;
   width   : 100%;
@@ -82,36 +119,6 @@
     }
   }
 
-  .editor-json-content {
-    position: absolute;
-    z-index : 100;
-
-    padding : 0;
-    overflow: hidden auto;
-
-    >.editor-json-focus {
-      position: fixed;
-      top     : 0;
-      left    : 0;
-      overflow: hidden;
-      width   : 0;
-      height  : 0;
-      padding : 0;
-      margin  : 0;
-      border  : 0;
-
-      &:focus {
-        outline: none;
-      }
-    }
-  }
-
-  .editor-priview-content {
-    position: absolute;
-    z-index : 100;
-    padding : 0;
-    overflow: hidden auto;
-  }
   .editor-priview-content-in {
     height: 100%;
     width: 100%;
