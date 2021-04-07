@@ -152,6 +152,9 @@ export default class VueUieditorRender extends UEVue {
         return opt;
       })();
 
+      mixinExBefore = UEMergeMixin(mixinExBefore, {
+        data(){ return transferExt.data || {}; }
+      });
       const service = editing ? this.service : null;
       let transferExt: any = {};
       _.assign(transferExt, {

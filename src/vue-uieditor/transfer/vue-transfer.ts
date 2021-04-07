@@ -1,6 +1,7 @@
 import { UETransfer } from '../base/ue-base';
 import { UECompiler } from '../base/ue-compiler';
 import { UERender } from '../base/ue-render';
+import _ from 'lodash';
 
 const groupOrder = 3;
 const group = '公用组件库/Vue 组件';
@@ -95,6 +96,35 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
           enabledBind: true,
           value: '/path1'
         }
+      }
+    }
+  },
+  template: {
+    transfer(render, extend) {
+      const { editing,getPropText } = extend;
+      if (editing) {
+        render.type = 'div';
+        const scope = _.trim(getPropText('slot-scope', '', true));
+        if(scope){
+          _.assign(extend.data, {
+            [scope]:{}
+          });
+        }
+      }
+      return render;
+    },
+    "editor": {
+      order: 0,
+      groupOrder,
+      group,
+      text: 'template',
+      icon: 'layui-icon layui-icon-form',
+      base: false,
+      container: true,
+      containerBorder: true,
+      attrs: {
+        slot: { value: 'tmpl1' },
+        'slot-scope': { effect: true }
       }
     }
   }
