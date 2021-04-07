@@ -456,7 +456,7 @@ function _defaultEditor(name: string): UETransferEditor {
       if (temp) list.push(`model: ${temp}`);
       temp = attrs.ref.value;
       if (temp) list.push(`ref: ${temp}`);
-      temp = attrs.slot.value;
+      temp = attrs.slot?.value;
       if (temp) list.push(`slot: ${temp}`);
       return list.length > 0 ? `${text} [ ${list.join(', ')} ]` : text;
     },
@@ -471,8 +471,8 @@ function _defaultEditor(name: string): UETransferEditor {
       'v-for': { group: 'Vue', vue: true, row: true, order: 104 },
       'v-model': { group: 'Vue', vue: true, order: 105 },
       'ref': { group: 'Vue', vue: true, effect: true, codeBtn: false, order: 106 },
-      'slot': { group: 'Vue', vue: true, order: 107 },
-      'slot-scope': { group: 'Vue', vue: true, order: 108 },
+      // 'slot': { group: 'Vue', vue: true, order: 107 },
+      // 'slot-scope': { group: 'Vue', vue: true, order: 108 },
       'class': {
         group: 'Vue', vue: true, effect: true, order: 109, enabledBind: true
       },
