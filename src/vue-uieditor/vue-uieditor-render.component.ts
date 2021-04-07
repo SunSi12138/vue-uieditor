@@ -69,14 +69,14 @@ export default class VueUieditorRender extends UEVue {
   @UEVueWatch('options')
   /** 刷新 */
   refresh() {
-    this._makeVueRender();
+    this.makeVueRender();
   }
 
   @UEVueLife('created')
   private async _created1() {
     const options = this.optionEx || {};
     await UECompiler.init({ bable: options.babel !== false });
-    this._makeVueRender();
+    this.makeVueRender();
   }
 
 
@@ -100,6 +100,20 @@ export default class VueUieditorRender extends UEVue {
     if (window.console) {
       console.error && console.error(err);
       console.warn && console.warn('render', this._compiledRender);
+    }
+  }
+
+
+  async makeVueRender(){
+    
+    if (this.isErrorCaptured) {
+      try {
+        await this._makeVueRender();
+      } catch (err) {
+        this.logError(err, this, 'compile');
+      }
+    } else {
+      await this._makeVueRender();
     }
   }
 
