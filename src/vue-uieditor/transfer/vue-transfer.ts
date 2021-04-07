@@ -156,7 +156,7 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       groupOrder,
       group,
       text: 'transition',
-      icon: 'layui-icon layui-icon-form',
+      icon: 'layui-icon layui-icon-transfer',
       base: false,
       container: true,
       containerBorder: true,
@@ -165,9 +165,58 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
         'appear,css': { order: 1, type: 'boolean' },
         type: { order: 5, type: 'select', datas: ['transition', 'animation'] },
         mode: { order: 6, type: 'select', datas: ['out-in', 'in-out'] },
-        'duration,enter-class,leave-class,appear-class,enter-to-class,leave-to-class,appear-to-class,enter-active-class,leave-active-class,appear-active-class': { order: 0 },
+        'duration,enter-class,leave-class,appear-class,enter-to-class,leave-to-class,appear-to-class,enter-active-class,leave-active-class,appear-active-class': { order: 10 },
         'before-enter,before-leave,before-appear,enter,leave,after-enter,after-leave,after-appear,enter-cancelled,leave-cancelled,appear-cancelled': { order: 30, event: true },
         '@appear': { name: 'appear', event: true, text: 'appear' }
+      }
+    }
+  },
+  'transition-group': {
+    transfer(render, extend) {
+      const { editing, getPropText } = extend;
+      if (editing) {
+        render.type = 'div';
+      }
+      return render;
+    },
+    "editor": {
+      order: 3,
+      groupOrder,
+      group,
+      text: 'transition-group',
+      icon: 'layui-icon layui-icon-video',
+      base: false,
+      container: true,
+      containerBorder: true,
+      attrs: {
+        'tag,name': { order: 0 },
+        'appear,css': { order: 1, type: 'boolean' },
+        type: { order: 5, type: 'select', datas: ['transition', 'animation'] },
+        'duration,move-class,enter-class,leave-class,appear-class,enter-to-class,leave-to-class,appear-to-class,enter-active-class,leave-active-class,appear-active-class': { order: 0 },
+        'before-enter,before-leave,before-appear,enter,leave,after-enter,after-leave,after-appear,enter-cancelled,leave-cancelled,appear-cancelled': { order: 30, event: true },
+        '@appear': { name: 'appear', event: true, text: 'appear' }
+      }
+    }
+  },
+  slot: {
+    transfer(render, extend) {
+      const { editing, getPropText } = extend;
+      if (editing) {
+        render.type = 'div';
+      }
+      return render;
+    },
+    "editor": {
+      order: 3,
+      groupOrder,
+      group,
+      text: 'slot',
+      icon: 'layui-icon layui-icon-senior',
+      base: false,
+      container: true,
+      containerBorder: true,
+      attrs: {
+        name: { order: 0 }
       }
     }
   }

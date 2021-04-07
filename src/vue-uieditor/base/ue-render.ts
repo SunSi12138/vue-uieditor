@@ -472,6 +472,7 @@ function _defaultEditor(name: string): UETransferEditor {
       'v-for': { group: 'Vue', vue: true, row: true, order: 104 },
       'v-model': { group: 'Vue', vue: true, order: 105 },
       'ref': { group: 'Vue', vue: true, effect: true, codeBtn: false, order: 106 },
+      'key': { group: 'Vue', vue: true, order: 107 },
       // 'slot': { group: 'Vue', vue: true, order: 107 },
       // 'slot-scope': { group: 'Vue', vue: true, order: 108 },
       'class': {
