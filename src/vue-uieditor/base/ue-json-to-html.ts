@@ -1,4 +1,4 @@
-interface Config {
+export interface UEJsonToHtmlConfig {
   raw?: boolean; // 显示转义字符
   wrap?: boolean; // 是否换行显示
   indent?: number; // 缩进，最大支持到8
@@ -6,7 +6,7 @@ interface Config {
   childrenKey?: string; // 获取 children 的字段
 }
 
-const defaultConfig: Config = {
+const defaultConfig: UEJsonToHtmlConfig = {
   raw: false,
   wrap: true,
   indent: 2
@@ -54,7 +54,7 @@ function resolveAttrs(attrsObject: any, extraAttrsObject?: object) {
   return ' ' + attrStrings.join(' ');
 }
 
-function UEJsonToHtml(schema: any | Array<any> | string | number, config?: Config, depth: number = 0): string {
+function UEJsonToHtml(schema: any | Array<any> | string | number, config?: UEJsonToHtmlConfig, depth: number = 0): string {
 
   if (Array.isArray(schema)) {
     return schema.map(childSchema => UEJsonToHtml(childSchema, config, depth)).join('');

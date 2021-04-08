@@ -1,8 +1,8 @@
 import _ from "lodash";
 import Vue from "vue";
 import { UEHelper } from "./ue-helper";
+import { UEJsonToHtml, UEJsonToHtmlConfig } from './ue-json-to-html';
 import { UERenderItem } from "./ue-render-item";
-import { UEJsonToHtml } from './ue-json-to-html';
 
 function _escape(str: string, addTry?: boolean) {
 
@@ -41,41 +41,42 @@ const _bKey = /^\s*(?:\:|v\-)/, _bEvent = /^\s*\@/;
 export class UECompiler {
 
   static toTemplate(items: (UERenderItem | string)[], editing?: boolean): string {
-    let templates: string[] = [];
-    _.forEach(items, function (item) {
-      if (_.isString(item)) item = { type: "", content: item };
-      let props = item.props;
-      let propList: string[];
-      if (props) {
-        let evals, evalfn
-        propList = _.map(_.keys(props), function (key) {
-          let item = { name: key, value: props[key] };
-          let value = item.value === true ? true : (_.isNil(item.value) ? '' : item.value.toString());
-          let pItem = value === true ? item.name : [item.name, '"' + _escape(value, editing && key.indexOf(':') == 0) + '"'].join('=');
-          switch (key) {
-            case ':_ue_eval':
-              evals = pItem;
-              return '';
-            case ':_ue_eval_fn':
-              evalfn = pItem;
-              return '';
-            default:
-              return pItem;
-          }
-        });
-        if (evals || evalfn) {
-          propList = propList.filter(function (item) { return !!item; });
-          evals && propList.unshift(evals);
-          evalfn && propList.unshift(evalfn);
-        }
-      }
-      let children = item.children;
-      let childrenHtml: string = children && children.length > 0 ? UECompiler.toTemplate(children, editing) : (item.content || '');
-      let attrHtml: string = propList && propList.length > 0 ? (' ' + propList.join(' ')) : '';
-      let tagHtml: string = item.type ? (!childrenHtml ? `<${item.type}${attrHtml} />` : `<${item.type}${attrHtml}>${childrenHtml}</${item.type}>`) : item.content;
-      templates.push(tagHtml);
-    });
-    return templates.join('');
+    return UECompiler.jsonToHtml(items, { wrap: false });
+    // let templates: string[] = [];
+    // _.forEach(items, function (item) {
+    //   if (_.isString(item)) item = { type: "", content: item };
+    //   let props = item.props;
+    //   let propList: string[];
+    //   if (props) {
+    //     let evals, evalfn
+    //     propList = _.map(_.keys(props), function (key) {
+    //       let item = { name: key, value: props[key] };
+    //       let value = item.value === true ? true : (_.isNil(item.value) ? '' : item.value.toString());
+    //       let pItem = value === true ? item.name : [item.name, '"' + _escape(value, editing && key.indexOf(':') == 0) + '"'].join('=');
+    //       switch (key) {
+    //         case ':_ue_eval':
+    //           evals = pItem;
+    //           return '';
+    //         case ':_ue_eval_fn':
+    //           evalfn = pItem;
+    //           return '';
+    //         default:
+    //           return pItem;
+    //       }
+    //     });
+    //     if (evals || evalfn) {
+    //       propList = propList.filter(function (item) { return !!item; });
+    //       evals && propList.unshift(evals);
+    //       evalfn && propList.unshift(evalfn);
+    //     }
+    //   }
+    //   let children = item.children;
+    //   let childrenHtml: string = children && children.length > 0 ? UECompiler.toTemplate(children, editing) : (item.content || '');
+    //   let attrHtml: string = propList && propList.length > 0 ? (' ' + propList.join(' ')) : '';
+    //   let tagHtml: string = item.type ? (!childrenHtml ? `<${item.type}${attrHtml} />` : `<${item.type}${attrHtml}>${childrenHtml}</${item.type}>`) : item.content;
+    //   templates.push(tagHtml);
+    // });
+    // return templates.join('');
   }
 
   static vueCompile(template: string) {
@@ -221,7 +222,7 @@ export class UECompiler {
    * Render 转成 Html
    * @param html 
    */
-  static async renderToHtmlAsync(render: UERenderItem): Promise<string> {
+  static async renderToHtmlAsync(render: UERenderItem, config?:UEJsonToHtmlConfig): Promise<string> {
     render = _.cloneDeep(render);
     render = {
       type: 'temp_20200807_',
@@ -233,7 +234,7 @@ export class UECompiler {
     const scripts = [], styles = [];
     const json = renderToJson([render], scripts, styles);
     json[0].children = json[0].children.concat(styles).concat(scripts);
-    let html: any = await UECompiler.jsonToHtmlAsync(json[0]);
+    let html: any = await UECompiler.jsonToHtmlAsync(json[0], config);
     return html.replace(/<\/?temp_20200807_>/g, "");
   }
 
@@ -265,9 +266,9 @@ export class UECompiler {
    * Json 转成 Html
    * @param html 
    */
-  static async jsonToHtmlAsync(json: any) {
+  static async jsonToHtmlAsync(json: any, config?:UEJsonToHtmlConfig) {
     // await initJsonToXml();
-    let html: string = UECompiler.jsonToHtml(json);
+    let html: string = UECompiler.jsonToHtml(json, config);
     return html;
   }
 
@@ -275,13 +276,13 @@ export class UECompiler {
    * Json 转成 Html，注意先使用 UECompiler 初始化
    * @param html 
    */
-  static jsonToHtml(json: any) {
+  static jsonToHtml(json: any, config?: UEJsonToHtmlConfig) {
     json = _.cloneDeep(json);
     // const newJson = {
     //   root20200806: toJson([json])
     // }
     // const html: string = _.trim(_jsonxml(newJson).replace(/<\/?root20200806>/g, ""));
-    const html: string = _.trim(UEJsonToHtml([json]));
+    const html: string = _.trim(UEJsonToHtml([json], config));
     return html;
   }
 

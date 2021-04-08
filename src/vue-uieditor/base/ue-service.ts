@@ -280,7 +280,7 @@ export class UEService {
 
   async getTmpl() {
     const jsonTmpl = this.getJson();
-    const html = await UECompiler.renderToHtmlAsync(jsonTmpl);
+    const html = await UECompiler.renderToHtmlAsync(jsonTmpl, { wrap: true, indent: 2 });
     return html;
   }
 
@@ -1289,8 +1289,8 @@ function _initAttrsFromRender(render: UERenderItem) {
   render.props && (render.props = {});
 }
 
-function _setAttrValue(attr:UETransferEditorAttrsItem, value:any){
-  if (!attr.event && attr.type == 'boolean-only'){
+function _setAttrValue(attr: UETransferEditorAttrsItem, value: any) {
+  if (!attr.event && attr.type == 'boolean-only') {
     attr.value = value === true || value === 'true';;
   } else {
     attr.value = value;
