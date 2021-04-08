@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UEMode, UEOption, UETransferEditor, UETransferEditorAttrsItem, UEDragType2 } from './ue-base';
+import { UEDragType2, UEMode, UEOption, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -1239,17 +1239,18 @@ function _initAttrsFromRender(render: UERenderItem) {
         if (item.event) {
           let eventName = `@${name}`;
           if (has = (eventName in props)) {
-            item.value = props[eventName];
+            // item.value = props[eventName];
+            _setAttrValue(item, props[eventName]);
             delete props[eventName];
           }
         } else {
           propName = `:${name}`;
           if (has = (name in props)) {
-            item.value = props[name];
+            _setAttrValue(item, props[name]);
             delete props[name];
             item.bind = false;
           } else if (has = (propName in props)) {
-            item.value = props[propName];
+            _setAttrValue(item, props[propName]);
             delete props[propName];
             item.bind = true;
           }
@@ -1261,10 +1262,12 @@ function _initAttrsFromRender(render: UERenderItem) {
       //attrBaks 备份属性，不会被起作用
       propName = `:${name}`;
       if (name in attrBaks) {
-        item.value = attrBaks[name];
+        // item.value = attrBaks[name];
+        _setAttrValue(item, attrBaks[name]);
         item.bind = false;
       } else if (propName in attrBaks) {
-        item.value = attrBaks[propName];
+        // item.value = attrBaks[propName];
+        _setAttrValue(item, attrBaks[propName]);
         item.bind = true;
       }
     }
@@ -1284,6 +1287,14 @@ function _initAttrsFromRender(render: UERenderItem) {
     }
   });
   render.props && (render.props = {});
+}
+
+function _setAttrValue(attr:UETransferEditorAttrsItem, value:any){
+  if (!attr.event && attr.type == 'boolean-only'){
+    attr.value = value === true || value === 'true';;
+  } else {
+    attr.value = value;
+  }
 }
 
 
@@ -1338,7 +1349,7 @@ function _setRenderAttrs(render: UERenderItem, editor: UETransferEditor, editing
               //editing 时 不处理事件
               if (generate || !item.event) {
                 const newName = item.event ? eventName : (isBind ? bindName : name);
-                props[newName] = value;
+                props[newName] = item.type == 'boolean-only' ? value === true : value;
               }
             }
         }

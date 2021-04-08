@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>表单模块 - layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+
+  <link rel="stylesheet" href="../src/css/layui-uieditor.css">
+
+  <style>
+    .test-content {
+      height: 100px;
+    }
+
+    .test-item {
+      height: 30px;
+    }
+
+    .test-item-inline {
+      height: 30px;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="height: 340px;width: 100%;">
+    <div class="layui-uieditor">
+      <div class="layui-tab layui-tab-card">
+        <!-- tool-bar -->
+        <div class="tool-bar">
+          <div class="layui-btn-group">
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+              文字
+            </button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm divided">
+              <i class="layui-icon layui-icon-refresh"></i>
+            </button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+              <i class="layui-icon layui-icon-left"></i>
+            </button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+              <i class="layui-icon layui-icon-right"></i>
+            </button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm divided">
+              <i class="layui-icon layui-icon-align-left"></i>
+            </button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+              <i class="layui-icon layui-icon-ok"></i>
+            </button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+              <i class="layui-icon layui-icon-close"></i>
+            </button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm divided">
+              <i class="layui-icon layui-icon-set-fill"></i>
+            </button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+              <i class="layui-icon layui-icon-about"></i>
+            </button>
+          </div>
+        </div>
+        <ul class="layui-tab-title">
+          <li class="layui-tab-first layui-this">设计</li>
+          <li>代码</li>
+          <li>模板</li>
+          <li>JSON</li>
+          <li>预览</li>
+        </ul>
+        <div class="layui-tab-content">
+          <div class="layui-tab-item layui-show">
+            <div class="editor-pane">
+              <div class="left">
+                <div class="left-content">
+                  <form id="form-attr-search" class="layui-form uieditor-searchform" action="" lay-filter="first">
+                    <input type="text" placeholder="请输入搜索关键字" autocomplete="off" class="layui-input">
+                    <i class="layui-icon layui-icon-search"></i>
+                  </form>
+                  <div class="layui-collapse editor-pane-collapse" lay-filter="test">
+                    <!-- 组件 -->
+                    <div class="layui-colla-item">
+                      <h2 class="layui-colla-title">
+                        <span class="editor-pane-collapse-title">组件</span>
+                        <i class="layui-icon layui-colla-icon"></i>
+                      </h2>
+                      <div class="layui-colla-content layui-show">
+                        <div id="tree1"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="center">
+                <div class="center-content">
+                  <div class="editor-content">
+                    <div class="center-breadcrumb">
+                      <span>
+                        <a href="/" target="_self" class="center-breadcrumb-item-link">
+                          Home
+                        </a>
+                        <span class="center-breadcrumb-item-separator">&gt;</span>
+                      </span>
+                      <span>
+                        <a href="/components/breadcrumb" target="_self" class="center-breadcrumb-item-link">
+                          Components
+                        </a>
+                        <span class="center-breadcrumb-item-separator">&gt;</span>
+                      </span>
+                      <span>
+                        <span class="center-breadcrumb-item-link">
+                          Breadcrumb
+                        </span>
+                      </span>
+                    </div>
+                    <div class="editor-json-content">
+                      <div class="uieditor-drag-content uieditor-drag-root">
+                        <div class="uieditor-drag-item test-item">
+                          item1
+                        </div>
+                        <div class="uieditor-drag-item test-item-inline">
+                          item-inline1
+                        </div>
+                        <div class="uieditor-drag-item test-item-inline">
+                          item-inline2
+                        </div>
+                        <div class="uieditor-drag-content test-content">
+                          content1
+                        </div>
+                        <div class="uieditor-drag-content test-content">
+                          content2
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="right">
+                <div class="right-content">
+                  <div class="layui-tab layui-tab-brief editor-pane-tab" lay-filter="docDemoTabBrief">
+                    <ul class="layui-tab-title">
+                      <li class="layui-this">属性</li>
+                      <li>事件</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                      <!-- 属性 -->
+                      <div class="layui-tab-item layui-show">
+                        <form id="form-attr-search" class="layui-form uieditor-searchform" action="" lay-filter="first">
+                          <input type="text" placeholder="请输入搜索关键字" autocomplete="off" class="layui-input">
+                          <i class="layui-icon layui-icon-search"></i>
+                        </form>
+                        <div class="layui-collapse editor-pane-collapse" lay-filter="test">
+                          <!-- Vue -->
+                          <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">
+                              <span class="editor-pane-collapse-title">Vue</span>
+                              <i class="layui-icon layui-colla-icon"></i>
+                            </h2>
+                            <div class="layui-colla-content layui-show">
+                              <form id="form1" class="layui-form layui-form-pane1 uieditor-form" action=""
+                                lay-filter="first">
+                                <div class="layui-form-item">
+                                  <label class="layui-form-label">v-if</label>
+                                  <div class="layui-input-block attr-bind attr-code">
+                                    <span class="layui-badge layui-bg-orange">v</span>
+                                    <input type="text" name="v-if" lay-verify="required|title" lay-reqText="标题不能为空"
+                                      required placeholder="请输入标题" autocomplete="off" class="layui-input">
+                                    <i class="layui-icon layui-icon-form"></i>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <label class="layui-form-label">v-show</label>
+                                  <div class="layui-input-block attr-bind attr-code">
+                                    <span class="layui-badge layui-bg-orange">v</span>
+                                    <input type="text" name="vModel" lay-verify="required|title" lay-reqText="标题不能为空"
+                                      required placeholder="请输入标题" autocomplete="off" class="layui-input">
+                                    <i class="layui-icon layui-icon-form"></i>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <label class="layui-form-label">v-for</label>
+                                  <div class="layui-input-block attr-bind attr-code">
+                                    <span class="layui-badge layui-bg-orange">v</span>
+                                    <input type="text" name="vModel" lay-verify="required|title" lay-reqText="标题不能为空"
+                                      required placeholder="请输入标题" autocomplete="off" class="layui-input">
+                                    <i class="layui-icon layui-icon-form"></i>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <div class="layui-row  layui-col-space4">
+                                    <div class="layui-col-xs6">
+                                      <label class="layui-form-label">v-model</label>
+                                      <div class="layui-input-block attr-bind">
+                                        <span class="layui-badge layui-bg-orange">v</span>
+                                        <input type="text" name="vModel" lay-verify="required|title"
+                                          lay-reqText="标题不能为空" required placeholder="请输入标题" autocomplete="off"
+                                          class="layui-input">
+                                      </div>
+                                    </div>
+                                    <div class="layui-col-xs6">
+                                      <label class="layui-form-label">ref</label>
+                                      <div class="layui-input-block">
+                                        <input type="text" name="ref" autocomplete="off" class="layui-input">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <div class="layui-row  layui-col-space4">
+                                    <div class="layui-col-xs6">
+                                      <label class="layui-form-label">
+                                        <i class="layui-icon layui-icon-about"></i>
+                                        class
+                                      </label>
+                                      <div class="layui-input-block attr-bind attr-code">
+                                        <span class="layui-badge layui-bg-gray">：</span>
+                                        <input type="text" name="disabled" autocomplete="off" class="layui-input">
+                                        <i class="layui-icon layui-icon-form"></i>
+                                      </div>
+                                    </div>
+                                    <div class="layui-col-xs6">
+                                      <label class="layui-form-label">style</label>
+                                      <div class="layui-input-block attr-bind attr-code">
+                                        <span class="layui-badge layui-bg-gray">：</span>
+                                        <input type="text" name="name" autocomplete="off" class="layui-input">
+                                        <i class="layui-icon layui-icon-form"></i>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                          <!-- 组件属性 -->
+                          <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">
+                              <span class="editor-pane-collapse-title">组件属性</span>
+                              <i class="layui-icon layui-colla-icon"></i>
+                            </h2>
+                            <div class="layui-colla-content layui-show">
+                              <form id="form1" class="layui-form layui-form-pane1 uieditor-form" action=""
+                                lay-filter="first">
+                                <div class="layui-form-item">
+                                  <div class="layui-row  layui-col-space4">
+                                    <div class="layui-col-xs6">
+                                      <label class="layui-form-label">
+                                        <i class="layui-icon layui-icon-about"></i>
+                                        disabled
+                                      </label>
+                                      <div class="layui-input-block attr-bind attr-code">
+                                        <span class="layui-badge layui-bg-blue">：</span>
+                                        <input type="text" name="disabled" autocomplete="off" class="layui-input">
+                                        <i class="layui-icon layui-icon-form"></i>
+                                      </div>
+                                    </div>
+                                    <div class="layui-col-xs6">
+                                      <label class="layui-form-label">name</label>
+                                      <div class="layui-input-block attr-bind attr-code">
+                                        <span class="layui-badge layui-bg-gray">：</span>
+                                        <input type="text" name="name" autocomplete="off" class="layui-input">
+                                        <i class="layui-icon layui-icon-form"></i>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <div class="layui-row  layui-col-space4">
+                                    <div class="layui-col-xs12">
+                                      <label class="layui-form-label">密码</label>
+                                      <div class="layui-input-block attr-bind attr-code">
+                                        <span class="layui-badge layui-bg-blue">@</span>
+                                        <input type="password" name="password" lay-verify="required|pass"
+                                          placeholder="请输入密码" autocomplete="off" class="layui-input">
+                                        <i class="layui-icon layui-icon-form"></i>
+                                      </div>
+                                      <div class="layui-form-mid layui-word-aux">请务必填写用户名</div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <div class="layui-row  layui-col-space4">
+                                    <div class="layui-col-xs12">
+                                      <label class="layui-form-label">selectInput</label>
+                                      <div class="layui-input-block attr-bind attr-code">
+                                        <span class="layui-badge layui-bg-blue">：</span>
+                                        <div id="selectInput1"></div>
+                                        <i class="layui-icon layui-icon-form"></i>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item uieditor-add-item">
+                                  <label class="layui-form-label">添加属性</label>
+                                  <div class="layui-input-block">
+                                    <input type="text" name="addEvent" lay-verify="required|title" lay-reqText="标题不能为空"
+                                      required placeholder="属性名称" autocomplete="off" class="layui-input">
+                                    <div class="layui-btn-group">
+                                      <button type="button" class="layui-btn layui-btn-sm layui-btn-normal">
+                                        <i class="layui-icon">&#xe654;</i>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <div class="layui-row  layui-col-space4">
+                                    <div class="layui-col-xs6">
+                                      <label class="layui-form-label">行内表单</label>
+                                      <div class="layui-input-block attr-bind">
+                                        <span class="layui-badge layui-bg-blue">：</span>
+                                        <select name="quiz" lay-verify="required" lay-verType="tips">
+                                          <option value="">请选择问题</option>
+                                          <option value="0">你工作的第一个城市</option>
+                                          <option value="1" disabled>你的工号</option>
+                                          <option value="2">你最喜欢的老师</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div class="layui-col-xs6">
+                                      <label class="layui-form-label">select分组</label>
+                                      <div class="layui-input-block">
+                                        <select name="quiz" lay-filter="quiz">
+                                          <option value="">请选择问题</option>
+                                          <optgroup label="城市记忆">
+                                            <option value="0">你工作的第一个城市</option>
+                                          </optgroup>
+                                          <optgroup label="学生时代">
+                                            <option value="1" disabled>你的工号</option>
+                                            <option value="2">你最喜欢的老师</option>
+                                          </optgroup>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <div class="layui-row  layui-col-space4">
+                                    <div class="layui-col-xs6">
+                                      <label class="layui-form-label">选择框</label>
+                                      <div class="layui-input-block">
+                                        <select name="interest" lay-filter="interest">
+                                          <option value=""></option>
+                                          <option value="0">写作</option>
+                                          <option value="1">阅读</option>
+                                          <option value="2">游戏</option>
+                                          <option value="3">音乐</option>
+                                          <option value="4">旅行</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div class="layui-col-xs6">
+                                      <label class="layui-form-label">搜索选择框</label>
+                                      <div class="layui-input-block">
+                                        <select name="interest-search" lay-filter="interest-search" lay-search>
+                                          <option value="">请搜索</option>
+                                          <option value="写作">写作</option>
+                                          <option value="阅读" disabled>阅读</option>
+                                          <option value="游戏" disabled>游戏</option>
+                                          <option value="音乐">音乐</option>
+                                          <option value="旅行">旅行</option>
+                                          <option value="读书">读书</option>
+                                          <option value="1">layer</option>
+                                          <option value="2" disabled>laydate</option>
+                                          <option value="3">3</option>
+                                          <option value="4">layim</option>
+                                          <option value="5">laypage</option>
+                                          <option value="6">6</option>
+                                          <option value="7">7</option>
+                                          <option value="8">8</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <div class="layui-row  layui-col-space4">
+                                    <div class="layui-col-xs6">
+                                      <label class="layui-form-label">选择框</label>
+                                      <div class="layui-input-block">
+                                        <select name="interest" lay-filter="interest">
+                                          <option value=""></option>
+                                          <option value="0">写作</option>
+                                          <option value="1">阅读</option>
+                                          <option value="2">游戏</option>
+                                          <option value="3">音乐</option>
+                                          <option value="4">旅行</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div class="layui-col-xs6">
+                                      <label class="layui-form-label">搜索选择框</label>
+                                      <div class="layui-input-block">
+                                        <select name="interest-search" lay-filter="interest-search" lay-search>
+                                          <option value="">请搜索</option>
+                                          <option value="写作">写作</option>
+                                          <option value="阅读" disabled>阅读</option>
+                                          <option value="游戏" disabled>游戏</option>
+                                          <option value="音乐">音乐</option>
+                                          <option value="旅行">旅行</option>
+                                          <option value="读书">读书</option>
+                                          <option value="1">layer</option>
+                                          <option value="2" disabled>laydate</option>
+                                          <option value="3">3</option>
+                                          <option value="4">layim</option>
+                                          <option value="5">laypage</option>
+                                          <option value="6">6</option>
+                                          <option value="7">7</option>
+                                          <option value="8">8</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="layui-form-item" pane>
+                                  <label class="layui-form-label">复选框</label>
+                                  <div class="layui-input-block">
+                                    <input type="checkbox" name="like[write]" title="写作">
+                                    <input type="checkbox" name="like[read]" title="阅读">
+                                    <input type="checkbox" name="like[game]" title="游戏" disabled>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item" pane>
+                                  <label class="layui-form-label">原始复选框</label>
+                                  <div class="layui-input-block">
+                                    <input type="checkbox" name="like1[write]" lay-skin="primary" title="写作">
+                                    <input type="checkbox" name="like1[read]" lay-skin="primary" title="阅读">
+                                    <input type="checkbox" name="like1[game]" lay-skin="primary" title="游戏" disabled>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item" pane>
+                                  <label class="layui-form-label">开关关</label>
+                                  <div class="layui-input-block">
+                                    <input type="checkbox" name="close" lay-skin="switch" title="开关">
+                                  </div>
+                                </div>
+                                <div class="layui-form-item" pane>
+                                  <label class="layui-form-label">开关开</label>
+                                  <div class="layui-input-block">
+                                    <input type="checkbox" checked name="open" lay-skin="switch" lay-filter="switchTest"
+                                      lay-text="ON|OFF">
+                                    <input type="checkbox" name="open2" lay-skin="switch" lay-filter="switchTest"
+                                      lay-text="已绑定|绑定">
+                                  </div>
+                                </div>
+                                <div class="layui-form-item" pane>
+                                  <label class="layui-form-label">单选框</label>
+                                  <div class="layui-input-block">
+                                    <input type="radio" name="sex" value="男" title="男">
+                                    <input type="radio" name="sex" value="女" title="女" checked>
+                                    <input type="radio" name="sex" value="中型" title="中" disabled>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item" pane>
+                                  <label class="layui-form-label">单选框</label>
+                                  <div class="layui-input-block">
+                                    <input type="radio" name="sex.id" value="男" title="男">
+                                    <input type="radio" name="sex.id" value="女" title="女" checked>
+                                    <input type="radio" name="sex.id" value="中型" title="中">
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <div class="layui-input-block">
+                                    <div colorpicker>
+                                      <input type="text" value="" placeholder="请选择颜色" class="layui-input">
+                                      <div></div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <div class="layui-input-block">
+                                    <div slider></div>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item layui-form-text">
+                                  <label class="layui-form-label">请填写描述</label>
+                                  <div class="layui-input-block">
+                                    <textarea placeholder="请输入内容" class="layui-textarea" name="desc"></textarea>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                    <button class="layui-btn" id="next">切换</button>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- 事件 -->
+                      <div class="layui-tab-item">
+                        <div class="layui-collapse editor-pane-collapse" lay-filter="test">
+                          <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">
+                              <span class="editor-pane-collapse-title">事件</span>
+                              <i class="layui-icon layui-colla-icon"></i>
+                            </h2>
+                            <!-- 事件内容 -->
+                            <div class="layui-colla-content layui-show">
+                              <form id="form1" class="layui-form layui-form-pane1 uieditor-form" action=""
+                                lay-filter="first">
+                                <div class="layui-form-item">
+                                  <label class="layui-form-label">on-click</label>
+                                  <div class="layui-input-block attr-bind attr-code">
+                                    <span class="layui-badge layui-bg-orange">@</span>
+                                    <input type="text" name="vModel" lay-verify="required|title" lay-reqText="标题不能为空"
+                                      required placeholder="请输入标题" autocomplete="off" class="layui-input">
+                                    <i class="layui-icon layui-icon-form"></i>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item">
+                                  <label class="layui-form-label">on-select</label>
+                                  <div class="layui-input-block attr-bind attr-code">
+                                    <span class="layui-badge layui-bg-orange">@</span>
+                                    <input type="text" name="vModel" lay-verify="required|title" lay-reqText="标题不能为空"
+                                      required placeholder="请输入标题" autocomplete="off" class="layui-input">
+                                    <i class="layui-icon layui-icon-form"></i>
+                                  </div>
+                                </div>
+                                <div class="layui-form-item uieditor-add-item">
+                                  <label class="layui-form-label">添加事件</label>
+                                  <div class="layui-input-block">
+                                    <input type="text" name="addEvent" lay-verify="required|title" lay-reqText="标题不能为空"
+                                      required placeholder="事件名称" autocomplete="off" class="layui-input">
+                                    <div class="layui-btn-group">
+                                      <button type="button" class="layui-btn layui-btn-sm layui-btn-normal">
+                                        <i class="layui-icon">&#xe654;</i>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="layui-tab-item">代码</div>
+          <div class="layui-tab-item">模板</div>
+          <div class="layui-tab-item">JSON</div>
+          <div class="layui-tab-item">预览</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br><br><br>
+  <div class="layui-uieditor">
+    <div style="position: relative;height: 300px;">
+      <div class="uieditor-drag-content uieditor-drag-root">
+
+      </div>
+
+      <!-- 选择框 -->
+      <div class="uieditor-drag-sel-box" style="width: 50px;height:20px;top:30px;left: 20px;">
+        <div class="title">
+          <i id="collapse" class="container-extand-icon layui-icon layui-icon-right"></i>
+          title
+        </div>
+        <a href="javascript:void(0);" id="selectBtn1" title="test" class="select-toolbar layui-icon layui-icon-file-b"
+          style="right:20px"></a>
+        <a href="javascript:void(0);" id="selectBtn1" title="test" class="select-toolbar layui-icon layui-icon-close"
+          style="right:0px"></a>
+      </div>
+      <!-- over框 -->
+      <div class="uieditor-drag-over-box" style="width: 50px;height:50px;top:120px;left: 20px;">
+        <div class="title">
+          <i id="collapse" class="container-extand-icon layui-icon layui-icon-right"></i>
+          title
+        </div>
+      </div>
+      <!-- pos-line -->
+      <div class="uieditor-drag-pos-line" style="width: 50px;height:0;top:80px;left: 20px;">
+      </div>
+    </div>
+  </div>
+
+
+  <script src="../src/layui.js"></script>
+  <!-- <script src="../build/lay/dest/layui.all.js"></script> -->
+
+  <script>
+
+    function dragStart($, jUieditor) {
+      var stopEvent = function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      };
+
+      var opt = {
+        title: 'test',
+        menus: [{
+          text: '复制',
+          icon: 'layui-icon-file-b',
+          click() {
+            console.warn('复制', item);
+          }
+        }, {
+          text: '删除',
+          icon: 'layui-icon-close',
+          click() {
+            console.warn('删除', item);
+          }
+        }]
+      };
+
+
+      var hideCls = 'uieditor-drag-hide';
+      var jEditorJsonContent = jUieditor.find('.editor-json-content').first();
+      var jSelectBox = $('<div class="uieditor-drag-sel-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
+      var jOverBox = $('<div class="uieditor-drag-over-box ' + hideCls + '" />').appendTo(jEditorJsonContent);
+      var jPosline = $('<div class="uieditor-drag-pos-line ' + hideCls + '" />').appendTo(jEditorJsonContent);
+
+      /**
+       * 获取element的rect
+       * @param target 
+       */
+      var _getOffsetRect = function (target) {
+
+        const body = jEditorJsonContent[0];
+
+
+        const doc = target.ownerDocument;
+        const docElem = doc.documentElement;
+        const win = doc.defaultView;
+        const offsetTop = win.pageYOffset - docElem.clientTop;
+        const offsetLeft = win.pageXOffset - docElem.clientLeft;
+
+        const bodyRect = body.getBoundingClientRect();
+        const bodyTop = bodyRect.top + offsetTop - body.scrollTop;
+        const bodyLeft = bodyRect.left + offsetLeft - body.scrollLeft;
+
+        const rect = target.getBoundingClientRect();
+        const top = rect.top + offsetTop - bodyTop;
+        const bottom = rect.bottom + offsetTop - bodyTop;
+        const left = rect.left + offsetLeft - bodyLeft;
+        const right = rect.right + offsetLeft - bodyLeft;
+        const width = right - left;
+        const height = bottom - top;
+
+        return {
+          top, bottom, left, right,
+          width, height
+        };
+
+      }
+
+      var _selectTarget = null;
+      var isSelect = function (target) {
+        return target == _selectTarget;
+      };
+
+      var unSelect = function(){
+        _selectTarget = null;
+        jSelectBox.addClass(hideCls);
+      };
+      var select = function (target) {
+        if (isSelect(target)) return;
+        _selectTarget = target;
+
+        var jTarget = $(target);
+        var title = opt.title;
+        var menus = opt.menus;
+        var toolbarHtmlList = [];
+        var right = 0;
+        menus.forEach(function (item, index) {
+          toolbarHtmlList.push(`<a href="javascript:void(0);" title="${item.text}" class="select-toolbar layui-icon ${item.icon}"
+          tIndex="${index}" style="right:${right}px" />`);
+          right += 20;
+        });
+        var html = `<div class="title">
+          <i id="collapse" class="container-extand-icon layui-icon layui-icon-right"></i>
+          ${title}
+        </div>${toolbarHtmlList.join('')}`;
+        jSelectBox.html(html);
+
+        var rect = _getOffsetRect(target);
+        jSelectBox.css({
+          top: `${rect.top}px`,
+          left: `${rect.left}px`,
+          width: `${rect.width}px`,
+          height: `${rect.height}px`,
+        });
+        jSelectBox.removeClass(hideCls);
+
+      };
+
+      jSelectBox.on('click', '>a', function (e) {
+        stopEvent(e);
+        var jo = $(e);
+        var index = ~~jo.attr('tIndex');
+        if (index >= 0) {
+          opt.menus[index].click();
+        }
+        return false;
+      });
+
+
+      jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
+        stopEvent(e);
+        select(e.target);
+        return false;
+      });
+
+    }
+
+    layui.config({ base: '../src/lay/modules/' }).use(['tree', 'form', 'layedit', 'element', 'colorpicker', 'slider', 'selectInput'], function () {
+      var form = layui.form
+        , layer = layui.layer
+        , $ = layui.$
+        , tree = layui.tree
+        , layedit = layui.layedit
+        , colorpicker = layui.colorpicker
+        , slider = layui.slider
+        , selectInput = layui.selectInput;
+
+      $('div[colorpicker]').each(function(idx, el){
+        var jParent = $(el);
+        var jColor = jParent.children('div');
+            console.warn("jParent", el, jParent.children(), jColor)
+               //表单赋值
+        colorpicker.render({
+          elem: jColor[0]
+          ,color: '#1c97f5'
+          ,done: function(color){
+            console.warn("jParent.find('input')'", jParent, jParent.find('input'))
+            jParent.find('input').first().val(color);
+          }
+        });
+      });
+
+          //表单赋值
+slider.render({
+    elem: '[slider]'
+    , range: false
+    , step:1
+    , min:1
+    , max:24
+    ,change: function(value){
+      console.warn('slider', value)
+    }
+  });
+
+      dragStart($, $('.layui-uieditor').first());
+      console.warn('element', layui.element);
+      selectInput.render({
+        elem: '#selectInput1',
+        data: [
+          { value: 1111, name: 1111 },
+          { value: 2222, name: 2222 },
+          { value: 3333, name: 3333 },
+          { value: 6666, name: 6666 },
+        ],
+        placeholder: '请输入名称',
+        name: 'list_common',
+        remoteSearch: false
+      });
+
+      var jUieditor = $('.layui-uieditor');
+
+      jUieditor.on('click', '.layui-bg-blue,.layui-bg-gray', function (e) {
+        var jo = $(e.target);
+        if (jo.hasClass('layui-bg-gray')) {
+          jo.addClass('layui-bg-blue');
+          jo.removeClass('layui-bg-gray');
+        } else {
+          jo.addClass('layui-bg-gray');
+          jo.removeClass('layui-bg-blue');
+        }
+      });
+      jUieditor.on('selectstart', '.layui-bg-blue,.layui-bg-gray', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        return false;
+      });
+
+      // jUieditor.on('mousedown', function (e) {
+      //   layer.closeAll('tips');
+      // });
+
+      jUieditor.on('click', '.layui-icon-about', function (e) {
+        // layer.tips('desc', e.target, {
+        //   tips: [1, '#3595CC'],
+        //   time: 5000
+        // });
+        layer.msg('descdddddddddddd ddddddddddddddddddd dfdfsdf',
+          {
+            time: 0, //20s后自动关闭
+            btn: ['明白了']
+          });
+      });
+
+
+
+      // $('.layui-bg-blue').on('click', function(e){
+      //   var jo = $(e.target);
+      //   if (jo.hasClass('layui-bg-gray')){
+      //     jo.addClass('layui-bg-blue');
+      //     jo.removeClass('layui-bg-gray');
+      //   } else {
+      //     jo.addClass('layui-bg-gray');
+      //     jo.removeClass('layui-bg-blue');
+      //   }
+      // });
+
+      //数据源
+      var data1 = [{
+        title: '一级1'
+        , id: 1
+        , children: [{
+          title: '二级1-1'
+          , id: 3
+          , href: 'https://www.layui.com/doc/'
+          , children: [{
+            title: '三级1-1-3'
+            , id: 23
+            , children: [{
+              title: '四级1-1-3-1'
+              , id: 24
+              , children: [{
+                title: '五级1-1-3-1-1'
+                , id: 30
+              }, {
+                title: '五级1-1-3-1-2'
+                , id: 31
+              }]
+            }]
+          }, {
+            title: '三级1-1-1'
+            , id: 7
+            , checked: true
+            , children: [{
+              title: '四级1-1-1-1'
+              , id: 15
+              //,checked: true
+              , href: 'https://www.layui.com/doc/base/infrastructure.html'
+            }]
+          }, {
+            title: '三级1-1-2'
+            , id: 8
+            , children: [{
+              title: '四级1-1-2-1'
+              , id: 32
+            }]
+          }]
+        }, {
+          title: '二级1-2'
+          , id: 4
+          , spread: true
+          , children: [{
+            title: '三级1-2-1'
+            , id: 9
+            , checked: true
+            , disabled: true
+          }, {
+            title: '三级1-2-2'
+            , id: 10
+          }]
+        }, {
+          title: '二级1-3'
+          , id: 20
+          , children: [{
+            title: '三级1-3-1'
+            , id: 21
+          }, {
+            title: '三级1-3-2'
+            , id: 22
+          }]
+        }]
+      }, {
+        title: '一级2'
+        , id: 2
+        , spread: true
+        , children: [{
+          title: '二级2-1'
+          , id: 5
+          , spread: true
+          , children: [{
+            title: '三级2-1-1'
+            , id: 11
+          }, {
+            title: '三级2-1-2'
+            , id: 12
+          }]
+        }, {
+          title: '二级2-2'
+          , id: 6
+          , checked: true
+          , children: [{
+            title: '三级2-2-1'
+            , id: 13
+          }, {
+            title: '三级2-2-2'
+            , id: 14
+            , disabled: true
+          }]
+        }]
+      }, {
+        title: '一级3'
+        , id: 16
+        , children: [{
+          title: '二级3-1'
+          , id: 17
+          , fixed: true
+          , children: [{
+            title: '三级3-1-1'
+            , id: 18
+          }, {
+            title: '三级3-1-2'
+            , id: 19
+          }]
+        }, {
+          title: '二级3-2'
+          , id: 27
+          , children: [{
+            title: '三级3-2-1'
+            , id: 28
+          }, {
+            title: '三级3-2-2'
+            , id: 29
+          }]
+        }]
+      }];
+
+      tree.render({
+        elem: '#tree1'
+        , data: data1
+        , id: 'demoId1'
+        , click: function (obj) {
+          layer.msg(JSON.stringify(obj.data));
+          console.log(obj);
+        }
+        , oncheck: function (obj) {
+          //console.log(obj);
+        }
+        , operate: function (obj) {
+          var type = obj.type;
+          if (type == 'add') {
+            //ajax操作，返回key值
+            return index++;
+          } else if (type == 'update') {
+            console.log(obj.elem.find('.layui-tree-txt').html());
+          } else if (type == 'del') {
+            console.log(obj);
+          };
+        }
+        // ,showCheckbox: true  //是否显示复选框
+        , accordion: false  //是否开启手风琴模式
+
+        , onlyIconControl: true //是否仅允许节点左侧图标控制展开收缩
+        , isJump: false  //点击文案跳转地址
+        , edit: false  //操作节点图标
+      });
+
+      //自定义验证规则
+      form.verify({
+        title: function (value) {
+          if (value.length < 5) {
+            return '标题也太短了吧';
+          }
+        }
+        , pass: [/(.+){6,12}$/, '密码必须6到12位']
+        , money: [
+          /^\d+\.\b\d{2}\b$/
+          , '金额必须为小数保留两位'
+        ]
+      });
+
+      //初始赋值
+      var thisValue = form.val('first', {
+        'vModel': 'model.name'
+        , 'v-if': 'false'
+        , 'ref': 'refName'
+        , 'disabled': 'false'
+        , 'name': ''
+        //,'quiz': 2
+        , 'interest': 3
+        , 'like[write]': true
+        //,'open': false
+        , 'sex': '男'
+        , 'desc': 'form 是我们非常看重的一块'
+        , xxxxxxxxx: 123
+      });
+      console.log(thisValue);
+
+
+      //事件监听
+      form.on('select', function (data) {
+        console.log('select: ', this, data);
+      });
+
+      form.on('select(quiz)', function (data) {
+        console.log('select.quiz：', this, data);
+      });
+
+      form.on('select(interest)', function (data) {
+        console.log('select.interest: ', this, data);
+      });
+
+
+
+      form.on('checkbox', function (data) {
+        console.log(this.checked, data.elem.checked);
+      });
+
+      form.on('switch', function (data) {
+        console.log(data);
+      });
+
+      form.on('radio', function (data) {
+        console.log(data);
+      });
+
+      //监听提交
+      form.on('submit(*)', function (data) {
+        console.log(data)
+        alert(JSON.stringify(data.field));
+        return false;
+      });
+
+    });
+
+  </script>
+
+  <form id="test1" action="" target="_blank">
+    <input type="radio" value="girl" disabled>
+    <input type="checkbox" name="love[a]">
+    <input type="checkbox" name="love[b]">
+    <input value="1">
+    <input name="as">
+    <input name="=" value="2">
+    <select name="quiz">
+      <option value="">请选择问题</option>
+      <option disabled value="你工作的第一个城市">你工作的第一个城市</option>
+      <option value="你的工号">你的工号</option>
+      <option value="你最喜欢的老师">你最喜欢的老师</option>
+      <option value="你的工号" selected>你的工号</option>
+      <option value="你的工号">你的工号</option>
+    </select>
+    <button type="submit">原始表单，测试提交</button>
+  </form>
+
+  <script>
+    layui.use('jquery', function () {
+      var $ = layui.jquery;
+      var submit = function () {
+        return false;
+      };
+      $('#test').on('submit', function () {
+        return false
+      });
+      $('#test1').on('submit', function (obj) {
+        //console.log(obj.field)
+        //return false;
+      });
+
+      $('#next').on('click', function () {
+        $('#form1').html(`
+        <div class="layui-form-item">
+        <label class="layui-form-label">输入框</label>
+        <div class="layui-input-block">
+          <input type="text" name="title" lay-verify="required|title" lay-reqText="标题不能为空" required placeholder="请输入标题"
+            autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">选择框</label>
+        <div class="layui-input-block">
+          <select name="interest" lay-filter="interest">
+            <option value=""></option>
+            <option value="0">写作</option>
+            <option value="1">阅读</option>
+            <option value="2">游戏</option>
+            <option value="3">音乐</option>
+            <option value="4">旅行</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">搜索选择框</label>
+        <div class="layui-input-inline">
+          <select name="interest-search" lay-filter="interest-search" lay-search>
+            <option value="">请搜索</option>
+            <option value="写作">写作</option>
+            <option value="阅读" disabled>阅读</option>
+            <option value="游戏" disabled>游戏</option>
+            <option value="音乐">音乐</option>
+            <option value="旅行">旅行</option>
+            <option value="读书">读书</option>
+            <option value="1">layer</option>
+            <option value="2" disabled>laydate</option>
+            <option value="3">3</option>
+            <option value="4">layim</option>
+            <option value="5">laypage</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">生日</label>
+        <div class="layui-input-block">
+          <input type="text" name="date" id="date" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off"
+            class="layui-input">
+        </div>
+        <div class="layui-tab layui-tab-card">
+      <ul class="layui-tab-title">
+        <li class="layui-this">网站设置</li>
+        <li>用户管理</li>
+        <li>权限分配</li>
+        <li>商品管理</li>
+        <li>订单管理</li>
+      </ul>
+      <div class="layui-tab-content" style="height: 100px;">
+        <div class="layui-tab-item layui-show">默认宽度是相对于父元素100%适应的，你也可以固定宽度。</div>
+        <div class="layui-tab-item">2</div>
+        <div class="layui-tab-item">3</div>
+        <div class="layui-tab-item">4</div>
+        <div class="layui-tab-item">5</div>
+        <div class="layui-tab-item">6</div>
+      </div>
+    </div>
+      </div>
+        `);
+        console.warn('layui', layui);
+        $('[name="title"]').val('aaaa')
+        layui.form.render();
+        //初始赋值
+        // var thisValue = layui.form.val('first', {
+        //   'title': '测试'
+        //   , 'phone': 11111111111
+        //   , 'email': 'xu@sentsin.com'
+        //   , 'password': 123123
+        //   //,'quiz': 2
+        //   , 'interest': 3
+        //   , 'like[write]': true
+        //   //,'open': false
+        //   , 'sex': '男'
+        //   , 'desc': 'form 是我们非常看重的一块'
+        //   , xxxxxxxxx: 123
+        // });
+        console.log('thisValue', layui.form.val('first'));
+
+
+      });
+
+    });
+  </script>
+</body>
+
+</html>

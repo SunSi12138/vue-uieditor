@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { UEOption, UETransfer, UETransferEditor, UETransferEditorAttrsItem, UETransferExtend, UETransferEditorAttrs, UETemplate } from './ue-base';
+import { UEOption, UETemplate, UETransfer, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem, UETransferExtend } from './ue-base';
 import { UEHelper } from './ue-helper';
 import { UERenderItem } from './ue-render-item';
 
@@ -329,6 +329,12 @@ export class UERender {
         attr.bind = true;
         attr.datas = ['true', 'false'];
         break;
+      case 'boolean-only':
+        attr.enabledBind = false;
+        attr.bind = false;
+        attr.codeBtn = false;
+        attr.value = attr.value === true || attr.value === 'true';
+        break;
     }
     // if (!attr.placeholder) attr.placeholder = attr.text;
     if (attr.event) {
@@ -473,7 +479,7 @@ function _defaultEditor(name: string): UETransferEditor {
       'v-else': { group: 'Vue', vue: true, enabledBind: false, order: 104 },
       'v-else-if': { group: 'Vue', vue: true, enabledBind: false, order: 105 },
       'v-model': { group: 'Vue', vue: true, enabledBind: false, order: 106 },
-      'v-once': { group: 'Vue', vue: true, enabledBind: false, type: 'boolean', codeBtn:false, order: 107 },
+      'v-once': { group: 'Vue', vue: true, type: 'boolean-only', order: 107 },
       'ref': { group: 'Vue', vue: true, effect: true, codeBtn: false, enabledBind: false, order: 108 },
       'key': { group: 'Vue', vue: true, order: 109 },
       // 'slot': { group: 'Vue', vue: true, order: 107 },

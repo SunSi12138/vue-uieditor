@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import { UETransferEditorAttrs, UETransferEditorAttrsItem } from '../base/ue-base';
+import { UEHelper } from '../base/ue-helper';
 import { UEService } from '../base/ue-service';
-import { UEVue, UEVueComponent, UEVueInject, UEVueLife, UETransFn } from '../base/vue-extends';
+import { UETransFn, UEVue, UEVueComponent, UEVueInject, UEVueLife } from '../base/vue-extends';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
 
@@ -43,7 +44,7 @@ export default class UieditorCpAttr extends UEVue {
 
   renderId: string;
 
-  setTab(index){
+  setTab(index) {
     this.service['_attr_tabcurindex_'] = index;
   }
 
@@ -175,8 +176,9 @@ export default class UieditorCpAttr extends UEVue {
       colIndex++;
       const name = attr.key;
 
-      const attrBind = attr.enabledBind || attr.bind || attr['isPrefxV'] || attr.event ? ' attr-bind' : ''
-      const attrBindColor = attr.enabledBind ? (attr.bind ? ' layui-bg-blue-active' : 'layui-bg-blue') : attr['isPrefxV'] || attr.event || attr.bind ? ` layui-bg-gray` : '';
+      const attrBind = attr.enabledBind || attr.bind || (attr.type != 'boolean-only' && attr['isPrefxV']) || attr.event ? ' attr-bind' : ''
+      const attrBindColor = attr.enabledBind ? (attr.bind ? ' layui-bg-blue-active' : 'layui-bg-blue')
+        : (attr['isPrefxV'] || attr.event || attr.bind ? ` layui-bg-gray` : '');
       const attrBindHtml = !attrBind ? '' : `<span name="${name}" class="layui-badge ${attrBindColor}">
       ${attr.event ? '@' : (attr['isPrefxV'] ? 'v' : ':')}
       </span>`;
@@ -221,6 +223,9 @@ export default class UieditorCpAttr extends UEVue {
           case 'select':
           case 'boolean':
             attrInputHtml = `<div ue-selectInput name="${name}"></div>`;
+            break;
+          case 'boolean-only':
+            attrInputHtml = `<input type="checkbox" name="${name}" lay-skin="switch" title="开关">`;
             break;
           case 'select-only':
             const datas = attr.datas;
@@ -267,6 +272,9 @@ export default class UieditorCpAttr extends UEVue {
     return htmlFormItemList.join('')
   }
 
+
+  private _formName = `attrform-${UEHelper.makeAutoId()}`
+
   private _makeFormDom(groupList: GroupItem[]) {
 
     const htmlGroupList = [];
@@ -278,7 +286,7 @@ export default class UieditorCpAttr extends UEVue {
     </h2><div class="layui-colla-content layui-show"><form
     class="layui-form layui-form-pane1 uieditor-form"
     action=""
-    lay-filter="attrform"
+    lay-filter="${this._formName}"
   >${this._makeFormItemDom(groupItem)}</form></div></div>`;
       htmlGroupList.push(htmlGroup);
     });
@@ -339,7 +347,7 @@ export default class UieditorCpAttr extends UEVue {
         language: attr.language as any || 'javascript',
         save(content) {
           $this._change(name, content);
-          layui.form.val('attrform', { [name]: content });
+          layui.form.val(this._formName, { [name]: content });
         }
       });
     });
@@ -380,7 +388,7 @@ export default class UieditorCpAttr extends UEVue {
 
     form.render();
 
-    jo.find('.layui-form[lay-filter="attrform"]').change((e) => {
+    jo.find('.layui-form[lay-filter="' + this._formName + '"]').change((e) => {
       var jInput = $(e.target);
       this._change(jInput.attr('name'), jInput.val());
     });
@@ -418,12 +426,17 @@ export default class UieditorCpAttr extends UEVue {
     });
 
     //初始赋值
-    form.val('attrform', model || {});
+    form.val(this._formName, model || {});
 
     // //事件监听
     form.on('select', (data) => {
       const name = $(data.elem).attr('name');
       this._change(name, data.value);
+    });
+
+    form.on('switch', (data) => {
+      const name = $(data.elem).attr('name');
+      this._change(name, data.elem.checked);
     });
 
     // form.on('checkbox', function (data) {
