@@ -2,6 +2,7 @@ import _ from "lodash";
 import Vue from "vue";
 import { UEHelper } from "./ue-helper";
 import { UERenderItem } from "./ue-render-item";
+import { UEJsonToHtml } from './ue-json-to-html';
 
 function _escape(str: string, addTry?: boolean) {
 
@@ -265,7 +266,7 @@ export class UECompiler {
    * @param html 
    */
   static async jsonToHtmlAsync(json: any) {
-    await initJsonToXml();
+    // await initJsonToXml();
     let html: string = UECompiler.jsonToHtml(json);
     return html;
   }
@@ -276,10 +277,11 @@ export class UECompiler {
    */
   static jsonToHtml(json: any) {
     json = _.cloneDeep(json);
-    const newJson = {
-      root20200806: toJson([json])
-    }
-    const html: string = _.trim(_jsonxml(newJson).replace(/<\/?root20200806>/g, ""));
+    // const newJson = {
+    //   root20200806: toJson([json])
+    // }
+    // const html: string = _.trim(_jsonxml(newJson).replace(/<\/?root20200806>/g, ""));
+    const html: string = _.trim(UEJsonToHtml([json]));
     return html;
   }
 
@@ -384,12 +386,12 @@ async function initHtmlBind() {
   return _htmlBind;
 }
 
-let _jsonxml;
+// let _jsonxml;
 async function initJsonToXml() {
-  if (_jsonxml) return _jsonxml;
-  _jsonxml = await import(/* webpackChunkName: "ui-editor-other-tool" */ 'jsontoxml');
-  _jsonxml = checkDefault(_jsonxml);
-  return _jsonxml;
+  // if (_jsonxml) return _jsonxml;
+  // _jsonxml = await import(/* webpackChunkName: "ui-editor-other-tool" */ 'jsontoxml');
+  // _jsonxml = checkDefault(_jsonxml);
+  // return _jsonxml;
 }
 
 function toJson(renders: any[]) {
