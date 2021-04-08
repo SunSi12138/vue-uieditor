@@ -4,10 +4,10 @@ import { UEHelper } from "./ue-helper";
 import { UEJsonToHtml, UEJsonToHtmlConfig } from './ue-json-to-html';
 import { UERenderItem } from "./ue-render-item";
 
-function _escape(str: string, addTry?: boolean) {
+// function _escape(str: string, addTry?: boolean) {
 
-  return str && _.escape(str).replace(/\/\/[^\n].*\n/g, '');
-}
+//   return str && _.escape(str).replace(/\/\/[^\n].*\n/g, '');
+// }
 
 //处理 html 的 " 和 & 字符
 const _dot2 = '&quot;';
