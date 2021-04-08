@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export interface UEJsonToHtmlConfig {
   raw?: boolean; // 显示转义字符
   wrap?: boolean; // 是否换行显示
@@ -5,6 +7,8 @@ export interface UEJsonToHtmlConfig {
   tagKey?: string; // 获取 tag 的字段
   childrenKey?: string; // 获取 children 的字段
 }
+const _dot2 = '&quot;'; // "
+const _dot21 = '&amp;'; // &
 
 const defaultConfig: UEJsonToHtmlConfig = {
   raw: false,
@@ -45,7 +49,7 @@ function resolveAttrs(attrsObject: any, extraAttrsObject?: object) {
 
     // deal: <tag on-click="onClick("xx")"></tag>
     if (typeof attrValue === 'string' && ~attrValue.indexOf('"')) {
-      attrValue = attrValue.replace(/"/g, '\'');
+      attrValue = attrValue.replace(/&/g, _dot21).replace(/"/g, _dot2);
     }
 
     return `${attrKey}="${attrValue}"`;
@@ -66,7 +70,7 @@ function UEJsonToHtml(schema: any | Array<any> | string | number, config?: UEJso
     indent,
     tagKey,
     childrenKey
-  } = Object.assign(defaultConfig, config);
+  } = _.assign({}, defaultConfig, config);
 
   let indentToken = wrap ? ' '.repeat(depth * Math.min(indent as number, 8)) : '';
   let wrapToken = wrap ? '\n' : ''
