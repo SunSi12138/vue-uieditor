@@ -10,15 +10,11 @@ import { UERenderItem } from "./ue-render-item";
 // }
 
 //处理 html 的 " 和 & 字符
-const _dot2 = '&quot;';
-const _dot2Reg = new RegExp(_.escapeRegExp(_dot2), 'g');
-const _dot21 = '&amp;';
-const _dot21Reg = new RegExp(_.escapeRegExp(_dot21), 'g');
 function _escapeS(str: string) {
-  return (_.isString(str) && str.replace(/\&/g, _dot21).replace(/\"/g, _dot2)) || str;
+  return UEJsonToHtml.escape(str);
 }
 function _unEscapeS(str: string) {
-  return (_.isString(str) && str.replace(_dot2Reg, '"').replace(_dot21Reg, '&')) || str;
+  return UEJsonToHtml.unEscape(str);
 }
 
 

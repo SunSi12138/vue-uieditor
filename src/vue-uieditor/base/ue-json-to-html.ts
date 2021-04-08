@@ -7,8 +7,6 @@ export interface UEJsonToHtmlConfig {
   tagKey?: string; // 获取 tag 的字段
   childrenKey?: string; // 获取 children 的字段
 }
-const _dot2 = '&quot;'; // "
-const _dot21 = '&amp;'; // &
 
 const defaultConfig: UEJsonToHtmlConfig = {
   raw: false,
@@ -49,7 +47,7 @@ function resolveAttrs(attrsObject: any, extraAttrsObject?: object) {
 
     // deal: <tag on-click="onClick("xx")"></tag>
     if (typeof attrValue === 'string' && ~attrValue.indexOf('"')) {
-      attrValue = attrValue.replace(/&/g, _dot21).replace(/"/g, _dot2);
+      attrValue = UEJsonToHtml.escape(attrValue);
     }
 
     return `${attrKey}="${attrValue}"`;
@@ -126,5 +124,20 @@ function UEJsonToHtml(schema: any | Array<any> | string | number, config?: UEJso
 
   return result;
 }
+
+const _dot2 = '&quot;';
+const _dot2Reg = new RegExp(_.escapeRegExp(_dot2), 'g');
+const _dot21 = '&amp;';
+const _dot21Reg = new RegExp(_.escapeRegExp(_dot21), 'g');
+function _escapeS(str: string) {
+  return (_.isString(str) && str.replace(/\&/g, _dot21).replace(/\"/g, _dot2)) || str;
+}
+function _unEscapeS(str: string) {
+  return (_.isString(str) && str.replace(_dot2Reg, '"').replace(_dot21Reg, '&')) || str;
+}
+
+UEJsonToHtml.escape = _escapeS;
+UEJsonToHtml.unEscape = _unEscapeS;
+
 
 export { UEJsonToHtml };

@@ -5,6 +5,7 @@ import { UEService } from '../base/ue-service';
 import { UETransFn, UEVue, UEVueComponent, UEVueInject, UEVueLife } from '../base/vue-extends';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
+import { UEJsonToHtml } from '../base/ue-json-to-html';
 
 type GroupItem = {
   group: string;
@@ -182,8 +183,8 @@ export default class UieditorCpAttr extends UEVue {
       const attrBindHtml = !attrBind ? '' : `<span name="${name}" class="layui-badge ${attrBindColor}">
       ${attr.event ? '@' : (attr['isPrefxV'] ? 'v' : ':')}
       </span>`;
-
-      const desc = attr.desc ? `<i name="${name}" class="layui-icon layui-icon-about"></i>` : '';
+      
+      const desc = attr.desc ? `<i name="${name}" layui-tip="${UEJsonToHtml.escape(attr.desc)}" layui-tip-direction="4"  class="layui-icon layui-icon-about"></i>` : '';
 
       const attrCode = attr.codeBtn !== false ? ' attr-code' : '';
       const codeBtn = attr.codeBtn !== false ? `<i ue-attr-codebtn name="${name}" class="layui-icon layui-icon-form"></i>` : '';
