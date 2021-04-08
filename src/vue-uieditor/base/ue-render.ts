@@ -515,14 +515,6 @@ function _defaultEditorAttrItem(name: string): UETransferEditorAttrsItem {
 function _defautlOption(): UEOption {
   return {
     transfer: {
-      'uieditor-editor-div': {
-        type: 'div',
-        "editor": {
-          base: false,
-          show: false,
-          container: true
-        }
-      }
     },
     transferBefore(render: UERenderItem, extend?: UETransferExtend): UERenderItem {
       let newRender: UERenderItem;

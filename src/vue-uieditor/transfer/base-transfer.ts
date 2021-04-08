@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { UETransfer } from '../base/ue-base';
 import { UERender } from '../base/ue-render';
 
@@ -7,7 +6,6 @@ const group = '公用组件库/基础组件';
 
 export const BaseTransfer: UETransfer = UERender.DefineTransfer({
   'uieditor-div': {
-    type: 'div',
     "editor": {
       text: 'Div 块级标签',
       order: 0,
@@ -20,7 +18,6 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
     }
   },
   'uieditor-span': {
-    type: 'span',
     "editor": {
       text: 'Span 行内标签',
       order: 1,
@@ -34,7 +31,6 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
     }
   },
   'uieditor-img': {
-    type: 'img',
     "editor": {
       text: "Image 图片",
       order: 2,
@@ -53,7 +49,6 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
     }
   },
   'uieditor-iframe': {
-    type: 'iframe',
     editor: {
       text: 'Iframe 内框架',
       order: 3,
@@ -73,13 +68,6 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
     }
   },
   'uieditor-text': {
-    transfer(render, extend) {
-      const { getPropText } = extend;
-      render.type = 'span';
-      const text = getPropText('text', 'Text', true);
-      render.children = [text];
-      return render;
-    },
     "editor": {
       text: 'Text 文本',
       order: 4,
@@ -98,26 +86,17 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
     }
   },
   'uieditor-a': {
-    transfer(render, extend) {
-      const { getPropText } = extend;
-      render.type = 'a';
-      const text = getPropText('text', '链接', true);
-      render.children = [text];
-      return render;
-    },
     "editor": {
       text: 'Link 超链接',
       order: 5,
       groupOrder,
       group,
+      base: false,
       inline: true,
+      container: true,
+      containerBorder: true,
       icon: 'layui-icon layui-icon-link',
       attrs: {
-        text: {
-          effect: true,
-          value: "超链接",
-          order: 0
-        },
         target: {
           type: 'select',
           datas: ['_blank', '_self', '_parent', '_top'],
@@ -132,25 +111,14 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
   },
   'uieditor-html': {
     transfer(render, extend) {
-      const { editing, getProp, getPropValue } = extend;
-      let html = getProp('content', true);
-      let type = getPropValue('type', true);
-      let preview = getPropValue('preview', true);
-      render.type = type || 'div';
-      if (!editing || preview === 'true') {
-        if (html.bind) {
-          render.props = _.assign({}, render.props, {
-            'v-html': html.value
-          });
-        } else
-          render.children = [html.value];
-      } else {
-        render.props.class = `${render.props.class || ''} empty-component`;
-
-        render.children = ['Html'];
+      const { editing, getPropValue } = extend;
+      if (editing) {
+        let preview = getPropValue('preview', true);
+        if (preview !== 'true') {
+          render.props.class = `${render.props.class || ''} empty-component`;
+          render.props.content = "HTML"
+        }
       }
-      if (editing && render.type == 'div')
-        render.props.style = 'display:block;';
       return render;
     },
     "editor": {
@@ -159,7 +127,6 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       groupOrder,
       group,
       icon: 'layui-icon layui-icon-fonts-html',
-      // empty: 'Html',
       attrs: {
         type: {
           effect: true,
@@ -172,6 +139,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
           effect: true,
           bind: false,
           type: 'select-only',
+          editorOlny: true,
           datas: ['true', 'false'],
           value: 'false'
         },
