@@ -1,4 +1,4 @@
-import { UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem } from './ue-base';
+import { UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem, UEObject } from './ue-base';
 
 export interface UERenderItem {
     /** 标签类型 */
@@ -18,6 +18,10 @@ export interface UERenderItem {
     readonly editorPId?: string;
     /** 编辑器组件配置 */
     readonly editor?: UETransferEditor;
+    /**
+     * 存放临时内容
+     */
+    readonly temp?:UEObject;
     /** 编辑器组件属性配置 */
     readonly attrs?: UETransferEditorAttrs;
 }

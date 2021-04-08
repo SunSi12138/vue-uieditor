@@ -1179,10 +1179,14 @@ function _initRender(renderList: UERenderItem[], parent: UERenderItem, editorOpt
   _.forEach(renderList, function (item) {
     if (_.isString(item)) return;
     const isInit = _initRenderAttrs(item, editorOpt, service);
-    if (!item.editorId) {
-      (item as any).editorId = _getId();
+    const tempRD:any = item;
+    if (!tempRD.editorId) {
+      tempRD.editorId = _getId();
     }
-    if (parent) (item as any).editorPId = parent.editorId;
+    if (!tempRD.temp) {
+      tempRD.temp = {};
+    }
+    if (parent) tempRD.editorPId = parent.editorId;
     if (item.children) _initRender(item.children as any, item, editorOpt, service);
   });
 }
@@ -1484,6 +1488,7 @@ function _makeResultJson(renderList: UERenderItem[], editing?: boolean, service?
     delete dItem.editorPId;
     delete dItem.attrs;
     delete dItem.editor;
+    delete dItem.temp;
 
     if (item.children) _makeResultJson(item.children as any, editing, service);
   });
