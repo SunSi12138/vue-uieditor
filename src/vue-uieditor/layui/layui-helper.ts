@@ -99,25 +99,18 @@ export class LayuiHelper {
    * requestAnimationFrame, fn返回 false 停止
    * @param fn 
    * @param tick 
+   * @param once， 只处理一次 
    */
-  static requestAnimationFrame(fn, tick) {
-    if (fn() === false) return;
-    let count = 0;
+  static requestAnimationFrame(fn, tick, once?:boolean) {
+    if (!once && fn() === false) return;
     (function done() {
-      if (count < 3) {
+      setTimeout(function () {
         requestAnimationFrame(function () {
           if (fn() === false) return;
+          if (once) return;
           done();
         });
-        count++;
-      } else {
-        setTimeout(function () {
-          requestAnimationFrame(function () {
-            if (fn() === false) return;
-            done();
-          });
-        }, tick || 1);
-      }
+      }, tick || 1);
     })();
   }
 
