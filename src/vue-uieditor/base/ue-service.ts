@@ -963,12 +963,14 @@ export class UEService {
       const cpItem = component.item;
       let json = cpItem.json;
       if (json) {
-        if (_.isString(json))
+        if (_.isString(json)) {
           json = JSON.parse(json);
-        else
+          cpItem.json = _.cloneDeep(json) || {};
+        } else
           json = _.cloneDeep(json);
       } else if (cpItem.template) {
         json = await UECompiler.htmlToRenderAsync(cpItem.template);
+        cpItem.json = _.cloneDeep(json) || {};
       }
       newRender = json;
       if (newRender && newRender.type) {

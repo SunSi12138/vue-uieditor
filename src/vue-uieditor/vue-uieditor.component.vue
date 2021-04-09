@@ -41,7 +41,7 @@
             </button>
             <button
               type="button"
-              layui-tip="新建"
+              layui-tip="清空"
               layui-tip-direction="3"
               class="layui-btn layui-btn-primary layui-btn-sm"
               :class="{ divided: hasToolbar }"
