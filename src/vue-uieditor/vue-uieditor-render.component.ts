@@ -286,6 +286,9 @@ export default class VueUieditorRender extends UEVue {
       methods: {
         $babelTransform(script, opt) {
           return UECompiler.babelTransform(script, opt);
+        },
+        $log(...args){
+          window.console?.warn(...args);
         }
       },
       updated() {
