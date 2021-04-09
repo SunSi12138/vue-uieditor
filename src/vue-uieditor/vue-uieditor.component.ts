@@ -153,7 +153,7 @@ export default class VueUieditor extends UEVue {
     let jEditorJsonContentRest = null;
     var syncEditorContentSize = () => {
       if (this.$isBeingDestroyed || !this.current) return false;
-      if (this.service.current.mode != 'design') return;
+      if (this.service.current.mode != 'design' || this.current.monacoEditorOther.show) return;
       let rest = jEditorJsonContentIn.offset();
       let height = jEditorJsonContentIn.outerHeight() - 5;
       let width = jEditorJsonContentIn.outerWidth();
@@ -179,7 +179,7 @@ export default class VueUieditor extends UEVue {
       let jPriviewJsonContentRest = null;
       var syncEditorContentSize = () => {
         if (this.$isBeingDestroyed || !this.current) return false;
-        if (this.service.current.mode != 'preview') return;
+        if (this.service.current.mode != 'preview' || this.current.monacoEditorOther.show) return;
         let rest = jPreviewJsonContentIn.offset();
         let height = jPreviewJsonContentIn.outerHeight() - 15;
         let width = jPreviewJsonContentIn.outerWidth() - 10;
