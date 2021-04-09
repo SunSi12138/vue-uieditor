@@ -428,10 +428,10 @@ export class UEService {
             return _this;
           }
         },
-        beforeDestroy() {
-          _this = null;
-          rootRender = json = null;
-        },
+        // beforeDestroy() {
+        //   _this = null;
+        //   rootRender = json = null;
+        // },
         destroyed() {
           LayuiRender.destroy(this.$el);
         }
@@ -898,7 +898,7 @@ export class UEService {
     await this.addByComponent(component, renderId, type2);
   }
 
-  
+
   canAddByDrag(cpId: string, renderId: string, type2: UEDragType2) {
     let component = _.find(this._components, { id: cpId });
     if (!component) return false;
