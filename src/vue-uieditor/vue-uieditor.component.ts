@@ -162,7 +162,7 @@ export default class VueUieditor extends UEVue {
       jEditorJsonContentRest = rest;
       jEditorJsonContent.offset(rest).width(width).height(height);
     }
-    LayuiHelper.requestAnimationFrame(syncEditorContentSize, 300);
+    LayuiHelper.requestAnimationFrame(syncEditorContentSize, 100);
 
 
     //editor-priview-content
@@ -182,7 +182,7 @@ export default class VueUieditor extends UEVue {
         jPriviewJsonContentRest = rest;
         jPreviewJsonContent.offset(rest).width(width).height(height);
       }
-      LayuiHelper.requestAnimationFrame(syncEditorContentSize, 300);
+      LayuiHelper.requestAnimationFrame(syncEditorContentSize, 100);
     })();
 
     jo.click(() => {

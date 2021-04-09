@@ -248,7 +248,7 @@ function _dragStart($el, options: UEDragOptions) {
     };
 
     _selectRect = null;
-    LayuiHelper.requestAnimationFrame(fn, 1000);
+    LayuiHelper.requestAnimationFrame(fn, 200);
 
     jSelectBox.removeClass(hideCls);
   };
