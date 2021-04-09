@@ -159,12 +159,6 @@ export default class VueUieditor extends UEVue {
       let width = jEditorJsonContentIn.outerWidth();
       _.assign(rest, { height, width });
       if (_.isEqual(jEditorJsonContentRest, rest)) return;
-      // if (jEditorJsonContentIn.is(':hide')) {
-      //   // jEditorJsonContent.hide();
-      //   return;
-      // } else {
-      //   jEditorJsonContent.show();
-      // }
       jEditorJsonContentRest = rest;
       jEditorJsonContent.offset(rest).width(width).height(height);
     }
