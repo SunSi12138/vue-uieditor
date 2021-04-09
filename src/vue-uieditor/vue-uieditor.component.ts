@@ -137,10 +137,10 @@ export default class VueUieditor extends UEVue {
     return !!this.current?.json;
   }
 
-  get isDesign(){
+  get isDesign() {
     return this.current.mode == 'design' && !this.current.monacoEditorOther.show;
   }
-  get isPreview(){
+  get isPreview() {
     return this.current.mode == 'preview' && !this.current.monacoEditorOther.show;
   }
   private _initEvents() {
@@ -544,8 +544,11 @@ export default class VueUieditor extends UEVue {
     });
   }
 
-  about() {
-    LayuiHelper.alert('Vue-UiEditor 2021');
+  async about() {
+    const theme = this.themeEx;
+    const content = !theme.about ? '<a href="https://gitee.com/days2020/vue-uieditor" target="_blank">Vue-UiEditor 2021</a>'
+      : await theme.about({ service: this.service });
+    LayuiHelper.alert(content);
   }
 
   @UEVueLife('destroyed')

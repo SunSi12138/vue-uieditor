@@ -302,6 +302,7 @@ export interface UEToolBar {
 }
 
 export interface UETheme {
+  about?({ service: UEService }): string | (Promise<string>);
   modes?: UEThemeMode[],
   /** 顶部工具栏 */
   toolBar?: UEToolBar[];
