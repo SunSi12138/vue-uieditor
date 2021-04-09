@@ -1222,7 +1222,6 @@ function _makeOrderCpTree(list: any[], isRoot?: boolean) {
 function _initRender(renderList: UERenderItem[], parent: UERenderItem, editorOpt: { [type: string]: UETransferEditor; }, service: UEService) {
   _.forEach(renderList, function (item) {
     if (_.isString(item)) return;
-    const isInit = _initRenderAttrs(item, editorOpt, service);
     const tempRD: any = item;
     if (!tempRD.editorId) {
       tempRD.editorId = _getId();
@@ -1231,6 +1230,7 @@ function _initRender(renderList: UERenderItem[], parent: UERenderItem, editorOpt
       tempRD.temp = {};
     }
     if (parent) tempRD.editorPId = parent.editorId;
+    const isInit = _initRenderAttrs(item, editorOpt, service);
     if (item.children) _initRender(item.children as any, item, editorOpt, service);
   });
 }
