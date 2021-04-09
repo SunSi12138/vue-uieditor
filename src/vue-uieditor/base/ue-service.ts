@@ -517,6 +517,50 @@ export class UEService {
     await this.refresh();
   }
 
+
+  /**
+   * 获取 render 的临时内容，使用内容传送
+   * @param id 
+   * @param key 
+   */
+  getRenderTemp(id: string, key: string): any
+  /**
+   * 获取 render 的临时内容，使用内容传送
+   * @param render 
+   * @param key 
+   */
+  getRenderTemp(render: UERenderItem, key: string): any
+  getRenderTemp(p, key) {
+    if (_.isString(p)) p = this.getRenderItem(p);
+    if (!p) return;
+    const temp = p.temp;
+    return temp && temp[key];
+  }
+
+  /**
+   * 设置 render 的临时内容(不会生成meta)，使用内容传送
+   * @param id 
+   * @param key 
+   * @param value 
+   */
+  setRenderTemp(id: string, key: string, value: any): any
+  /**
+   * 设置 render 的临时内容(不会生成meta)，使用内容传送
+   * @param render 
+   * @param key 
+   * @param value 
+   */
+  setRenderTemp(render: UERenderItem, key: string, value: any): any
+  setRenderTemp(p, key, value) {
+    if (_.isString(p)) p = this.getRenderItem(p);
+    if (!p) return;
+    const temp = p.temp || (p.temp = {});
+    _.assign(temp, {
+      [key]: value
+    });
+  }
+
+
   /**
    * 刷新导向栏
    * @param render 
@@ -1179,7 +1223,7 @@ function _initRender(renderList: UERenderItem[], parent: UERenderItem, editorOpt
   _.forEach(renderList, function (item) {
     if (_.isString(item)) return;
     const isInit = _initRenderAttrs(item, editorOpt, service);
-    const tempRD:any = item;
+    const tempRD: any = item;
     if (!tempRD.editorId) {
       tempRD.editorId = _getId();
     }
