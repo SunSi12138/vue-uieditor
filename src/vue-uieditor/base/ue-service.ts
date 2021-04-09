@@ -898,6 +898,23 @@ export class UEService {
     await this.addByComponent(component, renderId, type2);
   }
 
+  
+  canAddByDrag(cpId: string, renderId: string, type2: UEDragType2) {
+    let component = _.find(this._components, { id: cpId });
+    if (!component) return false;
+    if (component.$isTmpl) return true;
+
+
+    const fromRender = null;
+    const fromParent = null;
+    const toRender = renderId && this.getRenderItem(renderId);
+    const toParent = type2 == 'in' ? toRender : this.getParentRenderItem(toRender, true);
+    const fromEditor = this.options.editor[component.type];
+
+    return _canMoving({ fromParent, toParent, fromRender, toRender, fromEditor, service: this, type2 });
+  }
+
+
   /**
    * 通过类型添加
    * @param type 
@@ -974,6 +991,16 @@ export class UEService {
     this.foucs();
     this.$emit('on-add-component', { service: this, dragContent: pRender, render: newRender })
     return this.refresh().then(() => this.setCurrent(id));
+  }
+
+  canMove(fromId: string, toId: string, type2: UEDragType2) {
+
+    const fromRender = fromId && this.getRenderItem(fromId);
+    const fromParent = this.getParentRenderItem(fromRender, true);
+    const toRender = toId && this.getRenderItem(toId);
+    const toParent = type2 == 'in' ? toRender : this.getParentRenderItem(toRender, true);
+
+    return _canMoving({ fromParent, toParent, fromRender, toRender, service: this, type2 });
   }
 
   move(fromId: string, toId: string, type2: string): Promise<any> {
@@ -1072,10 +1099,13 @@ export class UEService {
     const copyRenderOrg = this.getRenderItem(this._copyId);
     const copyEditor = copyRenderOrg.editor;
     if (copyEditor && copyEditor.coping) {
-      if (copyEditor.coping({ render: copyRender, parent: pRender, editor: copyEditor, service: this }) === false) return;
+      if (copyEditor.coping({ render: copyRender, parent: pRender, service: this }) === false) return;
     }
 
-    if (focus !== true && !_canMoving({ dragEditor: copyEditor, pEditor: pRender.editor, dragContent: pRender, service: this })) return;
+    if (focus !== true && !_canMoving({
+      toParent: pRender, toRender: render, fromRender: copyRenderOrg,
+      fromParent: this.getParentRenderItem(copyRenderOrg), service: this, type2: pos as any
+    })) return;
 
     if (this._isCut) {
       this.deleteWidget(this._copyParentId, this._copyId, true);
@@ -1604,25 +1634,39 @@ ${withThisDts}
 
 
 function _canMoving(p: {
-  /** 容器render(父层) */
-  dragContent: UERenderItem;
-  /** 本render的editort */
-  dragEditor: UETransferEditor;
-  pEditor: UETransferEditor;
+  fromParent: UERenderItem;
+  toParent: UERenderItem;
+  fromRender: UERenderItem;
+  fromEditor?: UETransferEditor;
+  toRender: UERenderItem;
+  toEditor?: UETransferEditor;
+  type2?: UEDragType2;
   service: UEService;
 }) {
-  const { dragContent, dragEditor, pEditor, service } = p;
-  if (dragEditor) {
-    if (dragEditor.moving && !dragEditor.moving({ dragContent, dragEditor, service })) {
-      return false;
-    }
-    if (dragEditor.movingChild && !dragEditor.movingChild({ dragContent, dragEditor, service })) {
+  const { fromParent, toParent, fromRender, toRender, type2, service } = p;
+
+  let { fromEditor, toEditor } = p;
+  if (!fromEditor) fromEditor = fromRender?.editor;
+  if (!toEditor) toEditor = toRender?.editor;
+
+  if (fromEditor) {
+    if (fromEditor.moving && !fromEditor.moving({ fromParent, toParent, fromRender, fromEditor, toRender, toEditor, type2, service })) {
       return false;
     }
   }
 
-  if (pEditor && pEditor.contenting && !pEditor.contenting({ dragContent, dragEditor, service })) {
-    return false;
+  if (fromParent?.editor) {
+    const pEditor = fromParent?.editor;
+    if (pEditor.movingChild && !pEditor.movingChild({ fromParent, toParent, fromRender, fromEditor, toRender, toEditor, service })) {
+      return false;
+    }
+  }
+
+  if (toParent?.editor) {
+    const pEditor = toParent?.editor;
+    if (pEditor.contenting && !pEditor.contenting({ fromParent, toParent, fromRender, fromEditor, toRender, toEditor, service })) {
+      return false;
+    }
   }
   return true;
 }

@@ -195,22 +195,55 @@ export interface UETransferEditor {
   /** 编辑时是否强制显示为inline */
   inline?: boolean;
   /** 处理是否可以复制 */
-  coping?: (p: { render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }) => boolean;
-  /** 处理是否可以插入组件到内容，容器时才会生产 */
-  contenting?: (p: { dragContent: UERenderItem; dragEditor: UETransferEditor; service: UEService; }) => boolean;
-  /** 拖动时处理，返回true|false，决定是否可以拖动到目标 */
-  moving?: (p: {
+  coping?: (p: { render: UERenderItem; parent: UERenderItem; service: UEService; }) => boolean;
+  /** 是否可以拖动组件为子节点，容器时才会生产 */
+  contenting?: (p: {
+    /** 当前render(父层) */
+    fromRender: UERenderItem;
+    /** 移动到 render */
+    toRender: UERenderItem;
+    /** 当前render的editort */
+    fromEditor: UETransferEditor;
+    /** 移动到 render 的editort*/
+    toEditor: UETransferEditor;
     /** 容器render(父层) */
-    dragContent: UERenderItem;
-    /** 本render的editort */
-    dragEditor: UETransferEditor;
+    fromParent: UERenderItem;
+    /** 容器render(父层) */
+    toParent: UERenderItem;
     service: UEService;
   }) => boolean;
-  movingChild?: (p: {
+  /** 拖动时处理，返回true|false，决定是否可以拖动到目标 */
+  moving?: (p: {
+    /** 当前render(父层) */
+    fromRender: UERenderItem;
+    /** 移动到 render */
+    toRender: UERenderItem;
+    /** 当前render的editort */
+    fromEditor: UETransferEditor;
+    /** 移动到 render 的editort*/
+    toEditor: UETransferEditor;
     /** 容器render(父层) */
-    dragContent: UERenderItem;
-    /** 本render的editort */
-    dragEditor: UETransferEditor; service: UEService;
+    fromParent: UERenderItem;
+    /** 容器render(父层) */
+    toParent: UERenderItem;
+    type2?: UEDragType2;
+    service: UEService;
+  }) => boolean;
+  /** 是否可以移动子节点 */
+  movingChild?: (p: {
+    /** 当前render(父层) */
+    fromRender: UERenderItem;
+    /** 移动到 render */
+    toRender: UERenderItem;
+    /** 当前render的editort */
+    fromEditor: UETransferEditor;
+    /** 移动到 render 的editort*/
+    toEditor: UETransferEditor;
+    /** 容器render(父层) */
+    fromParent: UERenderItem;
+    /** 容器render(父层) */
+    toParent: UERenderItem;
+    service: UEService;
   }) => boolean;
   /**
    * 编辑渲染时转换 render 和 attr

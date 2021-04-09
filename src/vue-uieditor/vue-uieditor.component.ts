@@ -9,10 +9,10 @@ import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueProvide, UEVueWatch }
 import uieditorCpAttr from './components/uieditor-cp-attr.component.vue';
 import uieditorCpTree from './components/uieditor-cp-tree.component.vue';
 import uieditorMonacoEditor from './components/uieditor-monaco-editor.component.vue';
+import { LayuiHelper } from './layui/layui-helper';
 import { LayuiRender } from './layui/layui-render';
 import './transfer';
 import { UEDrag } from './ue-drag';
-import { LayuiHelper } from './layui/layui-helper';
 
 function _toolbarDisabled(item, service) {
   let disabled = item.disabled;
@@ -252,10 +252,20 @@ export default class VueUieditor extends UEVue {
         const id = fromEl.id;
         this.service.setCurrent(id);
       },
-      dragstart(e) {
+      dragstart: (e) => {
         return true;
       },
-      dragover(e) {
+      dragover: (e) => {
+        const { $, isTreeNode, fromEl, toEl, pos } = e;
+        if (isTreeNode) {
+          const cpId = $(fromEl).data('id');
+          const renderId = toEl.id;
+          if (!this.service.canAddByDrag(cpId, renderId, pos.type2)) return false;
+        } else {
+          const fromId = fromEl.id;
+          const toId = toEl.id;
+          if (!this.service.canMove(fromId, toId, pos.type2)) return false;
+        }
         return true;
       },
       drop: (e) => {
@@ -263,12 +273,14 @@ export default class VueUieditor extends UEVue {
         if (isTreeNode) {
           const cpId = $(fromEl).data('id');
           const renderId = toEl.id;
+
+          if (!this.service.canAddByDrag(cpId, renderId, pos.type2)) return false;
           this.service.addByDrag(cpId, renderId, pos.type2);
         } else {
           const fromId = fromEl.id;
           const toId = toEl.id;
+          if (!this.service.canMove(fromId, toId, pos.type2)) return false;
           this.service.move(fromId, toId, pos.type2);
-
         }
         return true;
       },
