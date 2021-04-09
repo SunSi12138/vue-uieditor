@@ -857,7 +857,7 @@ export class UEService {
     if (_.size(editor) > 0) {
       _.forEach(editor, function (item, type) {
         const newItem = { id: UEHelper.makeAutoId(), $isTmpl: false, uedrag: true, icon: item.icon, title: item.defaultText || item.text, type, item };
-        if (item.show !== false) {
+        if (item.show !== false && item.showInTree !== false) {
           const group = _getCpTreeGroup(tree, (item.group || '').split('/'));
           group?.children.push(newItem);
         }

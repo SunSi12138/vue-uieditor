@@ -48,7 +48,7 @@ export default class UieditorCpTree extends UEVue {
     } else {
       const sReg = new RegExp(_.escapeRegExp(searchText), 'i');
       data = _.filter(cps.list, function (treeItem) {
-        return treeItem.item.show !== false && sReg.test(treeItem.title);
+        return treeItem.item.show !== false && treeItem.item.showInTree !== false && sReg.test(treeItem.title);
       });
     }
 
