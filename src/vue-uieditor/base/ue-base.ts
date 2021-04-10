@@ -311,6 +311,18 @@ export interface UETemplate {
    * html 模板，如果有json内容，优先使用json内容
    */
   template?: string;
+  /** 拖动时处理，返回true|false，决定是否可以拖动到目标 */
+  moving?: (p: {
+    /** 移动到 render */
+    toRender: UERenderItem;
+    /** 移动到 render 的editort*/
+    toEditor: UETransferEditor;
+    fromEditor: UETransferEditor;
+    /** 容器render(父层) */
+    toParent: UERenderItem;
+    type2?: UEDragType2;
+    service: UEService;
+  }) => boolean;
 }
 
 export type UEThemeMode = 'json' | 'script' | 'tmpl';

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UEDragType2, UEMode, UEOption, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
+import { UEDragType2, UEMode, UEOption, UETransferEditor, UETransferEditorAttrsItem, UETemplate } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -902,15 +902,22 @@ export class UEService {
   canAddByDrag(cpId: string, renderId: string, type2: UEDragType2) {
     let component = _.find(this._components, { id: cpId });
     if (!component) return false;
-    if (component.$isTmpl) return true;
-
+    const isTmpl = component.$isTmpl;
+    const tmpl: UETemplate = isTmpl ? component.item : null;
+    const cpType = isTmpl ? _makeTempalte(tmpl).type : component.type;
+    if (!cpType) return false;
 
     const fromRender = null;
     const fromParent = null;
     const toRender = renderId && this.getRenderItem(renderId);
     const toParent = type2 == 'in' ? toRender : this.getParentRenderItem(toRender, true);
-    const fromEditor = this.options.editor[component.type];
+    const fromEditor = this.options.editor[cpType];
 
+    let ok = true;
+    if (tmpl && tmpl.moving) {
+      ok = tmpl.moving({ toParent, toRender, toEditor: toRender?.editor, fromEditor, type2, service: this });
+    }
+    if (ok === false) return false;
     return _canMoving({ fromParent, toParent, fromRender, toRender, fromEditor, service: this, type2 });
   }
 
@@ -961,17 +968,7 @@ export class UEService {
     let newRender
     if (component.$isTmpl) {
       const cpItem = component.item;
-      let json = cpItem.json;
-      if (json) {
-        if (_.isString(json)) {
-          json = JSON.parse(json);
-          cpItem.json = _.cloneDeep(json) || {};
-        } else
-          json = _.cloneDeep(json);
-      } else if (cpItem.template) {
-        json = await UECompiler.htmlToRenderAsync(cpItem.template);
-        cpItem.json = _.cloneDeep(json) || {};
-      }
+      const json = _makeTempalte(cpItem);
       newRender = json;
       if (newRender && newRender.type) {
         const type = newRender.type;
@@ -1671,4 +1668,23 @@ function _canMoving(p: {
     }
   }
   return true;
+}
+
+/**
+ * 生成并获取模板内容
+ * @param tmpl 
+ */
+function _makeTempalte(tmpl: UETemplate): UERenderItem {
+  let json: any = tmpl.json;
+  if (json) {
+    if (_.isString(json)) {
+      json = tmpl.json = JSON.parse(json);
+    }
+  } else if (tmpl.template) {
+    json = tmpl.json = UECompiler.htmlToRender(tmpl.template);
+  }
+  if (_.isArray(json)) {
+    json = tmpl.json = _.first(json);
+  }
+  return _.cloneDeep(json) || {};
 }

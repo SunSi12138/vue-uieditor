@@ -200,12 +200,12 @@ export class UECompiler {
    * Html 转成 Render
    * @param html 
    */
-   static htmlToRender(html: string): Promise<string | UERenderItem> {
+  static htmlToRender(html: string): Promise<string | UERenderItem> {
     let json: any = UECompiler.htmlToJson(`<root>${html}</root>`);
     return UECompiler._htmlToRender(json);
   }
 
-   private static _htmlToRender(json: any): Promise<string | UERenderItem> {
+  private static _htmlToRender(json: any): Promise<string | UERenderItem> {
     json = jsonToRender([json]);
     const root = json[0];
     const template: any = _.find(root.children, { type: 'template' });
@@ -231,7 +231,7 @@ export class UECompiler {
    * Render 转成 Html
    * @param html 
    */
-  static async renderToHtmlAsync(render: UERenderItem, config?:UEJsonToHtmlConfig): Promise<string> {
+  static async renderToHtmlAsync(render: UERenderItem, config?: UEJsonToHtmlConfig): Promise<string> {
     render = _.cloneDeep(render);
     render = {
       type: 'temp_20200807_',
@@ -275,7 +275,7 @@ export class UECompiler {
    * Json 转成 Html
    * @param html 
    */
-  static async jsonToHtmlAsync(json: any, config?:UEJsonToHtmlConfig) {
+  static async jsonToHtmlAsync(json: any, config?: UEJsonToHtmlConfig) {
     // await initJsonToXml();
     let html: string = UECompiler.jsonToHtml(json, config);
     return html;
