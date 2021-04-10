@@ -32,6 +32,9 @@ export default class VueUieditorRender extends UEVue {
   private json!: string;
 
   @UEVueProp()
+  private tmpl!: string;
+
+  @UEVueProp()
   private mixin!: string;
 
   @UEVueProp()
@@ -66,6 +69,7 @@ export default class VueUieditorRender extends UEVue {
   }
 
   @UEVueWatch('json')
+  @UEVueWatch('tmpl')
   @UEVueWatch('options')
   /** 刷新 */
   refresh() {
@@ -104,8 +108,8 @@ export default class VueUieditorRender extends UEVue {
   }
 
 
-  async makeVueRender(){
-    
+  async makeVueRender() {
+
     if (this.isErrorCaptured) {
       try {
         await this._makeVueRender();
@@ -123,8 +127,9 @@ export default class VueUieditorRender extends UEVue {
 
     const editing = this.editing === true;
     const preview = this.preview === true;
-    const json: UERenderItem = _.isString(this.json) ? JSON.parse(this.json) :
-      _.cloneDeep(this.json);
+    const json: UERenderItem = this.json ?
+      (_.isString(this.json) ? JSON.parse(this.json) : _.cloneDeep(this.json))
+      : UECompiler.htmlToRender(this.tmpl || '<template><uieditor-div /></template>');
     const options = _.assign(_defaultOptions(), this.optionEx);
 
     if (options?.mixins) vueDef.mixins = vueDef.mixins.concat(options.mixins);
@@ -153,7 +158,7 @@ export default class VueUieditorRender extends UEVue {
       })();
 
       mixinExBefore = UEMergeMixin(mixinExBefore, {
-        data(){ return transferExt.data || {}; }
+        data() { return transferExt.data || {}; }
       });
       const service = editing ? this.service : null;
       let transferExt: any = {};
@@ -287,7 +292,7 @@ export default class VueUieditorRender extends UEVue {
         $babelTransform(script, opt) {
           return UECompiler.babelTransform(script, opt);
         },
-        $log(...args){
+        $log(...args) {
           window.console?.warn(...args);
         }
       },
