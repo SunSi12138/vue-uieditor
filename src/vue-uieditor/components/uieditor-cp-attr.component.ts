@@ -14,7 +14,7 @@ type GroupItem = {
   items: UETransferEditorAttrsItem[];
 }
 
-const _vReg = /^\s*v\-*/;
+const _vReg = /^\s*v\-.*/;
 const $: JQueryStatic = layui.$;
 
 function _makeGroupList(attrList: UETransferEditorAttrsItem[]): GroupItem[] {
