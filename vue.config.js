@@ -11,12 +11,19 @@ const cssPath = path.join(assetPath, 'css').replace(/\\/g, '/');
 // vue.config.js
 module.exports = {
   publicPath,
-  lintOnSave: true,
+  lintOnSave: false,
   outputDir: path.resolve(__dirname, './lib'),
   assetsDir: assetPath,
   runtimeCompiler: true,
   parallel: true,
   productionSourceMap: false,
+  devServer: {
+    open: false,
+    overlay: {
+      warning: false,
+      errors: false
+    }
+  },
   css: {
     extract: {
       publicPath: cssPath,
