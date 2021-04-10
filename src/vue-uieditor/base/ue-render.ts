@@ -274,6 +274,8 @@ export class UERender {
     editor = UEHelper.assignDepth({}, _defaultEditor(type), editor, emptyEditor);
     if (!editor.text) editor.text = type;
     if (!editor.placeholder) editor.placeholder = editor.text;
+    if (editor.placeholderAttr) editor.attrs = UEHelper.assignDepth({}, _defaultplaceholderAttr, editor.attrs);
+    if (editor.disabledAttr) editor.attrs = UEHelper.assignDepth({}, _defaultDisabledAttr, editor.attrs);
 
     const attrs = editor.attrs;
     const newAttrs = {};
@@ -471,6 +473,8 @@ function _defaultEditor(name: string): UETransferEditor {
     draggable: true,
     select: true,
     base: true,
+    placeholderAttr: false,
+    disabledAttr: false,
     attrs: {
       '_meta_type': { group: 'Vue', editorOlny: true, show: false, text: 'type', effect: true, groupOrder: -50, order: -50, desc: '更改类型，注意：只保留v-model与ref内容' },
       [_collapseKey]: { group: 'Vue', order: 999, show: false, value: 'false', editorOlny: true, desc: "editor内部使用" },
@@ -532,3 +536,11 @@ function _defautlOption(): UEOption {
     }
   };
 }
+
+const _defaultplaceholderAttr: UETransferEditorAttrs = {
+  'placeholder': { group: 'Vue', order: 2 }
+};
+
+const _defaultDisabledAttr: UETransferEditorAttrs = {
+  'disabled': { order: 2, bind: true, effect: true, type: 'boolean' }
+};

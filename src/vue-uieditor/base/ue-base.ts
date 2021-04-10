@@ -196,6 +196,11 @@ export interface UETransferEditor {
   show?: boolean;
   /** 编辑时是否强制显示为inline */
   inline?: boolean;
+  /** 是否有placeholder属性， 默认为:false */
+  placeholderAttr?: boolean;
+  /** 是否有 disabled 属性， 默认为:false */
+  disabledAttr?: boolean;
+  /** 是否有 inline 属性， 默认为:true */
   /** 处理是否可以复制 */
   coping?: (p: { render: UERenderItem; parent: UERenderItem; service: UEService; }) => boolean;
   /** 是否可以拖动组件为子节点，容器时才会生产 */
