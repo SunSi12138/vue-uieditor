@@ -1504,7 +1504,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
       const overCls = '';// !operation.selectChild ? ' over' : '';
       className = `uieditor-drag-content${emptyCls}${overCls}`;
     }
-    if (className && !editor.select){
+    if (className && !editor.select) {
       className = className.replace('uieditor-drag-item', '')
         .replace('uieditor-drag-content', '');
     }

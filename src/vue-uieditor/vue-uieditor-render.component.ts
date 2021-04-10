@@ -8,6 +8,7 @@ import { UERenderItem } from './base/ue-render-item';
 import { UEService } from './base/ue-service';
 import { UEMergeMixin, UEVue, UEVueComponent, UEVueInject, UEVueLife, UEVueMixin, UEVueProp, UEVueWatch } from './base/vue-extends';
 import './transfer';
+import Vue from 'vue';
 
 const _defaultGlobalExtend = {
   UEHelper,
@@ -257,6 +258,13 @@ export default class VueUieditorRender extends UEVue {
   }
 
   $extendVueDef(vueDef, { previewOpt }) {
+    const editing = this.editing;
+    let warnHandler, newWarnHandler;
+    if (editing) {
+      warnHandler = Vue.config.warnHandler;
+      newWarnHandler = Vue.config.warnHandler = function () { };
+    }
+
 
     let $uieditorRender = this;
 
@@ -303,6 +311,9 @@ export default class VueUieditorRender extends UEVue {
         $uieditorRender.$emit('on-render-created', this);
       },
       mounted() {
+        if (editing && newWarnHandler == Vue.config.warnHandler) {
+          Vue.config.warnHandler = warnHandler;
+        }
         $uieditorRender.$emit('on-render-mounted', this);
         if ($uieditorRender.preview || $uieditorRender.editing) {
           if ($uieditorRender.service) $uieditorRender.service._lastcp = this;
