@@ -466,7 +466,7 @@ export class UEService {
   /**
    * 获取父节点
    * @param render 
-   * @param all 是否所有内容，否则根据draggable设置查找父节点，默认为：true 
+   * @param all 是否所有内容，否则根据select设置查找父节点，默认为：true 
    */
   getParentRenderItem(render: UERenderItem, all = true): UERenderItem {
     if (!render) return null;
@@ -479,7 +479,7 @@ export class UEService {
         return pRender;
       } else {
         let editor = render.editor;
-        if (editor && !editor.draggable)
+        if (editor && !editor.select)
           return this.getParentRenderItem(pRender, all);
         else
           return pRender;
@@ -585,7 +585,7 @@ export class UEService {
     let editor = render.editor
     let pId = render.editorPId
     const pRender = this.getRenderItem(pId);
-    if (editor && editor.draggable) {
+    if (editor && editor.select) {
       // const pEditor = pRender.editor
       outList.unshift({
         text: (editor.textFormat && editor.textFormat(editor, render.attrs)) || editor.text,
@@ -1503,6 +1503,10 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
       // }
       const overCls = '';// !operation.selectChild ? ' over' : '';
       className = `uieditor-drag-content${emptyCls}${overCls}`;
+    }
+    if (className && !editor.select){
+      className = className.replace('uieditor-drag-item', '')
+        .replace('uieditor-drag-content', '');
     }
 
     if (editor.inline) className = `${className} inline`;

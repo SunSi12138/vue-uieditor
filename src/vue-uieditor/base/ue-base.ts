@@ -186,7 +186,9 @@ export interface UETransferEditor {
   editUseModel?: boolean;
   /** 编辑时临时添加样式 */
   className?: string | ((p: { render: UERenderItem, editor: UETransferEditor, attrs: UETransferEditorAttrs }) => string);
-  /** 是否可以拖动或选中（编辑），默认：true */
+  /** 是否可以选中（编辑），默认：true */
+  select?: boolean;
+  /** 是否可以拖动（编辑），默认：true */
   draggable?: boolean;
   /** 是否显示在组件树，默认为 true */
   showInTree?: boolean;

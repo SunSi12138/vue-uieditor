@@ -469,6 +469,7 @@ function _defaultEditor(name: string): UETransferEditor {
     },
     order: 99,
     draggable: true,
+    select: true,
     base: true,
     attrs: {
       '_meta_type': { group: 'Vue', editorOlny: true, show: false, text: 'type', effect: true, groupOrder: -50, order: -50, desc: '更改类型，注意：只保留v-model与ref内容' },
