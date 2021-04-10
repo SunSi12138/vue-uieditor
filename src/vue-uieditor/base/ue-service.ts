@@ -1649,6 +1649,7 @@ function _canMoving(p: {
   if (!toEditor) toEditor = toRender?.editor;
 
   if (fromEditor) {
+    if (fromEditor.draggable === false) return false;
     if (fromEditor.moving && !fromEditor.moving({ fromParent, toParent, fromRender, fromEditor, toRender, toEditor, type2, service })) {
       return false;
     }
