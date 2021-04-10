@@ -542,7 +542,7 @@ function _defautlOption(): UEOption {
 }
 
 const _defaultplaceholderAttr: UETransferEditorAttrs = {
-  'placeholder': { group: 'Vue', order: 2 }
+  'placeholder': { order: 2 }
 };
 
 const _defaultDisabledAttr: UETransferEditorAttrs = {
