@@ -337,6 +337,10 @@ export class UERender {
         attr.codeBtn = false;
         attr.value = attr.value === true || attr.value === 'true';
         break;
+      case 'number':
+        attr.enabledBind = false;
+        attr.bind = true;
+        break;
     }
     // if (!attr.placeholder) attr.placeholder = attr.text;
     if (attr.event) {
