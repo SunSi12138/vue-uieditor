@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UECanNotSelectProps, UEDragType2, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
+import { UECanNotSelectProps, UEDragType2, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem, UECanNotMoveProps } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -1355,7 +1355,7 @@ function _initAttrsFromRender(render: UERenderItem) {
     const { name, isEvent, isBind } = UERender.getVueBindNameEx(key);
     if (!attrs[name]) {
       const isB = _.isBoolean(value);
-      const isBOnly = name == UECanNotSelectProps;
+      const isBOnly = name == UECanNotSelectProps || name == UECanNotMoveProps;
       attrs[name] = UERender.NewCustAttr(name, {
         bind: isBind,
         event: isEvent,
@@ -1394,6 +1394,8 @@ function _setRenderAttrs(render: UERenderItem, editor: UETransferEditor, editing
 
       _.forEach(attrs, function (item, name) {
         name = item.name;
+
+        if (name == UECanNotMoveProps) debugger;
 
         if (editing) {
           if (!item.effect) return;
@@ -1509,7 +1511,8 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
       className = className.replace('uieditor-drag-item', '')
         .replace('uieditor-drag-content', '');
     }
-
+    
+    if (editor.controlLeft) className = `${className} control-left`;
     if (editor.inline) className = `${className} inline`;
     if (editor.containerBorder) className = `${className} drawing-item-border`;
 
@@ -1652,6 +1655,10 @@ function _canMoving(p: {
   let { fromEditor, toEditor } = p;
   if (!fromEditor) fromEditor = fromRender?.editor;
   if (!toEditor) toEditor = toRender?.editor;
+
+  if (fromRender?.props[UECanNotMoveProps]){
+    return false;
+  }
 
   if (fromEditor) {
     if (fromEditor.draggable === false) return false;

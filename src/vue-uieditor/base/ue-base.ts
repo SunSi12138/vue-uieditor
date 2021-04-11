@@ -176,6 +176,8 @@ export interface UETransferEditor {
   container?: boolean;
   /** 是否显示容器边框，默认为 false */
   containerBorder?: boolean;
+  /** 是否在左边留空方便控制 */
+  controlLeft?: boolean;
   /** 是否基础组件，编辑时作为独立组件，内容不能拖动，默认：true */
   base?: boolean;
   /** 编辑时使用div代替显示 */
@@ -368,3 +370,5 @@ export type UEDragType2 = 'in' | 'before' | 'after';
 
 /** 标记为不能选择属性 */
 export const UECanNotSelectProps = 'ue-cant-select';
+/** 标记为不能移动属性 */
+export const UECanNotMoveProps = 'ue-cant-move';

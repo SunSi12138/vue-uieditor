@@ -257,6 +257,7 @@ export default class VueUieditor extends UEVue {
       },
       dragover: (e) => {
         const { $, isTreeNode, fromEl, toEl, pos } = e;
+        if (!pos) return false;
         if (isTreeNode) {
           const cpId = $(fromEl).data('id');
           const renderId = toEl.id;
@@ -270,6 +271,7 @@ export default class VueUieditor extends UEVue {
       },
       drop: (e) => {
         const { $, isTreeNode, fromEl, toEl, pos } = e;
+        if (!pos) return false;
         if (isTreeNode) {
           const cpId = $(fromEl).data('id');
           const renderId = toEl.id;
