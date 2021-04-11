@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UEDragType2, UEMode, UEOption, UETransferEditor, UETransferEditorAttrsItem, UETemplate } from './ue-base';
+import { UEDragType2, UEMode, UEOption, UETransferEditor, UETransferEditorAttrsItem, UETemplate, UECanNotSelectProps } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -1504,7 +1504,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
       const overCls = '';// !operation.selectChild ? ' over' : '';
       className = `uieditor-drag-content${emptyCls}${overCls}`;
     }
-    if (className && !editor.select) {
+    if (className && (!editor.select || render.props[UECanNotSelectProps])) {
       className = className.replace('uieditor-drag-item', '')
         .replace('uieditor-drag-content', '');
     }

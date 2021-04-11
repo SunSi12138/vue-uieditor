@@ -365,3 +365,6 @@ export interface UETheme {
 
 export type UEDragType = 'in' | 'top' | 'bottom' | 'left' | 'right';
 export type UEDragType2 = 'in' | 'before' | 'after';
+
+/** 标记为不能选择属性 */
+export const UECanNotSelectProps = 'ue-cant-select';

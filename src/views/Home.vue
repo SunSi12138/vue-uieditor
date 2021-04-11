@@ -23,7 +23,7 @@
 </style>
 <script lang="ts">
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
-import { UEOption, UETheme } from "../vue-uieditor/base/ue-base";
+import { UECanNotSelectProps, UEOption, UETheme } from "../vue-uieditor/base/ue-base";
 import { UERender } from "../vue-uieditor/base/ue-render";
 import { UERenderItem } from "../vue-uieditor/base/ue-render-item";
 import {
@@ -60,6 +60,9 @@ export default class Home extends UEVue {
           group,
           inline: true,
           icon: "layui-icon layui-icon-align-left",
+          transferAttr({render}){
+            render.props[UECanNotSelectProps] = true;
+          },
           contextmenu({ render, service }) {
             return [
               {
