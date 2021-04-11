@@ -61,7 +61,8 @@ export default class Home extends UEVue {
           inline: true,
           icon: "layui-icon layui-icon-align-left",
           transferAttr({render}){
-            render.props[UECanNotSelectProps] = true;
+            // render.props[UECanNotSelectProps] = true;
+            render.props['aaaa'] =true;
           },
           contextmenu({ render, service }) {
             return [

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UEDragType2, UEMode, UEOption, UETransferEditor, UETransferEditorAttrsItem, UETemplate, UECanNotSelectProps } from './ue-base';
+import { UECanNotSelectProps, UEDragType2, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -1355,11 +1355,12 @@ function _initAttrsFromRender(render: UERenderItem) {
     const { name, isEvent, isBind } = UERender.getVueBindNameEx(key);
     if (!attrs[name]) {
       const isB = _.isBoolean(value);
+      const isBOnly = name == UECanNotSelectProps;
       attrs[name] = UERender.NewCustAttr(name, {
         bind: isBind,
         event: isEvent,
-        value: isB ? value : (value || ''),
-        type: isB ? 'boolean' : 'text'
+        value: isB ? (isBOnly ? value : value.toString()) : (value || ''),
+        type: isB ? (isBOnly ? 'boolean-only' : 'boolean') : 'text'
       }, editor);
     }
   });
