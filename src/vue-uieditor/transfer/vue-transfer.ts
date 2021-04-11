@@ -100,16 +100,9 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
     }
   },
   template: {
-    transfer(render, extend) {
-      const { editing, getPropText } = extend;
+    transfer(render, { editing }) {
       if (editing) {
         render.type = 'div';
-        const scope = _.trim(getPropText('slot-scope', '', true));
-        if (scope) {
-          _.assign(extend.data, {
-            [scope]: {}
-          });
-        }
       }
       return render;
     },
@@ -123,8 +116,8 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       container: true,
       containerBorder: true,
       attrs: {
-        slot: { value: 'tmpl1', order: 0, enabledBind: false },
-        'slot-scope': { effect: true, order: 1, enabledBind: false, bind: false }
+        slot: { value: 'tmpl1', vue: false },
+        'slot-scope': { vue: false }
       }
     }
   },

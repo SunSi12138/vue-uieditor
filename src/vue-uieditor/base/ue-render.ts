@@ -491,12 +491,12 @@ function _defaultEditor(name: string): UETransferEditor {
       'v-once': { group: 'Vue', vue: true, type: 'boolean-only', order: 107 },
       'ref': { group: 'Vue', vue: true, effect: true, codeBtn: false, enabledBind: false, order: 108 },
       'key': { group: 'Vue', vue: true, order: 109 },
-      // 'slot': { group: 'Vue', vue: true, order: 107 },
-      // 'slot-scope': { group: 'Vue', vue: true, order: 108 },
+      'slot': { group: 'Vue', vue: true, order: 110, enabledBind: false },
+      'slot-scope': { group: 'Vue', effect: true, vue: true, order: 111, enabledBind: false, bind: false },
       'class': {
-        group: 'Vue', vue: true, effect: true, order: 110, enabledBind: true
+        group: 'Vue', vue: true, effect: true, order: 112, enabledBind: true
       },
-      'style': { group: 'Vue', vue: true, effect: true, order: 111, enabledBind: true, language: 'css' }
+      'style': { group: 'Vue', vue: true, effect: true, order: 113, enabledBind: true, language: 'css' }
     }
   }
 };
@@ -531,6 +531,15 @@ function _defautlOption(): UEOption {
 
       if (!_.isString(render)) {
         newRender.props || (newRender.props = {});
+        const { editing, getPropText } = extend;
+        if (editing) {
+          const scope = _.trim(getPropText('slot-scope', '', true));
+          if (scope) {
+            _.assign(extend.data, {
+              [scope]: {}
+            });
+          }
+        }
       }
 
       return newRender;
