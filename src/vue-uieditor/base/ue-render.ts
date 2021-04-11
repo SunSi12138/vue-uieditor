@@ -542,9 +542,9 @@ function _defautlOption(): UEOption {
 }
 
 const _defaultplaceholderAttr: UETransferEditorAttrs = {
-  'placeholder': { order: 2 }
+  'placeholder': { order: -1 }
 };
 
 const _defaultDisabledAttr: UETransferEditorAttrs = {
-  'disabled': { order: 2, bind: true, effect: true, type: 'boolean' }
+  'disabled': { order: -2, bind: true, effect: true, type: 'boolean' }
 };
