@@ -342,7 +342,8 @@ function _dragStart($el, options: UEDragOptions) {
 
       const collapseHtml = !collapse ? '' :
         `<i class="container-extand-icon layui-icon ${title.isCollapse ? 'layui-icon-down' : 'layui-icon-right'}"></i>`
-      const html = `<div class="title"${title.isCollapse ? ' style="top:-1px !important;"' : ''}>
+      // const html = `<div class="title"${title.isCollapse ? ' style="top:-1px !important;"' : ''}>
+      const html = `<div class="title">
       ${collapseHtml}
       ${title.text}
     </div>`;

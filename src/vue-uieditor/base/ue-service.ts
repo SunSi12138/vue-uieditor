@@ -363,7 +363,7 @@ export class UEService {
   private _editJson: UERenderItem;
 
 
-  /** 编辑中的 root JSON */
+  /** 编辑中的 root JSON，注意：不是完整JSON内容，如：collapse 后，子节点给删除了。 */
   get rootRender(): UERenderItem {
     return this.current.json;
   }
@@ -1512,7 +1512,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
         .replace('uieditor-drag-content', '');
     }
 
-    if (editor.controlLeft) className = `${className} control-left`;
+    if (!collapse && editor.controlLeft) className = `${className} control-left`;
     if (editor.inline) className = `${className} inline`;
     if (editor.containerBorder) className = `${className} drawing-item-border`;
 
@@ -1542,6 +1542,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
 
     if (collapse) {
       const text = editor.textFormat(editor, attrs);
+      render.type = 'div';
       render.children = [{
         type: 'div',
         props: { 'class': 'collapse-info' },
