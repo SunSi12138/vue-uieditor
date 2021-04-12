@@ -1511,7 +1511,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
       className = className.replace('uieditor-drag-item', '')
         .replace('uieditor-drag-content', '');
     }
-    
+
     if (editor.controlLeft) className = `${className} control-left`;
     if (editor.inline) className = `${className} inline`;
     if (editor.containerBorder) className = `${className} drawing-item-border`;
@@ -1540,8 +1540,14 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
     render.props[rClassNameB ? ':class' : 'class'] = className;
     render.props['id'] = id;
 
-    if (collapse)
-      render.children = [];
+    if (collapse) {
+      const text = editor.textFormat(editor, attrs);
+      render.children = [{
+        type: 'div',
+        props: { 'class': 'collapse-info' },
+        children:[_.escape(text)]
+      }];
+    }
 
     return render;
 
@@ -1656,7 +1662,7 @@ function _canMoving(p: {
   if (!fromEditor) fromEditor = fromRender?.editor;
   if (!toEditor) toEditor = toRender?.editor;
 
-  if (fromRender?.props[UECanNotMoveProps]){
+  if (fromRender?.props[UECanNotMoveProps]) {
     return false;
   }
 
