@@ -162,7 +162,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       empty: 'uieditor-render',
       attrs: {
         json: { order: 1, bind: true, row: true, enabledBind: false },
-        tmpl: { order: 2, bind: false, row: true, enabledBind: false, language:'html' },
+        tmpl: { order: 2, bind: false, row: true, language:'html' },
         options: { order: 3, bind: true, row: true, enabledBind: false, value:'$this.$uieditorOptions' },
         query: { order: 4, bind: true, enabledBind: false, row: true, desc: "合并route query参数，如：{id:'111'}" },
         params: { order: 5, bind: true, enabledBind: false, row: true, desc: "传送params参数，可以使用this.params获取" }
