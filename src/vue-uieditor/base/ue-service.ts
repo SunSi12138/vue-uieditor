@@ -1427,8 +1427,6 @@ function _setRenderAttrs(render: UERenderItem, editor: UETransferEditor, editing
       _.forEach(attrs, function (item, name) {
         name = item.name;
 
-        if (name == UECanNotMoveProps) debugger;
-
         if (editing) {
           if (!item.effect) return;
         }
@@ -1539,7 +1537,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
       const overCls = '';// !operation.selectChild ? ' over' : '';
       className = `uieditor-drag-content${emptyCls}${overCls}`;
     }
-    if (className && (!editor.select || render.props[UECanNotSelectProps])) {
+    if (className && (!editor.select || render.props[UECanNotSelectProps] || attrs[UECanNotSelectProps])) {
       className = className.replace('uieditor-drag-item', '')
         .replace('uieditor-drag-content', '');
     }
@@ -1695,7 +1693,7 @@ function _canMoving(p: {
   if (!fromEditor) fromEditor = fromRender?.editor;
   if (!toEditor) toEditor = toRender?.editor;
 
-  if (fromRender?.props[UECanNotMoveProps]) {
+  if (fromRender?.props[UECanNotMoveProps] || (fromRender?.attrs && fromRender?.attrs[UECanNotMoveProps])) {
     return false;
   }
 
