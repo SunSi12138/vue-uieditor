@@ -937,6 +937,38 @@ export class UEService {
   }
 
   /**
+   * 通过JSON添加
+   * @param json 
+   * @param renderId 
+   * @param type2 
+   */
+   async addByJson(json: any, renderId: string, type2: UEDragType2) {
+
+    await this.addByComponent({
+      $isTmpl: true,
+      item: {
+        json
+      },
+    }, renderId, type2);
+  }
+
+  /**
+   * 通过模板添加
+   * @param json 
+   * @param renderId 
+   * @param type2 
+   */
+   async addByTmpl(template: string, renderId: string, type2: UEDragType2) {
+
+    await this.addByComponent({
+      $isTmpl: true,
+      item: {
+        template
+      },
+    }, renderId, type2);
+  }
+
+  /**
    * 添加组件 或 模板
    * @param component 
    * @param renderId 
