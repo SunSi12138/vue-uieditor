@@ -1518,8 +1518,6 @@ function _getEditorRender(render: UERenderItem): UERenderItem {
   return render;
 }
 
-const _collapseKey = '_editor_collapse';
-
 /**
  * 返回可拖动的render
  * @param renderList 
@@ -1527,7 +1525,6 @@ const _collapseKey = '_editor_collapse';
  */
 function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem): UERenderItem[] {
 
-  const pEditor = parentRender.editor;
   let dragChildren = _.map(renderList, function (item) {
     let render = _getEditorRender(item);
     let editor = render.editor;
