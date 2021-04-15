@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UECanNotSelectProps, UEDragType2, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem, UECanNotMoveProps } from './ue-base';
+import { UECanNotCopyProps, UECanNotMoveProps, UECanNotRemoveProps, UECanNotSelectProps, UEDragType2, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -942,7 +942,7 @@ export class UEService {
    * @param renderId 
    * @param type2 
    */
-   async addByJson(json: any, renderId: string, type2: UEDragType2) {
+  async addByJson(json: any, renderId: string, type2: UEDragType2) {
 
     await this.addByComponent({
       $isTmpl: true,
@@ -958,7 +958,7 @@ export class UEService {
    * @param renderId 
    * @param type2 
    */
-   async addByTmpl(template: string, renderId: string, type2: UEDragType2) {
+  async addByTmpl(template: string, renderId: string, type2: UEDragType2) {
 
     await this.addByComponent({
       $isTmpl: true,
@@ -1022,6 +1022,24 @@ export class UEService {
     this.foucs();
     this.$emit('on-add-component', { service: this, dragContent: pRender, render: newRender })
     return this.refresh().then(() => this.setCurrent(id));
+  }
+
+  canRemove(id: string) {
+    const render = this.getRenderItem(id);
+    if (!render) return false;
+    if (render.props && render.props[UECanNotRemoveProps]) return false;
+    const attrs = render.attrs;
+    if (attrs && attrs[UECanNotRemoveProps]) return false;
+    return true;
+  }
+
+  canCopy(id: string) {
+    const render = this.getRenderItem(id);
+    if (!render) return false;
+    if (render.props && render.props[UECanNotCopyProps]) return false;
+    const attrs = render.attrs;
+    if (attrs && attrs[UECanNotCopyProps]) return false;
+    return true;
   }
 
   canMove(fromId: string, toId: string, type2: UEDragType2) {
@@ -1387,7 +1405,8 @@ function _initAttrsFromRender(render: UERenderItem) {
     const { name, isEvent, isBind } = UERender.getVueBindNameEx(key);
     if (!attrs[name]) {
       const isB = _.isBoolean(value);
-      const isBOnly = name == UECanNotSelectProps || name == UECanNotMoveProps;
+      const isBOnly = name == UECanNotSelectProps || name == UECanNotMoveProps ||
+        name == UECanNotCopyProps || name == UECanNotRemoveProps;
       attrs[name] = UERender.NewCustAttr(name, {
         bind: isBind,
         event: isEvent,
@@ -1576,7 +1595,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
       render.children = [{
         type: 'div',
         props: { 'class': 'collapse-info' },
-        children:[_.escape(text)]
+        children: [_.escape(text)]
       }];
     }
 

@@ -372,3 +372,7 @@ export type UEDragType2 = 'in' | 'before' | 'after';
 export const UECanNotSelectProps = 'ue-cant-select';
 /** 标记为不能移动属性 */
 export const UECanNotMoveProps = 'ue-cant-move';
+/** 标记为不能删除属性 */
+export const UECanNotRemoveProps = 'ue-cant-remove';
+/** 标记为不能复制属性 */
+export const UECanNotCopyProps = 'ue-cant-copy';

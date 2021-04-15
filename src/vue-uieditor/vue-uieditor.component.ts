@@ -326,14 +326,14 @@ export default class VueUieditor extends UEVue {
             {
               title: '复制',
               icon: 'layui-icon layui-icon-file-b',
-              show: true,
+              show: service.canCopy(renderId),
               click: (item, e) => {
                 this.service.copyCurToNext()
               }
             }, {
               title: '删除',
               icon: 'layui-icon layui-icon-close',
-              show: true,
+              show: service.canRemove(renderId),
               click: (item, e) => {
                 this.service.delCur(false);
               }
