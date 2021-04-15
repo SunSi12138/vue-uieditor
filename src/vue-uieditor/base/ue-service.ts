@@ -800,6 +800,8 @@ export class UEService {
     else if (!_.isString(id)) {
       id = (id as UERenderItem).editorId || '';
     }
+    if (id == this.rootRender?.editorId) id = '';
+
     // if (!id) return;
     const current = this.current;
     const render = this.getRenderItem(id);
