@@ -23,7 +23,7 @@
 </style>
 <script lang="ts">
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
-import { UECanNotMoveProps, UECanNotSelectProps, UEOption, UETheme } from "../vue-uieditor/base/ue-base";
+import { UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotSelectProps, UEOption, UETheme } from "../vue-uieditor/base/ue-base";
 import { UERender } from "../vue-uieditor/base/ue-render";
 import { UERenderItem } from "../vue-uieditor/base/ue-render-item";
 import {
@@ -176,7 +176,7 @@ export default class Home extends UEVue {
         template: `<template>
 	<uieditor-div>
 		<uieditor-text text="test1" name="name1" />
-		<uieditor-div>
+		<uieditor-div ${UECanNotMoveOutProps} ${UECanNotMoveInProps}>
 			<uieditor-text text="test1222" />
 			<test-text text="测试文本" slider="0" select="sm" :boolean="true" />
 		</uieditor-div>

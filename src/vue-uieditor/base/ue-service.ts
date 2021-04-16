@@ -1722,6 +1722,8 @@ function _canMoving(p: {
 
   if (type2 == 'in') {
     if (UEIsCanNot(toRender, UECanNotMoveInProps)) return false;
+  } else{
+    if (UEIsCanNot(toParent, UECanNotMoveInProps)) return false;
   }
 
   if (fromParent != toParent) {
