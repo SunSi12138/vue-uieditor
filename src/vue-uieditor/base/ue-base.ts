@@ -368,11 +368,41 @@ export interface UETheme {
 export type UEDragType = 'in' | 'top' | 'bottom' | 'left' | 'right';
 export type UEDragType2 = 'in' | 'before' | 'after';
 
-/** 标记为不能选择属性 */
+/** 标记为不能选择 */
 export const UECanNotSelectProps = 'ue-cant-select';
-/** 标记为不能移动属性 */
+/** 标记为不能移动 */
 export const UECanNotMoveProps = 'ue-cant-move';
-/** 标记为不能删除属性 */
+/** 标记为不能删除 */
 export const UECanNotRemoveProps = 'ue-cant-remove';
-/** 标记为不能复制属性 */
+/** 标记为不能复制 */
 export const UECanNotCopyProps = 'ue-cant-copy';
+/** 标记为不能选择子节点 */
+export const UECanNotSelectChildProps = 'ue-cant-select-child';
+/** 标记为不能移动子节点 */
+export const UECanNotMoveChildProps = 'ue-cant-move-child';
+/** 标记为不能删除子节点 */
+export const UECanNotRemoveChildProps = 'ue-cant-remove-child';
+/** 标记为不能复制子节点 */
+export const UECanNotCopyChildProps = 'ue-cant-copy-child';
+/** 标记为不能移入子节点 */
+export const UECanNotMoveInProps = 'ue-cant-movein';
+/** 标记为不能移出子节点 */
+export const UECanNotMoveOutProps = 'ue-cant-moveout';
+
+const cantPropReg = /^\s*ue\-cant\-/;
+/**
+ * 是否不能标示属性名称
+ * @param name 
+ */
+export function UEIsCanNotProps(name: string) {
+  return cantPropReg.test(name);
+}
+
+/**
+ * 是否不能操作
+ * @param render 
+ * @param cantName 标记名称, 如：UECanNotSelectProps
+ */
+export function UEIsCanNot(render, cantName: string) {
+  return !!(render && ((render.props && render.props[cantName]) || (render.attrs && render.attrs[cantName])));
+}

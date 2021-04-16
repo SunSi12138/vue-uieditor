@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UECanNotCopyProps, UECanNotMoveProps, UECanNotRemoveProps, UECanNotSelectProps, UEDragType2, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
+import { UECanNotCopyChildProps, UECanNotCopyProps, UECanNotMoveChildProps, UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotRemoveChildProps, UECanNotRemoveProps, UECanNotSelectChildProps, UECanNotSelectProps, UEDragType2, UEIsCanNot, UEIsCanNotProps, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -1029,18 +1029,18 @@ export class UEService {
   canRemove(id: string) {
     const render = this.getRenderItem(id);
     if (!render) return false;
-    if (render.props && render.props[UECanNotRemoveProps]) return false;
-    const attrs = render.attrs;
-    if (attrs && attrs[UECanNotRemoveProps]) return false;
+    if (UEIsCanNot(render, UECanNotRemoveProps)) return false;
+    const pRender = this.getRenderItem(render.editorPId);
+    if (UEIsCanNot(pRender, UECanNotRemoveChildProps)) return false;
     return true;
   }
 
   canCopy(id: string) {
     const render = this.getRenderItem(id);
     if (!render) return false;
-    if (render.props && render.props[UECanNotCopyProps]) return false;
-    const attrs = render.attrs;
-    if (attrs && attrs[UECanNotCopyProps]) return false;
+    if (UEIsCanNot(render, UECanNotCopyProps)) return false;
+    const pRender = this.getRenderItem(render.editorPId);
+    if (UEIsCanNot(pRender, UECanNotCopyChildProps)) return false;
     return true;
   }
 
@@ -1407,8 +1407,7 @@ function _initAttrsFromRender(render: UERenderItem) {
     const { name, isEvent, isBind } = UERender.getVueBindNameEx(key);
     if (!attrs[name]) {
       const isB = _.isBoolean(value);
-      const isSp = name == UECanNotSelectProps || name == UECanNotMoveProps ||
-        name == UECanNotCopyProps || name == UECanNotRemoveProps;
+      const isSp = UEIsCanNotProps(name);
       const isBOnly = isSp;
       attrs[name] = UERender.NewCustAttr(name, {
         bind: isBind,
@@ -1557,7 +1556,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
       const overCls = '';// !operation.selectChild ? ' over' : '';
       className = `uieditor-drag-content${emptyCls}${overCls}`;
     }
-    if (className && (!editor.select || render.props[UECanNotSelectProps] || attrs[UECanNotSelectProps])) {
+    if (className && (!editor.select || UEIsCanNot(render, UECanNotSelectProps) || UEIsCanNot(parentRender, UECanNotSelectChildProps))) {
       className = className.replace('uieditor-drag-item', '')
         .replace('uieditor-drag-content', '');
     }
@@ -1713,8 +1712,20 @@ function _canMoving(p: {
   if (!fromEditor) fromEditor = fromRender?.editor;
   if (!toEditor) toEditor = toRender?.editor;
 
-  if (fromRender?.props[UECanNotMoveProps] || (fromRender?.attrs && fromRender?.attrs[UECanNotMoveProps])) {
+  if (UEIsCanNot(fromRender, UECanNotMoveProps)) {
     return false;
+  }
+
+  if (UEIsCanNot(fromParent, UECanNotMoveChildProps)) {
+    return false;
+  }
+
+  if (type2 == 'in') {
+    if (UEIsCanNot(toRender, UECanNotMoveInProps)) return false;
+  }
+
+  if (fromParent != toParent) {
+    if (UEIsCanNot(fromParent, UECanNotMoveOutProps)) return false;
   }
 
   if (fromEditor) {
