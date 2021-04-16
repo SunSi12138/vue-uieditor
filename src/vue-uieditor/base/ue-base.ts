@@ -166,6 +166,10 @@ export interface UETransferEditor {
   readonly name?: string;
   placeholder?: string;
   icon?: string;
+  /** 默认的模板内容(JSON) */
+  json?: UERenderItem;
+  /** 默认的模板内容 */
+  template?: string;
   /** 排序，默认：99 */
   order?: number;
   /** 分组 */

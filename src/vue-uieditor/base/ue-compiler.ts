@@ -201,6 +201,7 @@ export class UECompiler {
    * @param html 
    */
   static htmlToRender(html: string): Promise<string | UERenderItem> {
+    if (!/^[\s\r\n]*\<template\>/i.test(html)) html = `<template>${html || '<uieditor-dev />'}</template>`;
     let json: any = UECompiler.htmlToJson(`<root>${html}</root>`);
     return UECompiler._htmlToRender(json);
   }

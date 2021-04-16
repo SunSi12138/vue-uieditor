@@ -51,9 +51,7 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       groupOrder,
       group,
       icon: 'layui-icon layui-icon-template-1',
-      base: false,
       container: true,
-      containerBorder: true,
       attrs: {
         'include,exclude,max': {
           group: '组件',
@@ -86,10 +84,9 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       groupOrder,
       group,
       icon: 'layui-icon layui-icon-share',
-      base: false,
       container: true,
       inline: true,
-      containerBorder: true,
+      json: { children: [{ type: 'uieditor-text' }] },
       attrs: {
         to: {
           group: '组件',
@@ -112,9 +109,7 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       group,
       text: 'template',
       icon: 'layui-icon layui-icon-form',
-      base: false,
       container: true,
-      containerBorder: true,
       attrs: {
         slot: { value: 'tmpl1', vue: false },
         'slot-scope': { vue: false }
@@ -150,9 +145,7 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       group,
       text: 'transition',
       icon: 'layui-icon layui-icon-transfer',
-      base: false,
       container: true,
-      containerBorder: true,
       attrs: {
         name: { order: 0 },
         'appear,css': { order: 1, type: 'boolean' },
@@ -178,9 +171,7 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       group,
       text: 'transition-group',
       icon: 'layui-icon layui-icon-video',
-      base: false,
       container: true,
-      containerBorder: true,
       attrs: {
         'tag,name': { order: 0 },
         'appear,css': { order: 1, type: 'boolean' },
@@ -205,9 +196,7 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       group,
       text: 'slot',
       icon: 'layui-icon layui-icon-senior',
-      base: false,
       container: true,
-      containerBorder: true,
       attrs: {
         name: { order: 0 }
       }

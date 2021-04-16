@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { UEOption, UETemplate, UETransfer, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem, UETransferExtend, UECanNotSelectProps, UECanNotMoveProps } from './ue-base';
+import { UEOption, UETemplate, UETransfer, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem, UETransferExtend } from './ue-base';
 import { UEHelper } from './ue-helper';
 import { UERenderItem } from './ue-render-item';
 
@@ -269,6 +269,11 @@ export class UERender {
   static DefineTransferEditor(type: string, editor: UETransferEditor): UETransferEditor {
     if (_isInited(editor)) return editor;
     _inited(editor);
+    if (editor.container) {
+      _.has(editor, 'base') || (editor.base = false);
+      _.has(editor, 'containerBorder') || (editor.containerBorder = true);
+      _.has(editor, 'controlLeft') || (editor.controlLeft = true);
+    }
 
     let emptyEditor = !editor.empty ? null : _emptyEditor(type, editor.empty);
     editor = UEHelper.assignDepth({}, _defaultEditor(type), editor, emptyEditor);
@@ -276,7 +281,6 @@ export class UERender {
     if (!editor.placeholder) editor.placeholder = editor.text;
     if (editor.placeholderAttr) editor.attrs = UEHelper.assignDepth({}, _defaultplaceholderAttr, editor.attrs);
     if (editor.disabledAttr) editor.attrs = UEHelper.assignDepth({}, _defaultDisabledAttr, editor.attrs);
-
     const attrs = editor.attrs;
     const newAttrs = {};
     //支持 'text:aaa,id':{}

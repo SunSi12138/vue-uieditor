@@ -4,6 +4,10 @@ import { UERender } from '../base/ue-render';
 const groupOrder = 2;
 const group = '公用组件库/基础组件';
 
+function _defaultTextJson() {
+  return { children: [{ type: 'uieditor-text' }] };
+}
+
 export const BaseTransfer: UETransfer = UERender.DefineTransfer({
   'uieditor-div': {
     "editor": {
@@ -12,9 +16,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       groupOrder,
       group,
       icon: 'layui-icon layui-icon-template-1',
-      base: false,
-      container: true,
-      containerBorder: true
+      container: true
     }
   },
   'uieditor-span': {
@@ -24,10 +26,9 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       groupOrder,
       group,
       icon: 'layui-icon layui-icon-more',
-      base: false,
       inline: true,
       container: true,
-      containerBorder: true
+      json: _defaultTextJson()
     }
   },
   'uieditor-img': {
@@ -91,11 +92,10 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       order: 5,
       groupOrder,
       group,
-      base: false,
       inline: true,
       container: true,
-      containerBorder: true,
       icon: 'layui-icon layui-icon-link',
+      json: _defaultTextJson(),
       attrs: {
         target: {
           type: 'select',
@@ -162,8 +162,8 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       empty: 'uieditor-render',
       attrs: {
         json: { order: 1, bind: true, row: true, enabledBind: false },
-        tmpl: { order: 2, bind: false, row: true, language:'html' },
-        options: { order: 3, bind: true, row: true, enabledBind: false, value:'$this.$uieditorOptions' },
+        tmpl: { order: 2, bind: false, row: true, language: 'html' },
+        options: { order: 3, bind: true, row: true, enabledBind: false, value: '$this.$uieditorOptions' },
         query: { order: 4, bind: true, enabledBind: false, row: true, desc: "合并route query参数，如：{id:'111'}" },
         params: { order: 5, bind: true, enabledBind: false, row: true, desc: "传送params参数，可以使用this.params获取" }
       }

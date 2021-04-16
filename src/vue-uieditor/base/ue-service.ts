@@ -609,6 +609,20 @@ export class UEService {
       editorId: _getId(),
       editorPId: parentId
     } as UERenderItem;
+
+    let component = _.find(this._components, { type });
+    if (component && !component.$isTmpl) {
+      const editor = component.item as UETransferEditor;
+      const { json, template } = editor;
+      if (json) {
+        render = _.merge({}, _.cloneDeep(json), render);
+      } else if (template) {
+        let tmplJson = _makeTempalte({ template });
+        console.warn('tmplJson', tmplJson, template)
+        render = _.merge({}, _.cloneDeep(tmplJson), render);
+      }
+    }
+
     return render;
   }
 
@@ -1722,7 +1736,7 @@ function _canMoving(p: {
 
   if (type2 == 'in') {
     if (UEIsCanNot(toRender, UECanNotMoveInProps)) return false;
-  } else{
+  } else {
     if (UEIsCanNot(toParent, UECanNotMoveInProps)) return false;
   }
 
