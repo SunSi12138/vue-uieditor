@@ -1407,11 +1407,13 @@ function _initAttrsFromRender(render: UERenderItem) {
     const { name, isEvent, isBind } = UERender.getVueBindNameEx(key);
     if (!attrs[name]) {
       const isB = _.isBoolean(value);
-      const isBOnly = name == UECanNotSelectProps || name == UECanNotMoveProps ||
+      const isSp = name == UECanNotSelectProps || name == UECanNotMoveProps ||
         name == UECanNotCopyProps || name == UECanNotRemoveProps;
+      const isBOnly = isSp;
       attrs[name] = UERender.NewCustAttr(name, {
         bind: isBind,
         event: isEvent,
+        show: !isSp,
         value: isB ? (isBOnly ? value : value.toString()) : (value || ''),
         type: isB ? (isBOnly ? 'boolean-only' : 'boolean') : 'text'
       }, editor);
