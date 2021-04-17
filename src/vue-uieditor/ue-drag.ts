@@ -22,6 +22,7 @@ interface UEDragEvent {
 
 interface UEDragOptions {
   canMove?(e: UEDragEvent): boolean | void;
+  canSelect?(e: UEDragEvent): boolean | void;
   select?(e: UEDragEvent): boolean | void;
   dragstart?(e: UEDragEvent): boolean | void;
   dragover?(e: UEDragEvent): boolean | void;
@@ -276,18 +277,33 @@ function _dragStart($el, options: UEDragOptions) {
   };
   jEditorJsonContent.on('mousedown', function (e) {
     unSelect();
-    if (options.select &&
-      options.select(_makeEvent({ fromEl: e.currentTarget, ev: e as any })) === false) {
-      return;
-    }
+    // if (options.select &&
+    //   options.select(_makeEvent({ fromEl: e.currentTarget, ev: e as any })) === false) {
+    //   return;
+    // }
 
   });
+
+
+  function closestSelect(el: HTMLElement, e) {
+    el = findDragElement(el);
+    if (el) {
+      const isRoot = el.classList.contains('uieditor-drag-root');
+      if (isRoot) return;
+
+      if (options.canSelect && options.canSelect(_makeEvent({ fromEl: el, ev: e })) === false) {
+        const parentElement = el.parentElement;
+        //向上查找可以选择父节点
+        return closestSelect(parentElement, e);
+      }
+    }
+    return el;
+  }
+
   //select
   jEditorJsonContent.on('mousedown', '.uieditor-drag-item,.uieditor-drag-content', function (e) {
-    const element = findDragElement(e.currentTarget);
+    const element = closestSelect(e.currentTarget, e);
     if (element) {
-      const isRoot = element.classList.contains('uieditor-drag-root');
-      if (isRoot) return;
 
       if (options.select &&
         options.select(_makeEvent({ fromEl: element, ev: e as any })) === false) {

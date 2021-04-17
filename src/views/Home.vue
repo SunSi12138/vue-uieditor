@@ -23,7 +23,14 @@
 </style>
 <script lang="ts">
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
-import { UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotSelectProps, UEOption, UETheme } from "../vue-uieditor/base/ue-base";
+import {
+  UECanNotMoveInProps,
+  UECanNotMoveOutProps,
+  UECanNotMoveProps,
+  UECanNotSelectProps,
+  UEOption,
+  UETheme,
+} from "../vue-uieditor/base/ue-base";
 import { UERender } from "../vue-uieditor/base/ue-render";
 import { UERenderItem } from "../vue-uieditor/base/ue-render-item";
 import {
@@ -54,17 +61,17 @@ export default class Home extends UEVue {
         },
         editor: {
           text: "%text%",
-          defaultText:'Text 文本',
+          defaultText: "Text 文本",
           order: 0,
           groupOrder,
           group,
           inline: true,
           icon: "layui-icon layui-icon-align-left",
-          transferAttr({render}){
+          transferAttr({ render }) {
             // render.props[UECanNotSelectProps] = true;
             render.props[UECanNotMoveProps] = true;
-            
-            render.props['aaaa'] =true;
+
+            render.props["aaaa"] = true;
           },
           contextmenu({ render, service }) {
             return [
@@ -209,13 +216,21 @@ export default class Home extends UEVue {
             type: "uieditor-text",
             props: {
               text: "test1222",
+              [UECanNotSelectProps]: true,
             },
           },
           {
             type: "test-text",
             props: {
-              [UECanNotMoveProps]:true,
+              [UECanNotMoveProps]: true,
               text: "测试文本",
+            },
+          },
+          {
+            type: "uieditor-div",
+            props: {
+              [UECanNotSelectProps]: true,
+              [UECanNotMoveProps]: true,
             },
           },
         ],

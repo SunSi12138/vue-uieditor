@@ -1610,10 +1610,10 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
       let emptyCls = !render.children || render.children as any == 0 ? ' uieditor-drag-empty' : '';
       className = `uieditor-drag-content${emptyCls}`;
     }
-    if (className && (!editor.select || UEIsCanNot(render, UECanNotSelectProps) || UEIsCanNot(parentRender, UECanNotSelectChildProps))) {
-      className = className.replace('uieditor-drag-item', '')
-        .replace('uieditor-drag-content', '');
-    }
+    // if (className && (!editor.select || UEIsCanNot(render, UECanNotSelectProps) || UEIsCanNot(parentRender, UECanNotSelectChildProps))) {
+    //   className = className.replace('uieditor-drag-item', '')
+    //     .replace('uieditor-drag-content', '');
+    // }
 
     if (!collapse && editor.controlLeft) className = `${className} control-left`;
     if (editor.inline) className = `${className} inline`;

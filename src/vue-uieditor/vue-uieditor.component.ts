@@ -247,13 +247,19 @@ export default class VueUieditor extends UEVue {
     });
 
     const drager = this._drager = UEDrag.dragStart(this.$el, {
+      canSelect:(e)=>{
+        const { isTreeNode, fromEl } = e;
+        if (isTreeNode) return true;
+        const fromId = fromEl.id;
+        if (!this.service.canSelect(fromId)) return false;
+      },
       select: (e) => {
         const { fromEl } = e;
         const id = fromEl.id;
         this.service.setCurrent(id);
       },
       canMove:(e)=>{
-        const { $, isTreeNode, fromEl, toEl, pos } = e;
+        const { isTreeNode, fromEl } = e;
         if (isTreeNode) return true;
         const fromId = fromEl.id;
         const toId = '';//toEl.id;
