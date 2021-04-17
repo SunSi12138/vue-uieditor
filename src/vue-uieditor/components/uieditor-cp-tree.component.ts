@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { UEHelper } from '../base/ue-helper';
 import { UEService } from '../base/ue-service';
-import { UEVue, UEVueComponent, UEVueInject, UEVueLife } from '../base/vue-extends';
+import { UEVue, UEVueComponent, UEVueInject, UEVueLife, UETransFn } from '../base/vue-extends';
 import { LayuiRender } from '../layui/layui-render';
 
 
@@ -38,6 +38,7 @@ export default class UieditorCpTree extends UEVue {
 
   searchText = '';
   treeId = `ue-cp-tree-${UEHelper.makeAutoId()}`;
+  @UETransFn((fn) => _.debounce(fn, 500))
   search() {
     const searchText = this.searchText;
     const tree = layui.tree;
@@ -57,12 +58,7 @@ export default class UieditorCpTree extends UEVue {
     });
   }
   keydown(e) {
-    if (e.keyCode == 13) {
-      e.stopPropagation();
-      e.preventDefault();
-      this.search();
-      return false;
-    }
+    this.search();
   }
   removeSearchText() {
     this.searchText = '';
