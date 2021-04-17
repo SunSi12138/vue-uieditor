@@ -496,6 +496,8 @@ function _dragStart($el, options: UEDragOptions) {
             };
           }
           el.classList.add(isTreeNode ? 'uieditor-drag-tree-active' : hideCls);
+          if (!isTreeNode)
+            el.style.setProperty('display', 'none', 'important');
           unSelect();
         } finally {
           return false;
@@ -568,6 +570,9 @@ function _dragStart($el, options: UEDragOptions) {
         // }
         unPosLine();
         el.classList.remove(isTreeNode ? 'uieditor-drag-tree-active' : hideCls);
+        if (!isTreeNode)
+          el.style.removeProperty('display');
+
         // select(el);
       }
     };
