@@ -21,6 +21,7 @@ interface UEDragEvent {
 }
 
 interface UEDragOptions {
+  canMove?(e: UEDragEvent): boolean | void;
   select?(e: UEDragEvent): boolean | void;
   dragstart?(e: UEDragEvent): boolean | void;
   dragover?(e: UEDragEvent): boolean | void;
@@ -107,15 +108,6 @@ function getPosLine(body, el: HTMLElement, ev: MouseEvent) {
   const xAbs = Math.min(_posLineAbs, rect.width / 3);
   let top = 0, left = 0, width = 0, height = 0, type, type2;
   const tmPos = _posLineThick + _posLineDistance;
-  // if (el.classList.contains('uieditor-drag-content')) {
-  //   //内容
-  //   type = 'in';
-  //   type2 = 'in';
-  //   width = rect.width - _posLineThick * 2;
-  //   top = rect.top + Math.min(20, rect.height / 2);
-  //   left = rect.left + _posLineThick;
-  //   height = _posLineThick;
-  // } else
   if (mousePos.y < rect.top + yAbs) {
     //上
     type = 'top';
@@ -467,11 +459,22 @@ function _dragStart($el, options: UEDragOptions) {
     return false;
   });
 
+  function closestDrag(el: HTMLElement, e, isTreeNode) {
+    el = findDragElement(el);
+    if (el && options.canMove && options.canMove(_makeEvent({ fromEl: el, ev: e, isTreeNode })) === false) {
+      const parentElement = el.parentElement;
+      //向上查找可以拖动父节点
+      return closestDrag(parentElement, e, isTreeNode);
+    }
+    return el;
+  }
+
 
   function dragEventFn(e) {
+
     const target = e.currentTarget;
     const isTreeNode = target.classList.contains('layui-tree-entry');
-    const el = isTreeNode ? target : findDragElement(target);
+    let el = isTreeNode ? target : closestDrag(target, e, isTreeNode);
     if (!el) return;
 
     const isRoot = el.classList.contains('uieditor-drag-root');

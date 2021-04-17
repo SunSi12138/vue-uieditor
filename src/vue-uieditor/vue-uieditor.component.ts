@@ -252,6 +252,13 @@ export default class VueUieditor extends UEVue {
         const id = fromEl.id;
         this.service.setCurrent(id);
       },
+      canMove:(e)=>{
+        const { $, isTreeNode, fromEl, toEl, pos } = e;
+        if (isTreeNode) return true;
+        const fromId = fromEl.id;
+        const toId = '';//toEl.id;
+        if (!this.service.canMove(fromId, '', 'in')) return false;
+      },
       dragstart: (e) => {
         return true;
       },

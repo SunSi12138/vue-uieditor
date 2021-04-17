@@ -1081,7 +1081,6 @@ export class UEService {
 
   canRemove(id: string) {
     const render = this.getRenderItem(id);
-    if (!render) return false;
     if (UEIsCanNot(render, UECanNotRemoveProps)) return false;
     const pRender = this.getRenderItem(render.editorPId);
     if (UEIsCanNot(pRender, UECanNotRemoveChildProps)) return false;
@@ -1090,10 +1089,17 @@ export class UEService {
 
   canCopy(id: string) {
     const render = this.getRenderItem(id);
-    if (!render) return false;
     if (UEIsCanNot(render, UECanNotCopyProps)) return false;
     const pRender = this.getRenderItem(render.editorPId);
     if (UEIsCanNot(pRender, UECanNotCopyChildProps)) return false;
+    return true;
+  }
+
+  canSelect(id: string) {
+    const render = this.getRenderItem(id);
+    if (UEIsCanNot(render, UECanNotSelectProps)) return false;
+    const pRender = this.getRenderItem(render.editorPId);
+    if (UEIsCanNot(pRender, UECanNotSelectChildProps)) return false;
     return true;
   }
 
@@ -1828,4 +1834,3 @@ function _isLock(render: UERenderItem) {
 function _isCollapse(render: UERenderItem) {
   return UEIsCanNot(render, UEIsCollapseProps);
 }
-

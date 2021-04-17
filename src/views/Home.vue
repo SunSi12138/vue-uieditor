@@ -214,6 +214,7 @@ export default class Home extends UEVue {
           {
             type: "test-text",
             props: {
+              [UECanNotMoveProps]:true,
               text: "测试文本",
             },
           },
