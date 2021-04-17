@@ -336,6 +336,7 @@ export class UERender {
         attr.enabledBind = false;
         attr.bind = true;
         attr.datas = ['true', 'false'];
+        attr.editorBind = true;
         break;
       case 'boolean-only':
         attr.enabledBind = false;
@@ -346,6 +347,7 @@ export class UERender {
       case 'number':
         attr.enabledBind = false;
         attr.bind = true;
+        attr.editorBind = true;
         break;
     }
     // if (!attr.placeholder) attr.placeholder = attr.text;
