@@ -21,7 +21,9 @@ export interface UERenderItem {
     /**
      * 存放临时内容
      */
-    readonly temp?:UEObject;
+    readonly temp?: UEObject;
     /** 编辑器组件属性配置 */
     readonly attrs?: UETransferEditorAttrs;
+    /** 编辑器设计时使用 */
+    'editor-attrs'?: any;
 }

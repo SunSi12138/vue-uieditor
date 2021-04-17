@@ -183,7 +183,7 @@ export default class UieditorCpAttr extends UEVue {
       const attrBindHtml = !attrBind ? '' : `<span name="${name}" class="layui-badge ${attrBindColor}">
       ${attr.event ? '@' : (attr['isPrefxV'] ? 'v' : ':')}
       </span>`;
-      
+
       const desc = attr.desc ? `<i name="${name}" layui-tip="${UEJsonToHtml.escape(attr.desc)}" layui-tip-direction="4"  class="layui-icon layui-icon-about"></i>` : '';
 
       const attrCode = attr.codeBtn !== false ? ' attr-code' : '';
@@ -416,7 +416,8 @@ export default class UieditorCpAttr extends UEVue {
 
       slider.render(_.assign({
         min: 1,
-        max: 24
+        max: 24,
+        value: attr.value
       }, typeOption, {
         elem: $(el),
         name,
