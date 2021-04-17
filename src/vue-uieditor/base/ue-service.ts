@@ -694,7 +694,8 @@ export class UEService {
             let selRender = children[(index == max) ? index - 1 : index + 1] as UERenderItem;
             curId = selRender && selRender.editorId || '';
           } else
-            curId = pRender.editorId
+            curId = pRender.editorId;
+          (id == this.current.id) && this.setCurrent('');
           children.splice(index, 1);
           this.history.addCur();
           if (!norefresh) {
