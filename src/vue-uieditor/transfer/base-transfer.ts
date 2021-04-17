@@ -6,7 +6,7 @@ const groupOrder = 2;
 const group = '公用组件库/基础组件';
 
 function _defaultTextJson() {
-  return { children: [{ type: 'uieditor-text' }], props:{[UEIsLockProps]:true} } as UERenderItem;
+  return { children: [{ type: 'uieditor-text' }] } as UERenderItem;
 }
 
 export const BaseTransfer: UETransfer = UERender.DefineTransfer({

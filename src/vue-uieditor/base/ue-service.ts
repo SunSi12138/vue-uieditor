@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UECanNotCopyChildProps, UECanNotCopyProps, UECanNotMoveChildProps, UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotRemoveChildProps, UECanNotRemoveProps, UECanNotSelectChildProps, UECanNotSelectProps, UEDragType2, UEIsCanNot, UEIsCanNotProps, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem, UEIsLockProps } from './ue-base';
+import { UECanNotCopyChildProps, UECanNotCopyProps, UECanNotMoveChildProps, UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotRemoveChildProps, UECanNotRemoveProps, UECanNotSelectChildProps, UECanNotSelectProps, UEDragType2, UEIsCanNot, UEIsCanNotProps, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem, UEIsLockProps, UEIsCollapseProps } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -1059,6 +1059,26 @@ export class UEService {
     await this.setAttr(id, attr);
   }
 
+
+  isCollapse(render: UERenderItem): boolean;
+  isCollapse(id: string): boolean;
+  isCollapse(p: UERenderItem | string) {
+    if (!p) return;
+    const render: UERenderItem = _.isString(p) ? this.getRenderItem(p) : p;
+    return _isCollapse(render);
+  }
+
+  async collapse(render: UERenderItem, isCollapse: boolean): Promise<any>;
+  async collapse(id: string, isCollapse: boolean): Promise<any>;
+  async collapse(p: UERenderItem | string, isCollapse: boolean) {
+    const id = _.isString(p) ? p : p?.editorId;
+    if (!id) return;
+    const attr = _.cloneDeep(this.getAttr(id, UEIsCollapseProps));
+    if (!attr) return;
+    attr.value = !!isCollapse;
+    await this.setAttr(id, attr);
+  }
+
   canRemove(id: string) {
     const render = this.getRenderItem(id);
     if (!render) return false;
@@ -1119,19 +1139,19 @@ export class UEService {
   }
 
 
-  /**
-   * 折叠内容
-   * @param id 
-   */
-  async collapse(id) {
-    let render = this.getRenderItem(id);
-    if (!render) return;
-    let attrs = render.attrs
-    let collapse = UERender.isCollapse(attrs);
-    UERender.setCollapse(attrs, collapse ? 'false' : 'true');
-    this.history.addCur();
-    await this.refresh();
-  }
+  // /**
+  //  * 折叠内容
+  //  * @param id 
+  //  */
+  // async collapse(id) {
+  //   let render = this.getRenderItem(id);
+  //   if (!render) return;
+  //   let attrs = render.attrs
+  //   let collapse = UERender.isCollapse(attrs);
+  //   UERender.setCollapse(attrs, collapse ? 'false' : 'true');
+  //   this.history.addCur();
+  //   await this.refresh();
+  // }
 
 
   private _copyId;
@@ -1568,7 +1588,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
     const attrs = render.attrs
     const isBase = editor.base;
     if (!isBase || editor.collapse) {
-      collapse = UERender.isCollapse(attrs);
+      collapse = _isCollapse(render);
     }
 
     const locked = _isLock(render);
@@ -1804,3 +1824,8 @@ function _makeTempalte(tmpl: UETemplate): UERenderItem {
 function _isLock(render: UERenderItem) {
   return UEIsCanNot(render, UEIsLockProps);
 }
+
+function _isCollapse(render: UERenderItem) {
+  return UEIsCanNot(render, UEIsCollapseProps);
+}
+

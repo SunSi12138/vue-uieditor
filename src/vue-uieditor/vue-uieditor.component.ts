@@ -299,9 +299,9 @@ export default class VueUieditor extends UEVue {
         let isCollapse = false;
         let collapseFn;
         if (!editor.base || editor.collapse) {
-          isCollapse = UERender.isCollapse(attrs);
+          isCollapse = this.service.isCollapse(curRender);
           collapseFn = (e) => {
-            this.service.collapse(renderId)
+            this.service.collapse(curRender, !isCollapse);
           };
         }
 

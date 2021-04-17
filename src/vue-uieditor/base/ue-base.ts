@@ -394,6 +394,8 @@ export const UECanNotMoveInProps = 'ue-cant-movein';
 export const UECanNotMoveOutProps = 'ue-cant-moveout';
 /** 标记节点是否锁定 */
 export const UEIsLockProps = 'ue-is-lock';
+/** 标记节点是否折叠 */
+export const UEIsCollapseProps = 'ue-is-collapse';
 
 const cantPropReg = /^\s*ue\-cant\-/;
 /**

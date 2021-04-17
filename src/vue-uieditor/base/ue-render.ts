@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { UEOption, UETemplate, UETransfer, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem, UETransferExtend, UEIsLockProps } from './ue-base';
+import { UEOption, UETemplate, UETransfer, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem, UETransferExtend, UEIsLockProps, UEIsCollapseProps, UEIsCanNot } from './ue-base';
 import { UEHelper } from './ue-helper';
 import { UERenderItem } from './ue-render-item';
 
@@ -412,14 +412,6 @@ export class UERender {
     return content && content.replace(/^[\s\r\n]*export default\s*/, '');
   }
 
-  static isCollapse(attrs: UETransferEditorAttrs): boolean {
-    return attrs[_collapseKey].value == 'true';
-  }
-
-  static setCollapse(attrs: UETransferEditorAttrs, value: 'false' | 'true') {
-    attrs[_collapseKey].value = value;
-  }
-
 }
 
 const _bindAttr = /^\s*[\:\@]/;
@@ -448,10 +440,6 @@ function _emptyEditor(component: string, defaultText: string) {
   } as UETransferEditor;
   return editor;
 }
-
-
-const _collapseKey = '_editor_collapse';
-
 
 function _defaultEditor(name: string): UETransferEditor {
   return {
@@ -485,7 +473,6 @@ function _defaultEditor(name: string): UETransferEditor {
     disabledAttr: false,
     attrs: {
       '_meta_type': { group: 'Vue', editorOlny: true, show: false, text: 'type', effect: true, groupOrder: -50, order: -50, desc: '更改类型，注意：只保留v-model与ref内容' },
-      [_collapseKey]: { group: 'Vue', order: 999, show: false, value: 'false', editorOlny: true, desc: "editor内部使用" },
       'v-for': { group: 'Vue', vue: true, row: true, enabledBind: false, order: 101, groupOrder: -50 },
       'v-show': { group: 'Vue', vue: true, row: true, enabledBind: false, order: 102 },
       'v-if': { group: 'Vue', vue: true, row: true, enabledBind: false, order: 103 },
@@ -501,7 +488,7 @@ function _defaultEditor(name: string): UETransferEditor {
         group: 'Vue', vue: true, effect: true, order: 112, enabledBind: true
       },
       'style': { group: 'Vue', vue: true, effect: true, order: 113, enabledBind: true, language: 'css' },
-      [UEIsLockProps]: { group: 'Vue', vue: true, effect: true, value: false, type: 'boolean-only' },
+      [`${UEIsLockProps},${UEIsCollapseProps}`]: { show: false, effect: true, value: false, type: 'boolean-only' },
     }
   }
 };
