@@ -357,6 +357,7 @@ export class UERender {
       || hideAttrGroups && hideAttrGroups.indexOf(attr.group) >= 0) {
       attr.show = false;
     }
+    if (attr.editorBind && !_.has(attr, 'effect')) attr.effect = true;
     return attr;
   };
 
