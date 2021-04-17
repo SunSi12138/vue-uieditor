@@ -551,5 +551,5 @@ const _defaultplaceholderAttr: UETransferEditorAttrs = {
 };
 
 const _defaultDisabledAttr: UETransferEditorAttrs = {
-  'disabled': { order: -2, bind: true, editorBind: true, type: 'boolean' }
+  'disabled': { order: -2, bind: true, type: 'boolean' }
 };
