@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UECanNotCopyChildProps, UECanNotCopyProps, UECanNotMoveChildProps, UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotRemoveChildProps, UECanNotRemoveProps, UECanNotSelectChildProps, UECanNotSelectProps, UEDragType2, UEIsCanNot, UEIsCanNotProps, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
+import { UECanNotCopyChildProps, UECanNotCopyProps, UECanNotMoveChildProps, UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotRemoveChildProps, UECanNotRemoveProps, UECanNotSelectChildProps, UECanNotSelectProps, UEDragType2, UEIsCanNot, UEIsCanNotProps, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem, UEIsLockProps } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -717,7 +717,7 @@ export class UEService {
    * @param id 
    * @param attr 
    */
-  setAttr(id: string, attr: UETransferEditorAttrsItem, refresh = true) {
+  async setAttr(id: string, attr: UETransferEditorAttrsItem, refresh = true) {
     const render = this.getRenderItem(id);
 
     let key = attr.key;
@@ -735,7 +735,7 @@ export class UEService {
     if (!refresh || !attr.effect || !!attr.demoValue) return;
     _setRenderAttrs(render, render.editor, true, this);
     this.history.addCur();
-    this.refresh().then(() => {
+    await this.refresh().then(() => {
       this.refresBreadcrumbs(render);
     });
   }
@@ -1038,6 +1038,25 @@ export class UEService {
     this.foucs();
     this.$emit('on-add-component', { service: this, dragContent: pRender, render: newRender })
     return this.refresh().then(() => this.setCurrent(id));
+  }
+
+  isLocked(render: UERenderItem): boolean;
+  isLocked(id: string): boolean;
+  isLocked(p: UERenderItem | string) {
+    if (!p) return;
+    const render: UERenderItem = _.isString(p) ? this.getRenderItem(p) : p;
+    return _isLock(render);
+  }
+
+  async locked(render: UERenderItem, locked: boolean): Promise<any>;
+  async locked(id: string, locked: boolean): Promise<any>;
+  async locked(p: UERenderItem | string, locked: boolean) {
+    const id = _.isString(p) ? p : p?.editorId;
+    if (!id) return;
+    const attr = _.cloneDeep(this.getAttr(id, UEIsLockProps));
+    if (!attr) return;
+    attr.value = !!locked;
+    await this.setAttr(id, attr);
   }
 
   canRemove(id: string) {
@@ -1541,34 +1560,29 @@ function _getEditorRender(render: UERenderItem): UERenderItem {
 function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem): UERenderItem[] {
 
   let dragChildren = _.map(renderList, function (item) {
-    let render = _getEditorRender(item);
-    let editor = render.editor;
+    const render = _getEditorRender(item);
+    const editor = render.editor;
     if (!editor) return render;
-    let renderId = render.editorId
+    const renderId = render.editorId
     let collapse = false;
-    let attrs = render.attrs
-    if (!editor.base || editor.collapse) {
+    const attrs = render.attrs
+    const isBase = editor.base;
+    if (!isBase || editor.collapse) {
       collapse = UERender.isCollapse(attrs);
     }
 
-    const select = true;
+    const locked = _isLock(render);
+
     let className;
     let id;
-    if (collapse || editor.base) {
+    if (collapse || isBase || locked) {
       let collapseCalss = collapse ? ' uieditor-drag-collapse' : '';
-      // if (select) {
-      //   render.props['tabindex'] = '-1';
-      // }
       className = `uieditor-drag-item${collapseCalss}`;
       id = renderId;
     } else {
-      id = renderId;// _makeEditorContentId(renderId);
+      id = renderId;
       let emptyCls = !render.children || render.children as any == 0 ? ' uieditor-drag-empty' : '';
-      // if (select) {
-      //   render.props['tabindex'] = '-1';
-      // }
-      const overCls = '';// !operation.selectChild ? ' over' : '';
-      className = `uieditor-drag-content${emptyCls}${overCls}`;
+      className = `uieditor-drag-content${emptyCls}`;
     }
     if (className && (!editor.select || UEIsCanNot(render, UECanNotSelectProps) || UEIsCanNot(parentRender, UECanNotSelectChildProps))) {
       className = className.replace('uieditor-drag-item', '')
@@ -1784,4 +1798,9 @@ function _makeTempalte(tmpl: UETemplate): UERenderItem {
     json = tmpl.json = _.first(json);
   }
   return _.cloneDeep(json) || {};
+}
+
+
+function _isLock(render: UERenderItem) {
+  return UEIsCanNot(render, UEIsLockProps);
 }

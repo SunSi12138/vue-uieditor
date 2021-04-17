@@ -392,6 +392,8 @@ export const UECanNotCopyChildProps = 'ue-cant-copy-child';
 export const UECanNotMoveInProps = 'ue-cant-movein';
 /** 标记为不能移出子节点 */
 export const UECanNotMoveOutProps = 'ue-cant-moveout';
+/** 标记节点是否锁定 */
+export const UEIsLockProps = 'ue-is-lock';
 
 const cantPropReg = /^\s*ue\-cant\-/;
 /**
@@ -408,5 +410,8 @@ export function UEIsCanNotProps(name: string) {
  * @param cantName 标记名称, 如：UECanNotSelectProps
  */
 export function UEIsCanNot(render, cantName: string) {
-  return !!(render && ((render.props && render.props[cantName]) || (render.attrs && render.attrs[cantName])));
+  if (!render) return false;
+  if (render.props && render.props[cantName]) return true;
+  const attr = render.attrs && render.attrs[cantName];
+  return attr?.value;
 }

@@ -314,6 +314,9 @@ export default class VueUieditor extends UEVue {
           editor
         }) || [];
 
+
+        const isLocked = service.isLocked(curRender)
+
         const control = {
           title: {
             collapse: collapseFn,
@@ -324,20 +327,28 @@ export default class VueUieditor extends UEVue {
           toolbars: [
             ...editorToolbarMenus,
             {
+              title: isLocked ? '解锁' : '锁定',
+              icon: `layui-icon ${isLocked ? 'layui-icon-key' : 'layui-icon-password'}`,
+              show: !isCollapse && !!collapseFn,
+              click: () => {
+                this.service.locked(renderId, !isLocked);
+              }
+            },
+            {
               title: '复制',
               icon: 'layui-icon layui-icon-file-b',
               show: service.canCopy(renderId),
-              click: (item, e) => {
+              click: () => {
                 this.service.copyCurToNext()
               }
             }, {
               title: '删除',
               icon: 'layui-icon layui-icon-close',
               show: service.canRemove(renderId),
-              click: (item, e) => {
+              click: () => {
                 this.service.delCur(false);
               }
-            }]
+            }] as UEContextmenuItem[]
         };
         return control;
       }

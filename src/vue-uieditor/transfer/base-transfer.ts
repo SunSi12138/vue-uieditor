@@ -1,11 +1,12 @@
-import { UETransfer } from '../base/ue-base';
+import { UETransfer, UECanNotCopyProps, UEIsLockProps } from '../base/ue-base';
 import { UERender } from '../base/ue-render';
+import { UERenderItem } from '../base/ue-render-item';
 
 const groupOrder = 2;
 const group = '公用组件库/基础组件';
 
 function _defaultTextJson() {
-  return { children: [{ type: 'uieditor-text' }] };
+  return { children: [{ type: 'uieditor-text' }], props:{[UEIsLockProps]:true} } as UERenderItem;
 }
 
 export const BaseTransfer: UETransfer = UERender.DefineTransfer({

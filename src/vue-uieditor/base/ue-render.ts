@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { UEOption, UETemplate, UETransfer, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem, UETransferExtend } from './ue-base';
+import { UEOption, UETemplate, UETransfer, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem, UETransferExtend, UEIsLockProps } from './ue-base';
 import { UEHelper } from './ue-helper';
 import { UERenderItem } from './ue-render-item';
 
@@ -500,7 +500,8 @@ function _defaultEditor(name: string): UETransferEditor {
       'class': {
         group: 'Vue', vue: true, effect: true, order: 112, enabledBind: true
       },
-      'style': { group: 'Vue', vue: true, effect: true, order: 113, enabledBind: true, language: 'css' }
+      'style': { group: 'Vue', vue: true, effect: true, order: 113, enabledBind: true, language: 'css' },
+      [UEIsLockProps]: { group: 'Vue', vue: true, effect: true, value: false, type: 'boolean-only' },
     }
   }
 };
