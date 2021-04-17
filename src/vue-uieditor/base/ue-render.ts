@@ -316,6 +316,8 @@ export class UERender {
     if (_isInited(attr)) return attr;
     _inited(attr);
 
+    if (attr.editorBind && !_.has(attr, 'effect')) attr.effect = true;
+
     let hideAttrs = editor.hideAttrs;
     let hideAttrGroups = editor.hideAttrGroups;
     attr = _.assign({}, _defaultEditorAttrItem(name), attr);
@@ -357,7 +359,6 @@ export class UERender {
       || hideAttrGroups && hideAttrGroups.indexOf(attr.group) >= 0) {
       attr.show = false;
     }
-    if (attr.editorBind && !_.has(attr, 'effect')) attr.effect = true;
     return attr;
   };
 
@@ -548,5 +549,5 @@ const _defaultplaceholderAttr: UETransferEditorAttrs = {
 };
 
 const _defaultDisabledAttr: UETransferEditorAttrs = {
-  'disabled': { order: -2, bind: true, effect: true, type: 'boolean' }
+  'disabled': { order: -2, bind: true, editorBind: true, type: 'boolean' }
 };
