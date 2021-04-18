@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { truncate } from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
@@ -1085,6 +1085,7 @@ export class UEService {
   canRemove(id: string): boolean;
   canRemove(p: string | UERenderItem) {
     const render = _.isString(p) ? this.getRenderItem(p) : p;
+    if (!render) return true;
     if (UEIsCanNot(render, UECanNotRemoveProps)) return false;
     const pRender = this.getRenderItem(render.editorPId);
     if (UEIsCanNot(pRender, UECanNotRemoveChildProps)) return false;
@@ -1095,6 +1096,7 @@ export class UEService {
   canCopy(id: string): boolean;
   canCopy(p: string | UERenderItem) {
     const render = _.isString(p) ? this.getRenderItem(p) : p;
+    if (!render) return true;
     if (UEIsCanNot(render, UECanNotCopyProps)) return false;
     const pRender = this.getRenderItem(render.editorPId);
     if (UEIsCanNot(pRender, UECanNotCopyChildProps)) return false;
@@ -1105,8 +1107,10 @@ export class UEService {
   canSelect(id: string): boolean;
   canSelect(p: string | UERenderItem) {
     const render = _.isString(p) ? this.getRenderItem(p) : p;
+    if (!render) return true;
     if (UEIsCanNot(render, UECanNotSelectProps)) return false;
-    if (!render.editor?.select) return false;
+    const editor = render?.editor;
+    if (editor && !editor.select) return false;
     const pRender = this.getRenderItem(render.editorPId);
     if (UEIsCanNot(pRender, UECanNotSelectChildProps)) return false;
     return true;
