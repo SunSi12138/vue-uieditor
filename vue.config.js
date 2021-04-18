@@ -8,11 +8,14 @@ const filename = '[name].[hash].js';
 const assetPath = path.join(uieditorName, './assets').replace(/\\/g, '/');
 const cssPath = path.join(assetPath, 'css').replace(/\\/g, '/');
 
+const rawArgv = process.argv.slice(2)
+const isLib = (rawArgv || []).includes('-lib');
+
 // vue.config.js
 module.exports = {
   publicPath,
   lintOnSave: false,
-  outputDir: path.resolve(__dirname, './lib'),
+  outputDir: path.resolve(__dirname, isLib ? './lib' : './dist'),
   assetsDir: assetPath,
   runtimeCompiler: true,
   parallel: true,
@@ -41,7 +44,7 @@ module.exports = {
   },
   configureWebpack: config => {
     // config.output.chunkFilename = '[name].[hash].chunk.js';
-    if (process.env.NODE_ENV === 'production') {
+    if (isLib) {
       Object.assign(config.output, {
         filename: 'index.js',
         chunkFilename: `./${uieditorName}/${filename}`,
@@ -86,7 +89,7 @@ module.exports = {
       }]
     ]);
 
-    if (process.env.NODE_ENV === 'production') {
+    if (isLib) {
       // 为生产环境修改配置...
 
       config.entry('app').clear();
@@ -129,16 +132,16 @@ module.exports = {
       // config.plugins.delete('html');
       // config.plugins.delete('copy');
 
-      const uieditorPath = path.resolve(__dirname, `./node_modules/${uieditorName}`);
-      const uieditorFile = path.resolve(uieditorPath, './index.js');
-      if (fs.existsSync(uieditorFile)) {
-        config.plugin('copy-vue-uieditor').use(CopyWebpackPlugin, [
-          [{
-            from: path.resolve(uieditorPath, `./${uieditorName}`),
-            to: `./${uieditorName}`
-          }]
-        ]);
-      }
+      // const uieditorPath = path.resolve(__dirname, `./node_modules/${uieditorName}`);
+      // const uieditorFile = path.resolve(uieditorPath, './index.js');
+      // if (fs.existsSync(uieditorFile)) {
+      //   config.plugin('copy-vue-uieditor').use(CopyWebpackPlugin, [
+      //     [{
+      //       from: path.resolve(uieditorPath, `./${uieditorName}`),
+      //       to: `./${uieditorName}`
+      //     }]
+      //   ]);
+      // }
 
     }
 
