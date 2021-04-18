@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UECanNotCopyChildProps, UECanNotCopyProps, UECanNotMoveChildProps, UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotRemoveChildProps, UECanNotRemoveProps, UECanNotSelectChildProps, UECanNotSelectProps, UEDragType2, UEIsCanNot, UEIsCanNotProps, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem, UEIsLockProps, UEIsCollapseProps } from './ue-base';
+import { UECanNotCopyChildProps, UECanNotCopyProps, UECanNotMoveChildProps, UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotRemoveChildProps, UECanNotRemoveProps, UECanNotSelectChildProps, UECanNotSelectProps, UEDragType2, UEIsCanNot, UEIsCanNotProps, UEIsCollapseProps, UEIsLockProps, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -478,8 +478,7 @@ export class UEService {
       if (all) {
         return pRender;
       } else {
-        let editor = render.editor;
-        if (editor && !editor.select)
+        if (!this.canSelect(pRender))
           return this.getParentRenderItem(pRender, all);
         else
           return pRender;
@@ -591,7 +590,7 @@ export class UEService {
         text: (editor.textFormat && editor.textFormat(editor, render.attrs)) || editor.text,
         id: render.editorId,
         pId,
-        canOpt: true,
+        canOpt: this.canSelect(render),
       });
     }
     if (pRender)
@@ -817,15 +816,17 @@ export class UEService {
     }
     if (id == this.rootRender?.editorId) id = '';
 
-    // if (!id) return;
     const current = this.current;
-    const render = this.getRenderItem(id);
+    let renderTemp = this.getRenderItem(id);
+    if (!this.canSelect(renderTemp)) {
+      renderTemp = this.getParentRenderItem(renderTemp, false);
+    }
+    const render = renderTemp;
+    id = render?.editorId;
 
     const change = current.id !== id;
-    // const editor = render.editor;
     const parentId = render?.editorPId;
     const pRender = this.getParentRenderItem(render);
-    // const pEditor = pRender?.editor
     current.parentId = parentId;
     current.id = id;
     this.refeshSelectBox();
@@ -1080,25 +1081,32 @@ export class UEService {
     await this.setAttr(id, attr);
   }
 
-  canRemove(id: string) {
-    const render = this.getRenderItem(id);
+  canRemove(render: UERenderItem): boolean;
+  canRemove(id: string): boolean;
+  canRemove(p: string | UERenderItem) {
+    const render = _.isString(p) ? this.getRenderItem(p) : p;
     if (UEIsCanNot(render, UECanNotRemoveProps)) return false;
     const pRender = this.getRenderItem(render.editorPId);
     if (UEIsCanNot(pRender, UECanNotRemoveChildProps)) return false;
     return true;
   }
 
-  canCopy(id: string) {
-    const render = this.getRenderItem(id);
+  canCopy(render: UERenderItem): boolean;
+  canCopy(id: string): boolean;
+  canCopy(p: string | UERenderItem) {
+    const render = _.isString(p) ? this.getRenderItem(p) : p;
     if (UEIsCanNot(render, UECanNotCopyProps)) return false;
     const pRender = this.getRenderItem(render.editorPId);
     if (UEIsCanNot(pRender, UECanNotCopyChildProps)) return false;
     return true;
   }
 
-  canSelect(id: string) {
-    const render = this.getRenderItem(id);
+  canSelect(render: UERenderItem): boolean;
+  canSelect(id: string): boolean;
+  canSelect(p: string | UERenderItem) {
+    const render = _.isString(p) ? this.getRenderItem(p) : p;
     if (UEIsCanNot(render, UECanNotSelectProps)) return false;
+    if (!render.editor?.select) return false;
     const pRender = this.getRenderItem(render.editorPId);
     if (UEIsCanNot(pRender, UECanNotSelectChildProps)) return false;
     return true;
@@ -1611,12 +1619,14 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
       let emptyCls = !render.children || render.children as any == 0 ? ' uieditor-drag-empty' : '';
       className = `uieditor-drag-content${emptyCls}`;
     }
-    // if (className && (!editor.select || UEIsCanNot(render, UECanNotSelectProps) || UEIsCanNot(parentRender, UECanNotSelectChildProps))) {
-    //   className = className.replace('uieditor-drag-item', '')
-    //     .replace('uieditor-drag-content', '');
-    // }
-
     if (!collapse && editor.controlLeft) className = `${className} control-left`;
+
+    if (className && (!editor.select || UEIsCanNot(render, UECanNotSelectProps) || UEIsCanNot(parentRender, UECanNotSelectChildProps))) {
+      // className = className.replace('uieditor-drag-item', '')
+      //   .replace('uieditor-drag-content', '');
+      className = className.replace('control-left', '');
+    }
+
     if (editor.inline) className = `${className} inline`;
     if (editor.containerBorder) className = `${className} drawing-item-border`;
 
