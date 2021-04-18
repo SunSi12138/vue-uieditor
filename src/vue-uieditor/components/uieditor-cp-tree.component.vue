@@ -8,6 +8,7 @@
         class="layui-input"
         v-model="searchText"
         @keydown="keydown"
+        @click="removeSearchText()"
       />
       <i
         class="layui-icon"
