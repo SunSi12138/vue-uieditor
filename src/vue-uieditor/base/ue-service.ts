@@ -1784,14 +1784,13 @@ function _canMoving(p: {
   if (UEIsCanNot(fromParent, UECanNotMoveChildProps)) {
     return false;
   }
-
   if (type2 == 'in') {
-    if (UEIsCanNot(toRender, UECanNotMoveInProps)) return false;
+    if (toRender && toRender != fromRender && UEIsCanNot(toRender, UECanNotMoveInProps)) return false;
   } else {
-    if (UEIsCanNot(toParent, UECanNotMoveInProps)) return false;
+    if (toParent && toParent != fromParent && UEIsCanNot(toParent, UECanNotMoveInProps)) return false;
   }
 
-  if (fromParent != toParent) {
+  if (toParent && fromParent != toParent) {
     if (UEIsCanNot(fromParent, UECanNotMoveOutProps)) return false;
   }
 

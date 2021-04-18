@@ -211,18 +211,20 @@ export default class Home extends UEVue {
       },
       {
         type: "uieditor-div",
+        props: {
+          [UECanNotMoveOutProps]: true,
+          [UECanNotMoveInProps]: true,
+        },
         children: [
           {
             type: "uieditor-text",
             props: {
               text: "test1222",
-              [UECanNotSelectProps]: true,
             },
           },
           {
             type: "test-text",
             props: {
-              [UECanNotMoveProps]: true,
               text: "测试文本",
             },
           },
