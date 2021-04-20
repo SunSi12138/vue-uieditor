@@ -320,7 +320,7 @@ export default class VueUieditor extends UEVue {
 
         //editor contextmenus
         const editorToolbars = editor?.toolbar;
-        const editorToolbarMenus = !collapseFn && editorToolbars && editorToolbars({
+        const editorToolbarMenus = !isCollapse && editorToolbars && editorToolbars({
           render: curRender,
           service,
           attrs: curRender?.attrs,

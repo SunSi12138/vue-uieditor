@@ -144,6 +144,32 @@ export default class Home extends UEVue {
           },
         },
       },
+      "test-div": {
+        type: "div",
+        editor: {
+          text: "Test Div 块级标签",
+          order: 0,
+          groupOrder,
+          group,
+          icon: "layui-icon layui-icon-template-1",
+          container: true,
+          toolbar({ render, service }) {
+            return [
+              {
+                title: "添加",
+                icon: "layui-icon layui-icon-addition",
+                click() {
+                  service.addByJson(
+                    { type: "test-text", props: { text: "test1222" } },
+                    render.editorId,
+                    "in"
+                  );
+                },
+              },
+            ];
+          },
+        },
+      },
     },
     templates: [
       {
