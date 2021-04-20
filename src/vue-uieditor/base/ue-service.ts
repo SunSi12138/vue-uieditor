@@ -1,4 +1,4 @@
-import _, { truncate } from 'lodash';
+import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
@@ -1579,7 +1579,19 @@ function _setRenderAttrs(render: UERenderItem, editor: UETransferEditor, editing
  */
 function _getEditorRender(render: UERenderItem): UERenderItem {
   if (_.isObject(render)) {
-    let editor = render.editor;
+    const editor = render.editor;
+    if (editor) {
+      //如果折叠，把 children 删除了
+      let collapse = false;
+      const isBase = editor.base;
+      if (!isBase || editor.collapse) {
+        collapse = _isCollapse(render);
+      }
+      if (collapse) {
+        render.children = [];
+        return render;
+      }
+    }
     if (editor && editor.container) {
       render.children = _getDroprender(render.children as any || [], render);
     } else {
