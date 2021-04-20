@@ -122,7 +122,7 @@
 
   /** JSON root节点(第一个)的样式 */
   .uieditor-drag-root {
-    min-height: 75%;
+    min-height: 75% !important;
     margin: 20px 10px 10px 10px;
 
     :focus {
@@ -135,6 +135,8 @@
   }
 
   .uieditor-drag-content {
+    min-height: 22px;
+
     &.over::after {
       content: '';
       clear: both;
