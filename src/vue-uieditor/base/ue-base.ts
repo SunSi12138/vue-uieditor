@@ -2,6 +2,7 @@ import { UEContextmenuItem } from "./ue-contextmenu-item";
 import { UERenderItem } from "./ue-render-item";
 import { UEService } from "./ue-service";
 import { UEVueMixin } from "./vue-extends";
+import _ from 'lodash';
 
 export type UEObject = { [key: string]: any };
 
@@ -398,6 +399,20 @@ export const UEIsLockProps = 'ue-is-lock';
 export const UEIsCollapseProps = 'ue-is-collapse';
 
 const cantPropReg = /^\s*ue\-cant\-/;
+const isPropReg = /^\s*ue\-is\-/;
+
+/**
+ * 删除 ue 私有特殊属性，如：ue-cant-move
+ * @param props 
+ */
+export function UEClearPrivateProps(props) {
+  if (_.size(props) == 0) return;
+  _.forEach(props, function (value, key) {
+    if (cantPropReg.test(key) || isPropReg.test(key)) {
+      delete props[key];
+    }
+  });
+}
 /**
  * 是否不能标示属性名称
  * @param name 

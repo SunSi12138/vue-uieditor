@@ -37,7 +37,7 @@ const _bKey = /^\s*(?:\:|v\-)/, _bEvent = /^\s*\@/;
 export class UECompiler {
 
   static toTemplate(items: (UERenderItem | string)[], editing?: boolean): string {
-    return UECompiler.jsonToHtml(items, { wrap: false });
+    return UECompiler.jsonToHtml(items, { wrap: false, clearPrivate: true });
     // let templates: string[] = [];
     // _.forEach(items, function (item) {
     //   if (_.isString(item)) item = { type: "", content: item };

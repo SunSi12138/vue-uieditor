@@ -1,9 +1,11 @@
 import _ from 'lodash';
+import { UEClearPrivateProps } from './ue-base';
 
 export interface UEJsonToHtmlConfig {
   raw?: boolean; // 显示转义字符
   wrap?: boolean; // 是否换行显示
   indent?: number; // 缩进，最大支持到8
+  clearPrivate?:boolean; //删除ue 特殊私有属性
   tagKey?: string; // 获取 tag 的字段
   childrenKey?: string; // 获取 children 的字段
 }
@@ -66,6 +68,7 @@ function UEJsonToHtml(schema: any | Array<any> | string | number, config?: UEJso
     raw,
     wrap,
     indent,
+    clearPrivate,
     tagKey,
     childrenKey
   } = _.assign({}, defaultConfig, config);
@@ -89,6 +92,9 @@ function UEJsonToHtml(schema: any | Array<any> | string | number, config?: UEJso
   } = schema;
   // let tag = schema[];
 
+  if (clearPrivate){
+    UEClearPrivateProps(rest);
+  }
   // if (htmlOnly && !~allowedTags.indexOf(tag)) {
   //     console.error('当前标签不符合标准html');
   //     return '';
