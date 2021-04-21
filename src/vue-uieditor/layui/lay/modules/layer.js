@@ -539,11 +539,12 @@ Class.pt.move = function(){
   ,resizeElem = layero.find('.layui-layer-resize')
   ,dict = {};
   
-  if(config.move){
+  var hasMove = moveElem.size() > 0;
+  if(hasMove && config.move){
     moveElem.css('cursor', 'move');
   }
 
-  moveElem.on('mousedown', function(e){
+  hasMove && moveElem.on('mousedown', function(e){
     e.preventDefault();
     if(config.move){
       dict.moveStart = true;
@@ -566,7 +567,7 @@ Class.pt.move = function(){
     ready.moveElem.css('cursor', 'se-resize').show();
   });
   
-  _DOC.on('mousemove', function(e){
+  hasMove && _DOC.on('mousemove', function(e){
 
     //拖拽移动
     if(dict.moveStart){

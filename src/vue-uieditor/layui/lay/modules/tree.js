@@ -55,6 +55,10 @@ layui.define('form', function(exports){
       ,setChecked: function(id){//设置值
         return that.setChecked.call(that, id);
       }
+      , destroy() {
+        delete thisModule.that[id];
+        delete thisModule.config[id];
+      }
     }
   }
   

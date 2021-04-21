@@ -19,11 +19,12 @@ export default class UieditorCpTree extends UEVue {
 
 
   private _cps: { list: any[], tree: any[] };
+  private _tree;
   private _renderTree() {
     const cps = this.service.components;
     this._cps = _.cloneDeep(cps);
 
-    layui.tree.render({
+    this._tree = layui.tree.render({
       elem: this.$refs.tree1
       , data: this._cps.tree
       , showCheckbox: false  //是否显示复选框
@@ -67,6 +68,8 @@ export default class UieditorCpTree extends UEVue {
 
   @UEVueLife('destroyed')
   private _d1() {
+    this._tree?.destroy();
+    this._tree = null;
     LayuiRender.destroy(this.$el);
   }
 
