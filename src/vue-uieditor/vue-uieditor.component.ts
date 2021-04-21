@@ -247,7 +247,7 @@ export default class VueUieditor extends UEVue {
     });
 
     const drager = this._drager = UEDrag.dragStart(this.$el, {
-      canSelect:(e)=>{
+      canSelect: (e) => {
         const { isTreeNode, fromEl } = e;
         if (isTreeNode) return true;
         const fromId = fromEl.id;
@@ -258,7 +258,7 @@ export default class VueUieditor extends UEVue {
         const id = fromEl.id;
         this.service.setCurrent(id);
       },
-      canMove:(e)=>{
+      canMove: (e) => {
         const { isTreeNode, fromEl } = e;
         if (isTreeNode) return true;
         const fromId = fromEl.id;
@@ -462,13 +462,13 @@ export default class VueUieditor extends UEVue {
     return _makeMenuDivided(menus);
   }
 
-  private _isContextMenuInit;
+  private _contextMenuDD1: any;
+  private _contextMenuDD2: any;
   private contextmenu() {
 
-    if (!this._isContextMenuInit) {
-      this._isContextMenuInit = true;
+    if (!this._contextMenuDD1) {
       //右键菜单
-      layui.dropdown.render({
+      this._contextMenuDD1 = layui.dropdown.render({
         elem: '.uieditor-drag-sel-box',
         trigger: 'contextmenu',
         isAllowSpread: false, //禁止菜单组展开收缩
@@ -485,8 +485,9 @@ export default class VueUieditor extends UEVue {
     }
 
 
+    if (this._contextMenuDD2) this._contextMenuDD2.destroy();
     //右键菜单
-    layui.dropdown.render({
+    this._contextMenuDD2 = layui.dropdown.render({
       elem: '.uieditor-drag-item,.uieditor-drag-content',
       trigger: 'contextmenu',
       isAllowSpread: false, //禁止菜单组展开收缩
@@ -500,6 +501,7 @@ export default class VueUieditor extends UEVue {
           obj?.click(obj, jo);
       }
     });
+
 
   }
 
@@ -591,9 +593,13 @@ export default class VueUieditor extends UEVue {
 
   @UEVueLife('destroyed')
   private _destroyed1() {
+    this._contextMenuDD1?.destroy();
+    this._contextMenuDD2?.destroy();
+
     this._drager?.destroy();
     this._service?._destroy();
     this._service = this._drager =
+    this._contextMenuDD1 = this._contextMenuDD2 =
       this.current = null;
     LayuiRender.destroy(this.$el);
   }

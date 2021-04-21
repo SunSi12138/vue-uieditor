@@ -49,6 +49,8 @@ layui.define(['jquery', 'laytpl', 'lay'], function (exports) {
         //重置实例
         , reload: function (options) {
           that.reload.call(that, options);
+        }, destroy() {
+          delete thisModule.that[id];
         }
       }
     }
