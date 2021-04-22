@@ -387,7 +387,7 @@ layui.define(['jquery', 'laytpl', 'lay'], function (exports) {
   //获取当前实例对象
   thisModule.getThis = function (id) {
     var that = thisModule.that[id];
-    if (!that) hint.error(id ? (MOD_NAME + ' instance with ID \'' + id + '\' not found') : 'ID argument required');
+    // if (!that) hint.error(id ? (MOD_NAME + ' instance with ID \'' + id + '\' not found') : 'ID argument required');
     return that;
   };
 
