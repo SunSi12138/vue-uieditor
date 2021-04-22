@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { UEOption, UETemplate, UETransfer, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem, UETransferExtend, UEIsLockProps, UEIsCollapseProps, UEIsCanNot } from './ue-base';
+import { UEIsCollapseProps, UEIsLockProps, UEOption, UETemplate, UETransfer, UETransferEditor, UETransferEditorAttrs, UETransferEditorAttrsItem, UETransferExtend } from './ue-base';
 import { UEHelper } from './ue-helper';
 import { UERenderItem } from './ue-render-item';
 
@@ -278,7 +278,6 @@ export class UERender {
     let emptyEditor = !editor.empty ? null : _emptyEditor(type, editor.empty);
     editor = UEHelper.assignDepth({}, _defaultEditor(type), editor, emptyEditor);
     if (!editor.text) editor.text = type;
-    if (!editor.placeholder) editor.placeholder = editor.text;
     if (editor.placeholderAttr) editor.attrs = UEHelper.assignDepth({}, _defaultplaceholderAttr, editor.attrs);
     if (editor.disabledAttr) editor.attrs = UEHelper.assignDepth({}, _defaultDisabledAttr, editor.attrs);
     const attrs = editor.attrs;
@@ -302,6 +301,7 @@ export class UERender {
       newAttrs[name] = UERender.DefineTransferEditorAttr(name, attr, editor);
     });
     editor.attrs = newAttrs;
+    if (!editor.placeholder) editor.placeholder = _.isFunction(editor.text) ? editor.text({ editor, attrs: newAttrs }) : editor.text;
 
     return editor;
   };
@@ -452,6 +452,7 @@ function _defaultEditor(name: string): UETransferEditor {
     icon: "layui-icon layui-icon-file",
     textFormat(editor, attrs) {
       let text = editor.text;
+      if (_.isFunction(text)) text = text({ editor, attrs });
       if (text && text.indexOf('%') >= 0) {
         text = text.replace(/%([^%]+)%/g, function (find, code) {
           code = _.trim(code);
