@@ -587,7 +587,7 @@ export class UEService {
     if (editor && editor.select) {
       // const pEditor = pRender.editor
       outList.unshift({
-        text: (editor.textFormat && editor.textFormat(editor, render.attrs)) || editor.text,
+        text: (editor.textFormat && editor.textFormat(editor, render.attrs)) || editor.name,
         id: render.editorId,
         pId,
         canOpt: this.canSelect(render),

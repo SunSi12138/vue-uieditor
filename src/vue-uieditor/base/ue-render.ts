@@ -459,8 +459,8 @@ function _defaultEditor(name: string): UETransferEditor {
           const attr = code && attrs[code];
           return (attr && attr.value) || '';
         });
-        if (!text) text = editor.defaultText || '';
       }
+      if (!text) text = editor.defaultText || '';
       let list = [];
       let temp = attrs['v-model'].value;
       if (temp) list.push(`model: ${temp}`);
