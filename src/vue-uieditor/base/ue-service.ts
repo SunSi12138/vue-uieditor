@@ -1200,6 +1200,7 @@ export class UEService {
   get canPaste() { return !!this._copyId; }
 
   pasteCur(pos?: 'before' | 'after' | 'child', keepCur?: boolean, currentId?: string, focus?: boolean) {
+    if (!this._copyId) return;
 
     currentId || (currentId = this.current.id || this.rootRender.editorId);
     let render = this.getRenderItem(currentId);
