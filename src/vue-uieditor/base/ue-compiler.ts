@@ -34,6 +34,27 @@ function _unEscapeES(str: string) {
 
 const _bKey = /^\s*(?:\:|v\-)/, _bEvent = /^\s*\@/;
 
+
+let _babelTransformList = [], _max = 35;
+function _getBabelTransformList(script, opt) {
+  if (script) script = _.trim(script);
+  const res = _.find(_babelTransformList, function (item) {
+    return item.script == script && _.isEqual(item.opt, opt);
+  });
+  if (res) {
+    _.remove(_babelTransformList, function (item) { return item == res; });
+    _babelTransformList.push(res);
+  }
+  return res?.res;
+}
+function _pushBabelTransformList(script, opt, res) {
+  if (script) script = _.trim(script);
+  if (_babelTransformList.length >= _max)
+    _babelTransformList = _babelTransformList.slice(10);
+  _babelTransformList.push({ script, opt, res });
+}
+
+
 export class UECompiler {
 
   static toTemplate(items: (UERenderItem | string)[], editing?: boolean): string {
