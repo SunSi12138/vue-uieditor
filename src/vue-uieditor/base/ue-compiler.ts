@@ -336,11 +336,14 @@ export class UECompiler {
   static babelTransform(script: string, opt?: any): { code: string; ast: any;[key: string]: any; } {
     const babel = Babel;
     if (!babel) return;
+    const res = _getBabelTransformList(script, opt);
+    if (res) return res;
     // if (script) script = script.replace(/\s*\/\/.*[\n\r]*$/gm, '');
     if (script) script = `
 ${script}
 `;
     const output = babel.transform(script, !opt ? babelOpt : _.assign({}, babelOpt, opt));
+    _pushBabelTransformList(script, opt, output);
     return output;
   }
 
