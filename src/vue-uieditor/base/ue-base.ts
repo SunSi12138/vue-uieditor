@@ -7,11 +7,11 @@ import _ from 'lodash';
 export type UEObject = { [key: string]: any };
 
 export interface UEOption {
-  /** vue 组合，扩展 meta 内容，如果组件、指令等 */
+  /** vue 组合，扩展到组件内部，如：组件、指令或方法等 */
   mixins?: UEVueMixin[];
-  /** render 转换器 */
+  /** 转换器，定义json的渲染行为 和 定义组件在编辑时的行为属性 */
   transfer?: UETransfer;
-  /** 模板 */
+  /** 设置模板到编辑器左边树 */
   templates?: UETemplate[];
   /** 编辑器设置 */
   readonly editor?: { [type: string]: UETransferEditor };
