@@ -57,9 +57,9 @@ import 'vue-uieditor';
 ```
 
 
-## 开发文档（API）
+# 开发文档（API）
 
-### options: UEOption
+## options: UEOption
 
 - vue-uieditor 组件参数
 
@@ -120,7 +120,7 @@ options: UEOption = UERender.DefineOption({
 });
 ```
 
-#### 成员变量列表
+### 成员变量列表
 
 |  名称   | 类型  | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  |
@@ -133,7 +133,7 @@ options: UEOption = UERender.DefineOption({
 | global  | Function | ()=> object | 定义全局变量 |
 | babel  | Boolean | true | 是否开启 babel 在线编译（要加载babel-standalone js），默认为 true |
 
-### templates: UETemplate
+## templates: UETemplate
 
 - 设置模板到编辑器左边树
 
@@ -160,7 +160,7 @@ options: UEOption = UERender.DefineOption({
 });
 ```
 
-#### 成员变量列表
+### 成员变量列表
 
 |  名称   | 类型  | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  |
@@ -172,7 +172,7 @@ options: UEOption = UERender.DefineOption({
 | template  | string | 空 | html 模板，如果有json内容，优先使用json内容 |
 | moving  | Function | (p: any) => boolean | 拖动时处理，返回true|false，决定是否可以拖动到目标 |
 
-### theme: UETheme
+## theme: UETheme
 
 - vue-uieditor 组件主题
 
@@ -208,7 +208,7 @@ theme: UETheme = {
 };
 ```
 
-#### 成员变量列表
+### 成员变量列表
 
 |  名称   | 类型  | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  |
@@ -217,7 +217,7 @@ theme: UETheme = {
 | about  | Function | ({ service: UEService }): string | 设置关于对话框内容 |
 | contextmenus  | Function | ({ render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[] | 选中组件的添加快捷菜单 |
 
-### toolBar: UEToolBar
+## toolBar: UEToolBar
 
 - vue-uieditor 组件顶部工具栏
 
@@ -236,7 +236,7 @@ theme: UETheme = {
 };
 ```
 
-#### 成员变量列表
+### 成员变量列表
 
 |  名称   | 类型  | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  |
@@ -245,7 +245,7 @@ theme: UETheme = {
 | about  | Function | ({ service: UEService }): string | 设置关于对话框内容 |
 | contextmenus  | Function | ({ render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[] | 选中组件的添加快捷菜单 |
 
-### transfer: UETransfer
+## transfer: UETransfer
 
 - 转换器，定义json的渲染行为 和 定义组件在编辑时的行为属性
 
@@ -268,7 +268,7 @@ options: UEOption = UERender.DefineOption({
 ```
 
 
-#### UETransferItem 成员变量列表
+### UETransferItem 成员变量列表
 
 |  名称   | 类型  | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  |
@@ -277,7 +277,7 @@ options: UEOption = UERender.DefineOption({
 | transfer  | Function | (render: UERenderItem, extend?: UETransferExtend): UERenderItem | 渲染时转换 render, 如果返回空不渲染 |
 
 
-### editor: UETransferEditor
+## editor: UETransferEditor
 
 - 组件编辑时属性与行为特性
 
@@ -300,7 +300,7 @@ options: UEOption = UERender.DefineOption({
 ```
 
 
-#### 成员变量列表
+### 成员变量列表
 
 |  名称   | 类型  | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  |
