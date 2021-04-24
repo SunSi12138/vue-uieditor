@@ -179,34 +179,10 @@ export default class Home extends UEVue {
     },
     templates: [
       {
-        title: "JSON",
-        group: "测试模板库/测试模板",
-        json:
-          '{"type":"uieditor-div","children":[{"type":"uieditor-text","props":{"text":"test1","name":"name1"}},{"type":"uieditor-div","children":[{"type":"uieditor-text","props":{"text":"test1222"}},{"type":"test-text","props":{"text":"测试文本","slider":"0","select":"sm",":boolean":"true"}}]}]}',
-      },
-      {
         title: "JSON Object",
         group: "测试模板库/测试模板",
         json: {
-          type: "uieditor-div",
-          children: [
-            { type: "uieditor-text", props: { text: "test1", name: "name1" } },
-            {
-              type: "uieditor-div",
-              children: [
-                { type: "uieditor-text", props: { text: "test1222" } },
-                {
-                  type: "test-text",
-                  props: {
-                    text: "测试文本",
-                    slider: "0",
-                    select: "sm",
-                    ":boolean": "true",
-                  },
-                },
-              ],
-            },
-          ],
+          type: "uieditor-div"
         },
       },
       {
@@ -214,11 +190,6 @@ export default class Home extends UEVue {
         group: "测试模板库/测试模板",
         template: `<template>
 	<uieditor-div>
-		<uieditor-text text="test1" name="name1" />
-		<uieditor-div ${UECanNotMoveOutProps} ${UECanNotMoveInProps}>
-			<uieditor-text text="test1222" />
-			<test-text text="测试文本" slider="0" select="sm" :boolean="true" />
-		</uieditor-div>
 	</uieditor-div>
 </template>`,
       },
