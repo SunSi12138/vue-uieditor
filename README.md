@@ -299,11 +299,33 @@ options: UEOption = UERender.DefineOption({
 });
 ```
 
-
 ### 成员变量列表
 
 |  名称   | 类型  | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  |
-| type  | string | 空 | 组件名称 |
-| editor  | UETransferEditor | 空 | 组件编辑时属性与行为特性 |
+| text  | string | ((p: { editor: UETransferEditor, attrs: UETransferEditorAttrs }) => string) | 空 | 显示名称, 支持属性变量, 如:%label% |
+| defaultText  | string | 空 | 如果text为空时默认内容 |
+| icon  | string | 空 | 图标 |
+| json  | string | 空 | 默认JSON模板内容 |
+| template  | string | 空 | 默认HTML模板内容 |
+| order  | number | 99 | 排序 |
+| group  | string | 空 | 分组，可用"/"实现分组层级，如：基础库/基础组件 |
+| groupOrder  | number | 99 | 分组排序 |
+| base  | boolean | true | 是否基础组件，编辑时作为独立组件，子孙节点不能选中等操作 |
+| container  | boolean | false | 是否容器，如：div |
+| containerBorder  | boolean | false | 是否显示容器边框，方便编辑时定位 |
+| controlLeft  | boolean | true | 是否在容器左边留空方便选择，容器时默认为 true |
+| empty  | string | 空 | 编辑时使用黑块代替组件显示，处理大型组件占用性能 |
+| collapse  | boolean | true |  是否可以收起，容器时默认为 true |
+| select  | boolean | true |  是否可以选中（编辑） |
+| draggable  | boolean | true |  是否可以拖动（编辑） |
+| showInTree  | boolean | true |  是否显示在组件树 |
+| show  | boolean | true |  是否显示 |
+| inline  | boolean | true |  编辑时是否强制显示为inline |
+| className  | string | 空 |  编辑时临时添加样式 |
+| placeholderAttr  | boolean | false |  组件是否有placeholder属性 |
+| disabledAttr  | boolean | false |  组件是否有 disabled 属性 |
+| hideAttrs  | string[] | [] |  隐藏已有属性attr，如: ['class'] |
+| hideAttrs  | string[] | [] |  隐藏已有分组 |
+| attrs  | UETransferEditorAttrs | 空 | 设置组件属性栏 |
 | transfer  | Function | (render: UERenderItem, extend?: UETransferExtend): UERenderItem | 渲染时转换 render, 如果返回空不渲染 |

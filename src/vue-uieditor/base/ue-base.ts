@@ -159,7 +159,7 @@ export interface UETransferEditorAttrs {
 export interface UETransferEditor {
   /** 显示名称, 支持环境变量, 如:%label% */
   text?: string | ((p: { editor: UETransferEditor, attrs: UETransferEditorAttrs }) => string);
-  /** 默认显示名称 */
+  /** 如果text为空时默认内容 */
   defaultText?: string;
   /** 格式化 text */
   textFormat?(editor: UETransferEditor, attrs: UETransferEditorAttrs): string;
@@ -173,7 +173,7 @@ export interface UETransferEditor {
   template?: string;
   /** 排序，默认：99 */
   order?: number;
-  /** 分组 */
+  /** 分组，可用"/"实现分组层级，如：基础库/基础组件 */
   group?: string;
   /** 分组顺序 */
   groupOrder?: number;
@@ -189,8 +189,6 @@ export interface UETransferEditor {
   empty?: string;
   /** 是否可以收起，容器时默认为 true */
   collapse?: boolean;
-  /** 编辑时v-model生效（可能找不到内容会出错），默认为 false */
-  editUseModel?: boolean;
   /** 编辑时临时添加样式 */
   className?: string | ((p: { render: UERenderItem, editor: UETransferEditor, attrs: UETransferEditorAttrs }) => string);
   /** 是否可以选中（编辑），默认：true */
