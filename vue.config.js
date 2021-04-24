@@ -123,9 +123,6 @@ module.exports = {
       config.plugins.delete('prefetch');
       config.plugins.delete('copy');
 
-      const package = require('./package.json');
-      const packageLib = require('./lib-build/package.json');
-
       (function saveLibPackage() {
         const package = require('./package.json');
         const { name, version, description, main, keyword, types, homepage } = package;
@@ -139,7 +136,9 @@ module.exports = {
           },
           "devDependencies": {}
         };
-        fs.writeFileSync(path.resolve(__dirname, './lib-build/package.json'), JSON.stringify(newPackage, null, 2), 'utf-8');
+        const newPath = path.resolve(__dirname, './lib-build');
+        if (!fs.existsSync(newPath)) fs.mkdirSync(newPath);
+        fs.writeFileSync(path.resolve(newPath, './package.json'), JSON.stringify(newPackage, null, 2), 'utf-8');
       })();
 
 
