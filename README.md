@@ -2,42 +2,14 @@
 
 ## 本项目开发环境
 
-### 安装环境
+- [DEVELOP](./doc/DEVELOP.md)
+
+## 安装与使用
+
+### 安装
 
 ```
-yarn install
-```
-
-### 启动开发环境
-```
-npm run dev
-```
-
-### 发布web到 ./dist
-```
-npm run build
-```
-
-### 发布lib到 ./lib， 发布结果可以直接发布到npm服务器，或在html使用script引用
-```
-npm run lib
-```
-
-### Run your unit tests
-```
-yarn test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
-
-## lib 安装与使用
-
-### 安装vue-uieditor
-
-```
-yarn install vue-uieditor
+yarn add vue-uieditor
 ```
 
 ### vue-uieditor资源加载，使用 webpack copy
@@ -53,18 +25,26 @@ config.plugin('copy-vue-uieditor-assets').use(CopyWebpackPlugin, [
 
 ```
 
-### 代码引用 vue-uieditor，或使用正规方式代码import
+### 引用 vue-uieditor
 
 ```ts
 import 'vue-uieditor';
 ```
 
-### 或使用正规方式代码import
+### 使用编辑器组件
 
-```ts
-import { UERender } from 'vue-uieditor';
+```html
+<vue-uieditor :options="options" :json="json" :theme="theme" />
+```
 
-UERender.AddGlobalTransfer(IViewTransfer);
+
+### 使用宣染组件
+
+- 宣染组件：将编辑器组件的JSON渲染到页面上
+- options 和 json 与编辑器组件一般是一致的
+
+```html
+<vue-uieditor-render :options="options" :json="json" />
 ```
 
 
