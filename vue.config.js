@@ -123,7 +123,7 @@ module.exports = {
       config.plugins.delete('prefetch');
       config.plugins.delete('copy');
 
-      (function saveLibPackage() {
+      const packageFile = (function saveLibPackage() {
         const package = require('./package.json');
         const { name, version, description, main, keyword, types, homepage } = package;
         const newPackage = {
@@ -136,16 +136,19 @@ module.exports = {
           },
           "devDependencies": {}
         };
-        const newPath = path.resolve(__dirname, './lib-build');
+        const os = require('os');
+        const newPath = path.resolve(os.tmpdir(), './vue-uieditor');
         if (!fs.existsSync(newPath)) fs.mkdirSync(newPath);
-        fs.writeFileSync(path.resolve(newPath, './package.json'), JSON.stringify(newPackage, null, 2), 'utf-8');
+        const newFile = path.resolve(newPath, 'package.json');
+        fs.writeFileSync(newFile, JSON.stringify(newPackage, null, 2), 'utf-8');
+        return newFile;
       })();
 
 
       config.plugin('copy-lib-files').use(CopyWebpackPlugin, [
         [
           {
-            from: './lib-build/',
+            from: packageFile,
             to: './'
           },
           {
