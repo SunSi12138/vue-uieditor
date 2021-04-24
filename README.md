@@ -2,7 +2,7 @@
 
 ## 本项目开发环境
 
-- [DEVELOP](./doc/DEVELOP.md)
+- [DEVELOP](https://gitee.com/days2020/vue-uieditor/blob/master/doc/DEVELOP.md)
 
 ## 安装与使用
 
