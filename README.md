@@ -1,8 +1,19 @@
-# vue-uieditor
+# VUE 可视化编辑器(vue-uieditor)
 
-## 本项目开发环境
+- 基于 VUE 2.x
+- 在线可视化VUE开发，所见即所得
+- 支持 es2015 JS 语法
+- 开发结果不用二次编译，马上可以使用
+- 减轻开发成本，提升项目维护效率
+- 可实现低代码开发
 
-- [DEVELOP](https://gitee.com/days2020/vue-uieditor/blob/master/doc/DEVELOP.md)
+## 相关文档
+
+- [本工程开发环境](https://gitee.com/days2020/vue-uieditor/blob/master/doc/DEVELOP.md)
+
+- [开发文档](https://gitee.com/days2020/vue-uieditor/blob/master/doc/API.md)
+
+- 演示
 
 ## 安装与使用
 
