@@ -71,13 +71,22 @@ export default class VueUieditor extends UEVue {
   }
 
   @UEVueProp()
-  private json!: UEOption;
+  private json!: any;
 
   @UEVueWatch('json')
   private _wJson(json) {
-    console.warn('json', json)
     if (this.service) {
       this.service.setJson(json);
+    }
+  }
+
+  @UEVueProp()
+  private template!: string;
+
+  @UEVueWatch('template')
+  private _wTemplate(template) {
+    if (this.service) {
+      this.service.setTmpl(template);
     }
   }
 
@@ -225,7 +234,10 @@ export default class VueUieditor extends UEVue {
     await UECompiler.init({ bable: options.babel !== false });
     const service = this.service;
     this.current = service.current;
-    await service.setJson(this.json);
+    if (this.json)
+      await service.setJson(this.json);
+    else if (this.template)
+      await service.setTmpl(this.template);
     await this.$nextTick();
     this.keys();
     this._initEvents();
@@ -599,7 +611,7 @@ export default class VueUieditor extends UEVue {
     this._drager?.destroy();
     this._service?._destroy();
     this._service = this._drager =
-    this._contextMenuDD1 = this._contextMenuDD2 =
+      this._contextMenuDD1 = this._contextMenuDD2 =
       this.current = null;
     LayuiRender.destroy(this.$el);
   }
