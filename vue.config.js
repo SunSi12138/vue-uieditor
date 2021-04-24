@@ -15,7 +15,7 @@ const isLib = (rawArgv || []).includes('-lib');
 module.exports = {
   publicPath,
   lintOnSave: false,
-  outputDir: path.resolve(__dirname, isLib ? './lib' : './dist'),
+  outputDir: path.resolve(__dirname, isLib ? './lib' : './pages'),
   assetsDir: assetPath,
   runtimeCompiler: true,
   parallel: true,
