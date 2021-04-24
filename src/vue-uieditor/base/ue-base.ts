@@ -361,9 +361,16 @@ export interface UEToolBar {
 }
 
 export interface UETheme {
-  about?({ service: UEService }): string | (Promise<string>);
+  /**
+   * 设置关于对话框内容
+   * @param p 
+   */
+  about?(p: { service: UEService }): string | (Promise<string>);
+  /**
+   * 编辑器可用模式：'json' | 'script' | 'tmpl
+   */
   modes?: UEThemeMode[],
-  /** 顶部工具栏 */
+  /** 设置顶部工具栏 */
   toolBar?: UEToolBar[];
   /** 选中组件的添加快捷菜单 */
   contextmenus?(p: { render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[];
