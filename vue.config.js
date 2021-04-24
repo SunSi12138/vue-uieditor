@@ -80,8 +80,6 @@ module.exports = {
       .add(path.resolve(__dirname, './src/vue-uieditor/layui'))
       .end();
 
-
-
     config.plugin('copy-assets').use(CopyWebpackPlugin, [
       [{
         from: './src/vue-uieditor/assets/',
@@ -124,6 +122,40 @@ module.exports = {
       config.plugins.delete('preload');
       config.plugins.delete('prefetch');
       config.plugins.delete('copy');
+
+      const package = require('./package.json');
+      const packageLib = require('./lib-build/package.json');
+
+      (function saveLibPackage() {
+        const package = require('./package.json');
+        const { name, version, description, main, keyword, types, homepage } = package;
+        const newPackage = {
+          name, version, description, main, keyword, types, homepage,
+          "scripts": {},
+          "dependencies": {
+            "vue": "^2.6.10",
+            "vue-template-compiler": "^2.6.10",
+            "lodash": "^4.17.21"
+          },
+          "devDependencies": {}
+        };
+        fs.writeFileSync(path.resolve(__dirname, './lib-build/package.json'), JSON.stringify(newPackage, null, 2), 'utf-8');
+      })();
+
+
+      config.plugin('copy-lib-files').use(CopyWebpackPlugin, [
+        [
+          {
+            from: './lib-build/',
+            to: './'
+          },
+          {
+            from: './README.md',
+            to: './'
+          }
+        ]
+      ]);
+
 
     } else {
       // 为开发环境修改配置...

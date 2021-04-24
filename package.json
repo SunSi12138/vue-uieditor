@@ -1,7 +1,11 @@
 {
   "name": "vue-uieditor",
   "version": "0.5.0",
-  "private": true,
+  "description": "Vue UI 编辑器",
+  "main": "./index.js",
+  "keyword": "vue uieditor vue-uieditor",
+  "types": "@types/index.d.ts",
+  "homepage": "https://gitee.com/days2020/vue-uieditor",
   "scripts": {
     "serve": "rimraf ./pages && vue-cli-service serve",
     "build": "rimraf ./pages && vue-cli-service build",
@@ -10,8 +14,7 @@
     "PU":"npm run lib && npm publish ./lib",
     "dev": "npm run serve",
     "output": "vue-cli-service inspect --mode production > output.js",
-    "lib-file": "cpy ./*/** ../../../../lib/@types --cwd=./lib/@types-build/src/vue-uieditor --parents && cpy ./lib-build ./lib && rimraf ./lib/@types-build",
-    "NM-file": "cpy ./*/** ../node_modules/vue-uieditor --cwd=./lib --parents && cpy ./lib-build ./lib && rimraf ./lib/@types-build",
+    "lib-file": "cpy ./*/** ../../../../lib/@types --cwd=./lib/@types-build/src/vue-uieditor --parents && rimraf ./lib/@types-build",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
