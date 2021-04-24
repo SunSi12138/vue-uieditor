@@ -15,11 +15,11 @@ export interface UEOption {
   templates?: UETemplate[];
   /** 编辑器设置 */
   readonly editor?: { [type: string]: UETransferEditor };
-  /** render 转换 之前 */
+  /** 转换器处理之前 */
   transferBefore?: (render: UERenderItem, extend?: UETransferExtend) => UERenderItem;
-  /** render 转换 之后 */
+  /** 转换器处理之后 */
   transferAfter?: (render: UERenderItem, extend?: UETransferExtend) => UERenderItem;
-  /** 扩展代码编辑器代码声明 */
+  /** 扩展代码智能提示声明 */
   extraLib?(): Promise<string>;
   /** 添加全局变量，object对象 */
   global?(): UEObject;
