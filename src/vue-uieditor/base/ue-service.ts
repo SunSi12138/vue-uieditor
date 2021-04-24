@@ -70,7 +70,7 @@ export class UEService {
   }
 
   $on(event: string, callback: Function) {
-    this.$uieditor?.$on(event, callback)
+    this.$uieditor?.$on(event, callback);
   }
 
   /** 历史记录 */
@@ -79,6 +79,7 @@ export class UEService {
     curList: [],
     pos: -1,
     max: 0,
+    init: false,
     canNext: false,
     canPre: false,
     _cacle: () => {
@@ -93,6 +94,10 @@ export class UEService {
       history.list[pos] = _.cloneDeep(item);
       history.curList[pos] = this.current.id;
       history._cacle();
+      if (history.init) {
+        this.$emit('on-change', { service: this });
+      } else
+        history.init = true;
     },
     addCur: () => {
       this.history.add(this._editJson);
@@ -107,6 +112,7 @@ export class UEService {
       await this._setJson(_.cloneDeep(list[pos]));
       const id = history.curList[pos];
       id && this.setCurrent(id);
+      this.$emit('on-change', { service: this });
     },
     pre: async () => {
       let history = this.history;
@@ -119,6 +125,7 @@ export class UEService {
       await this._setJson(_.cloneDeep(list[pos]));
       const id = history.curList[pos];
       id && this.setCurrent(id);
+      this.$emit('on-change', { service: this });
     }
   };
 
@@ -724,6 +731,7 @@ export class UEService {
     if (!render || !key) return;
     if (key == '_meta_type') {
       this.changeRenderType(render, attr.value);
+      this.history.addCur();
       return;
     }
     const oldText = render.editor.textFormat(render.editor, render.attrs);
@@ -732,7 +740,10 @@ export class UEService {
       _.assign(attrs[key], attr);
     const newText = render.editor.textFormat(render.editor, render.attrs);
     if (newText != oldText) this.$uieditor['_drager'].select(id, true);
-    if (!refresh || !attr.effect || !!attr.demoValue) return;
+    if (!refresh || !attr.effect || !!attr.demoValue) {
+      this.history.addCur();
+      return;
+    }
     _setRenderAttrs(render, render.editor, true, this);
     this.history.addCur();
     await this.refresh().then(() => {

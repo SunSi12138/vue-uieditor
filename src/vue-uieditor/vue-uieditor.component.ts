@@ -141,6 +141,7 @@ export default class VueUieditor extends UEVue {
   }
 
   current: any = null;
+  history: any = null;
 
   get isInited() {
     return !!this.current?.json;
@@ -234,6 +235,8 @@ export default class VueUieditor extends UEVue {
     await UECompiler.init({ bable: options.babel !== false });
     const service = this.service;
     this.current = service.current;
+    this.history = service.history;
+
     if (this.json)
       await service.setJson(this.json);
     else if (this.template)
@@ -379,6 +382,8 @@ export default class VueUieditor extends UEVue {
       }
     });
     this.contextmenu();
+
+    this.$emit('on-ready', { service });
 
   }
 

@@ -7,7 +7,13 @@
       <vue-uieditor-render :options="options" :json="json" />
     </div>
     <div v-else class="uieditor-div">
-      <vue-uieditor :options="options" :json="json" :theme="theme" />
+      <vue-uieditor
+        :options="options"
+        :json="json"
+        :theme="theme"
+        @on-ready="onReady"
+        @on-change="onChange"
+      />
     </div>
   </div>
 </template>
@@ -326,6 +332,14 @@ export default class Home extends UEVue {
     //     ],
     //   };
     // }, 3000);
+  }
+
+  onReady({ service }) {
+    console.warn("onReady", service);
+  }
+
+  onChange({ service }) {
+    console.warn("onChange", service);
   }
 }
 </script>
