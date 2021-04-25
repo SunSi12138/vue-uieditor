@@ -179,8 +179,8 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
       icon: 'layui-icon layui-icon-senior',
       empty: 'uieditor-monaco-editor',
       attrs: {
-        'format-auto': { order: 1, type:'boolean-only' },
-        language: { order: 2, type:'select', datas:['javascript', 'html', 'css', 'json'] },
+        language: { order: 1, type:'select', datas:['javascript', 'html', 'css', 'json'] },
+        'format-auto': { order: 2, type:'boolean' },
         extraLib: { order: 3 }
       }
     }
