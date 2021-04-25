@@ -603,9 +603,9 @@ export default class VueUieditor extends UEVue {
 
   async about() {
     const theme = this.themeEx;
-    const content = !theme.about ? '<a href="https://gitee.com/days2020/vue-uieditor" target="_blank">Vue-UiEditor 2021</a>'
+    const content = !theme.about ? `<a href="${process.env.VUE_APP_UE_HOMEPAGE}" target="_blank">${process.env.VUE_APP_UE_NAME.toUpperCase()} ${process.env.VUE_APP_UE_VERSION} (2021)</a><div>${process.env.VUE_APP_UE_DESC}</div>`
       : await theme.about({ service: this.service });
-    LayuiHelper.alert(content);
+    LayuiHelper.alert(content, { title: '关于' });
   }
 
   @UEVueLife('destroyed')

@@ -11,6 +11,13 @@ const cssPath = path.join(assetPath, 'css').replace(/\\/g, '/');
 const rawArgv = process.argv.slice(2)
 const isLib = (rawArgv || []).includes('-lib');
 
+const package = require('./package.json');
+
+process.env.VUE_APP_UE_NAME = package.name;
+process.env.VUE_APP_UE_VERSION = package.version;
+process.env.VUE_APP_UE_HOMEPAGE = package.homepage;
+process.env.VUE_APP_UE_DESC = package.description;
+
 // vue.config.js
 module.exports = {
   publicPath,
@@ -124,7 +131,6 @@ module.exports = {
       config.plugins.delete('copy');
 
       const packageFile = (function saveLibPackage() {
-        const package = require('./package.json');
         const { name, version, description, main, keyword, types, homepage } = package;
         const newPackage = {
           name, version, description, main, keyword, types, homepage,

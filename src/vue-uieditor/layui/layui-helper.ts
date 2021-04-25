@@ -2,16 +2,16 @@ import _ from 'lodash';
 import './layui-import';
 
 export interface LayuiLayerOption {
-  content: string;
-  time: number;
-  shade: boolean;
-  skin: string;
-  title: string | false;
+  content?: string;
+  time?: number;
+  shade?: boolean;
+  skin?: string;
+  title?: string | false;
   //是否显示关闭按钮
-  closeBtn: boolean;
-  btn: string[] | false,
-  resize: boolean;
-  end(): void;
+  closeBtn?: boolean;
+  btn?: string[] | false,
+  resize?: boolean;
+  end?(): void;
 };
 
 const layer = layui.layer;
