@@ -447,7 +447,7 @@ function toJson(renders: any[]) {
   });
 }
 const _jsonBaseProps = ['type', 'props', 'children'];
-const _renderObjProps = ['editor-attrs', 'merge-attrs', 'operation', 'validator', 'formItem'];
+const _renderObjProps = ['editor-attrs'];
 function renderToJson(renders: any[], outScript: any[], outStyle: any[]) {
   return _.map(renders, function (item) {
     if (!item || _.isString(item)) return item || '';
@@ -470,7 +470,7 @@ function renderToJson(renders: any[], outScript: any[], outStyle: any[]) {
     _.forEach(item, function (p, n) {
       if (n == 'parent' || n == 'children') return;
       if (!_.includes(_jsonBaseProps, n))
-        props[n] = _.includes(_renderObjProps, n) ? JSON.stringify(p) : p;
+        props[n] = JSON.stringify(p);
       // props[`#${n}`] = _.includes(_renderObjProps, n) ? JSON.stringify(p) : p;
     });
     let children = item.children;
@@ -497,11 +497,15 @@ function jsonToRender(json: any[]) {
     };
     const newProps = {};
     _.forEach(props, function (p, n) {
-      if (n.indexOf('#') == 0) {
-        const newN = n.substr(1);
-        newItem[newN] = _.includes(_renderObjProps, newN) ? JSON.parse(p) : p;
+      if (_.includes(_renderObjProps, n)) {
+        newItem[n] = JSON.parse(p);
       } else
         newProps[n] = p;
+      // if (n.indexOf('#') == 0) {
+      //   const newN = n.substr(1);
+      //   newItem[newN] = _.includes(_renderObjProps, newN) ? JSON.parse(p) : p;
+      // } else
+      //   newProps[n] = p;
     });
     let newChildren;
     const children = item.children;
