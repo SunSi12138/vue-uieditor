@@ -470,7 +470,8 @@ function renderToJson(renders: any[], outScript: any[], outStyle: any[]) {
     _.forEach(item, function (p, n) {
       if (n == 'parent' || n == 'children') return;
       if (!_.includes(_jsonBaseProps, n))
-        props[`#${n}`] = _.includes(_renderObjProps, n) ? JSON.stringify(p) : p;
+        props[n] = _.includes(_renderObjProps, n) ? JSON.stringify(p) : p;
+      // props[`#${n}`] = _.includes(_renderObjProps, n) ? JSON.stringify(p) : p;
     });
     let children = item.children;
     if (children && children.length > 0) {
