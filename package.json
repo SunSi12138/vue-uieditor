@@ -1,6 +1,6 @@
 {
   "name": "vue-uieditor",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "VUE 可视化编辑器（vue-uieditor）",
   "main": "./index.js",
   "keyword": "vue uieditor vue-uieditor",
