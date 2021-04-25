@@ -212,7 +212,7 @@ theme: UETheme = {
 
 |  名称   | 类型  | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  |
-| modes  | Array | ['json', 'script', 'tmpl] | 编辑器可用模式：'json' | 'script' | 'tmpl |
+| modes  | Array | ['json', 'script', 'tmpl] | 编辑器可用模式：json, script, tmpl |
 | toolBar  | UEToolBar[] | [] | 设置顶部工具栏 |
 | about  | Function | ({ service: UEService }): string | 设置关于对话框内容 |
 | contextmenus  | Function | ({ render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[] | 选中组件的添加快捷菜单 |
@@ -240,7 +240,7 @@ theme: UETheme = {
 
 |  名称   | 类型  | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  |
-| modes  | Array | ['json', 'script', 'tmpl] | 编辑器可用模式：'json' | 'script' | 'tmpl |
+| modes  | Array | ['json', 'script', 'tmpl] | 编辑器可用模式：json, script, tmpl |
 | toolBar  | UEToolBar[] | [] | 设置顶部工具栏 |
 | about  | Function | ({ service: UEService }): string | 设置关于对话框内容 |
 | contextmenus  | Function | ({ render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[] | 选中组件的添加快捷菜单 |
@@ -326,6 +326,70 @@ options: UEOption = UERender.DefineOption({
 | placeholderAttr  | boolean | false |  组件是否有placeholder属性 |
 | disabledAttr  | boolean | false |  组件是否有 disabled 属性 |
 | hideAttrs  | string[] | [] |  隐藏已有属性attr，如: ['class'] |
-| hideAttrs  | string[] | [] |  隐藏已有分组 |
+| hideAttrGroups  | string[] | [] |  隐藏已有属性分组 |
 | attrs  | UETransferEditorAttrs | 空 | 设置组件属性栏 |
-| transfer  | Function | (render: UERenderItem, extend?: UETransferExtend): UERenderItem | 渲染时转换 render, 如果返回空不渲染 |
+| coping  | Function | (p: { render: UERenderItem; parent: UERenderItem; service: UEService; }) => boolean | 处理是否可以复制，并可以处理复制内容 |
+| contenting  | Function | (p: any) => boolean | 是否可以拖动组件为子节点，容器时才会生产 |
+| moving  | Function | (p: any) => boolean | 拖动时处理，返回true|false，决定是否可以拖动到目标 |
+| movingChild  | Function | (p: any) => boolean | 拖动时处理，返回true|false，决定是否可以移动子节点 |
+| transferAttr  | Function | (p: any) => void | 编辑渲染时转换 render 和 attr，转换内容会生成到JSON |
+| contextmenu  | Function | (p: any) => void | 选中对像的快捷菜单 |
+| toolbar  | Function | (p: any) => void | 选中对像的工具栏 |
+
+## attrs: UETransferEditorAttrs
+
+- 组件编辑时属性与行为特性
+
+```ts
+options: UEOption = UERender.DefineOption({
+    ...,
+    transfer:UERender.DefineTransfer({
+      'uieditor-img': {
+        "editor": {
+          text: "Image 图片",
+          order: 2,
+          groupOrder:0,
+          group:'公用组件库/基础组件',
+          icon: 'layui-icon layui-icon-picture',
+          inline: true,
+          attrs: {
+            src: {
+              order: 0,
+              value: './vue-uieditor/assets/images/demo.png',
+              effect: true,
+            },
+            style: { value: 'min-width:30px;min-height:30px' }
+          }
+        }
+      }
+    })
+});
+```
+
+### UETransferEditorAttrsItem 成员变量列表
+
+|  名称   | 类型  | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  |
+| text  | string | 空 | 显示名称 |
+| value  | any | 空 | 默认值 |
+| demoValue  | any | 空 | 编辑时代替value，保证组件编辑时的显示效果和防止使用value时出错 |
+| editValue  | any | 空 | 进入高级代码编写时，使用些属性代替 value 属性 |
+| desc  | string | 空 | 描述说明 |
+| codeBtn  | boolean | true | 是否默认代码编辑按钮 |
+| language  | string | javascript | 代码编辑语言，如：javascript,html |
+| row  | boolean | false | 是否占一行 |
+| group  | string | 空 | 分组 |
+| groupOrder  | number | 99 | 分组顺序，同组第一个为准 |
+| order  | number | 99 | 顺序 |
+| show  | boolean | true | 是否显示属性 |
+| event  | boolean | false | 是否事件 |
+| vue  | boolean | false | 是否vue属性 |
+| effect  | boolean | false | 是否在编辑时生效 |
+| editorOlny  | boolean | false | 此属性只使用于编辑器，即最终结果没有此属性 |
+| type  | text, slider, select, select-only, boolean, boolean-only, number, custom' | text | 显示类型 |
+| typeOption  | any | 空 | 显示类型的参数，如：type为'slider'时，typeOption={min:1,max:24} |
+| datas  | string[] | 空 | 显示类型数据源，如：type为'select'时，datas=['small', 'large'] |
+| bind  | boolean | false | 是否为bind属性 |
+| enabledBind  | boolean | false | 是否允许修改bind属性 |
+| editorBind  | boolean | false | 编辑是否使用bind，编辑开此项容易报错 |
+| change  | Function | (attr: UETransferEditorAttrsItem, service: UEService) => boolean | 改变时处理，返回false中断 |

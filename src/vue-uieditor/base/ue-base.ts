@@ -205,7 +205,6 @@ export interface UETransferEditor {
   placeholderAttr?: boolean;
   /** 是否有 disabled 属性， 默认为:false */
   disabledAttr?: boolean;
-  /** 是否有 inline 属性， 默认为:true */
   /** 处理是否可以复制 */
   coping?: (p: { render: UERenderItem; parent: UERenderItem; service: UEService; }) => boolean;
   /** 是否可以拖动组件为子节点，容器时才会生产 */
@@ -261,7 +260,13 @@ export interface UETransferEditor {
    * 编辑渲染时转换 render 和 attr
    */
   transferAttr?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; editing: boolean; service: UEService; }) => void;
+  /**
+   * 选中对像的快捷菜单
+   */
   contextmenu?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; service: UEService; }) => UEContextmenuItem[];
+  /**
+   * 选中对像的工具栏
+   */
   toolbar?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; service: UEService; }) => UEContextmenuItem[];
   /** 隐藏attr，如: ['class'] */
   hideAttrs?: string[];
