@@ -483,7 +483,7 @@ function _defaultEditor(name: string): UETransferEditor {
       'v-for': { group: 'Vue', vue: true, row: true, enabledBind: false, order: 101, groupOrder: -50 },
       'v-show': { group: 'Vue', vue: true, row: true, enabledBind: false, order: 102 },
       'v-if': { group: 'Vue', vue: true, row: true, enabledBind: false, order: 103 },
-      'v-else': { group: 'Vue', vue: true, enabledBind: false, order: 104 },
+      'v-else': { group: 'Vue', vue: true, type: 'boolean-only', value: false, order: 104 },
       'v-else-if': { group: 'Vue', vue: true, enabledBind: false, order: 105 },
       'v-model': { group: 'Vue', vue: true, enabledBind: false, order: 106 },
       'v-once': { group: 'Vue', vue: true, type: 'boolean-only', order: 107 },
