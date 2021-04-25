@@ -268,7 +268,7 @@ options: UEOption = UERender.DefineOption({
 ```
 
 
-### UETransferItem 成员变量列表
+### 成员变量列表
 
 |  名称   | 类型  | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  |
@@ -366,7 +366,7 @@ options: UEOption = UERender.DefineOption({
 });
 ```
 
-### UETransferEditorAttrsItem 成员变量列表
+### 成员变量列表
 
 |  名称   | 类型  | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  |
@@ -393,3 +393,68 @@ options: UEOption = UERender.DefineOption({
 | enabledBind  | boolean | false | 是否允许修改bind属性 |
 | editorBind  | boolean | false | 编辑是否使用bind，编辑开此项容易报错 |
 | change  | Function | (attr: UETransferEditorAttrsItem, service: UEService) => boolean | 改变时处理，返回false中断 |
+
+
+## service: UEService
+
+- 组件编辑时属性与行为特性
+
+```ts
+options: UEOption = UERender.DefineOption({
+    ...,
+    transfer:UERender.DefineTransfer({
+      'uieditor-div': {
+        "editor": {
+          text: "Div",
+          order: 2,
+          groupOrder:0,
+          group:'公用组件库/基础组件',
+          icon: 'layui-icon layui-icon-picture',
+          inline: true,
+          transferAttr({ service }) {
+            console.log('service', service.getJson())
+          }
+      }
+    })
+});
+```
+
+### 成员变量列表
+
+|  名称   | 类型  | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  |
+| $uieditor  | Vue | 空 | 获取当前编辑组件 |
+| options  | UEOption | 空 | 获取当前options |
+| history  | object | 空 | 获取历史记录信息 |
+| current  | object | 空 | 获取当前信息，如果选中id等 |
+| rootRender  | object | 空 | 获取当前JSON root |
+
+### 成员函数列表
+
+#### setModeUI
+
+- 设置当前模式
+
+```ts
+setModeUI(mode: UEMode): void;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| mode  | design, json, script, tmpl, preview | 是 | design | 模式 |
+
+#### showMonacoEditorOther
+
+- 显示代码编辑器
+
+```ts
+showMonacoEditorOther(option: MonacoEditorContext): Promise<void>
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| option  | MonacoEditorContext | 是 | 空 | 选项 |
