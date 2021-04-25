@@ -458,3 +458,537 @@ showMonacoEditorOther(option: MonacoEditorContext): Promise<void>
 |  名称   | 类型  | 是否必选 | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  | ----  |
 | option  | MonacoEditorContext | 是 | 空 | 选项 |
+
+#### getTmpl
+
+- 获取模板（html）
+
+```ts
+getTmpl(): string
+```
+
+#### setTmpl
+
+- 设置模板（html）
+
+```ts
+setTmpl(html:string): Promise<void>
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| html  | string | 是 | 空 | html模板内容 |
+
+#### getJson
+
+- 获取json
+
+```ts
+getJson(): string
+```
+
+#### setJson
+
+- 设置json
+
+```ts
+getJson(json:string | object): Promise<void>
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| json  | string, object | 是 | 空 | json内容 |
+
+#### getScript
+
+- 获取代码(script)
+
+```ts
+getScript(): string
+```
+
+#### setScript
+
+- 设置代码
+
+```ts
+setScript(script:string): Promise<void>
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| script  | string | 是 | 空 | 代码内容 |
+
+#### getCurRender
+
+- 获取当前选中节点
+
+```ts
+getCurRender(): UERenderItem
+```
+
+#### getRenderItem
+
+- 获取指定ID的节点
+
+```ts
+getRenderItem(id: string, context?: UERenderItem): UERenderItem
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| id  | string | 是 | 空 | ID |
+| context  | UERenderItem | 否 | rootRender | 搜索上下文节点 |
+
+#### getRenderByType
+
+- 获取指定ID的节点
+
+```ts
+getRenderByType(type: string, context?: UERenderItem): UERenderItem
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| type  | string | 是 | 空 | 类型 |
+| context  | UERenderItem | 否 | rootRender | 搜索上下文节点 |
+
+#### getParentRenderItem
+
+- 获取父节点
+
+```ts
+getParentRenderItem(render: UERenderItem, all?: boolean): UERenderItem
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| render  | UERenderItem | 是 | 空 | 节点 |
+| all  | UERenderItem | 否 | 是 | 是否所有内容，否则根据select设置查找父节点 |
+
+#### getParentRenderByType
+
+- 根据类型，获取父级节点
+
+```ts
+getParentRenderByType(render: UERenderItem, type: string): UERenderItem
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| render  | UERenderItem | 是 | 空 | 节点 |
+| type  | string | 是 | 空 | 类型 |
+
+#### closest
+
+- 向上查找节点，包涵本身
+
+```ts
+closest(render: UERenderItem, fn: (render: UERenderItem) => boolean): UERenderItem
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| render  | UERenderItem | 是 | 空 | 节点 |
+| fn  | (render: UERenderItem) => boolean | 是 | 空 | 搜索条件，返回true |
+
+#### empty
+
+- 清空内容
+
+```ts
+empty(cnf?: boolean): Promise<void>
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| cnf  | boolean | 否 | false | 是否提示确认框 |
+
+#### getRenderTemp
+
+- 获取 render 的临时内容，使用于内容传送
+
+```ts
+getRenderTemp(id: string, key: string): any
+getRenderTemp(render: UERenderItem, key: string): any
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| id  | string | 是 | 空 | 节点ID |
+| render  | UERenderItem | 是 | 空 | 节点 |
+| key  | string | 是 | 空 | 内容key |
+
+#### getRenderTemp
+
+- 设置 render 的临时内容，使用于内容传送
+
+```ts
+setRenderTemp(id: string, key: string, value: any): any;
+setRenderTemp(render: UERenderItem, key: string, value: any): any;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| id  | string | 是 | 空 | 节点ID |
+| render  | UERenderItem | 是 | 空 | 节点 |
+| key  | string | 是 | 空 | 内容key |
+| value  | any | 是 | 空 | 内容 |
+
+#### delCur
+
+- 删除选中节点
+
+```ts
+delCur(cnf?: boolean, norefresh?: boolean): Promise<void>
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| cnf  | boolean | 否 | true | 是否提示确认框 |
+| norefresh  | boolean | 否 | false | 是否不刷新 |
+
+#### deleteWidget
+
+- 删除节点
+
+```ts
+deleteWidget(parentId: string, id: string, norefresh?: boolean): void
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| parentId  | string | 是 | 空 | 父节点ID |
+| id  | string | 是 | 空 | 节点ID |
+| norefresh  | boolean | 否 | false | 是否不刷新 |
+
+#### getAttr
+
+- 获取节点属性
+
+```ts
+getAttr(id: string, key: string): UETransferEditorAttrsItem
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| id  | string | 是 | 空 | 节点ID |
+| key  | string | 是 | 空 | 属性key |
+
+#### setAttr
+
+- 设置节点属性
+
+```ts
+setAttr(id: string, attr: UETransferEditorAttrsItem, refresh?: boolean): Promise<void>
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| id  | string | 是 | 空 | 节点ID |
+| attr  | UETransferEditorAttrsItem | 是 | 空 | 属性内容 |
+| refresh  | boolean | 否 | 是 | 是否刷新 |
+
+#### addAttr
+
+- 添加自定义节点属性
+
+```ts
+addAttr(id: string, key: string): UETransferEditorAttrsItem;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| id  | string | 是 | 空 | 节点ID |
+| key  | string | 是 | 空 | 属性key |
+
+#### refresh
+
+- 刷新
+
+```ts
+refresh(): Promise<any>
+```
+
+#### setCurrent
+
+- 设置（选中）当前节点
+
+```ts
+setCurrent(render: UERenderItem): any;
+setCurrent(id: string): any;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| id  | string | 是 | 空 | 节点ID |
+| render  | render | 是 | 空 | 节点 |
+
+#### addByType
+
+- 在指定节点添加（插入）新内容（根据类型）
+
+```ts
+addByType(type: string, renderId: string, type2: UEDragType2): Promise<void>;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| type  | string | 是 | 空 | 节点类型，如：uieditor-div |
+| renderId  | string | 是 | 空 | 节点Id |
+| type2  | in, before, after | 是 | 空 | 位置 |
+
+#### addByJson
+
+- 在指定节点添加（插入）新内容（根据json内容）
+
+```ts
+addByJson(json: any, renderId: string, type2: UEDragType2): Promise<void>;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| json  | string, object | 是 | 空 | json内容 |
+| renderId  | string | 是 | 空 | 节点Id |
+| type2  | in, before, after | 是 | 空 | 位置 |
+
+#### addByTmpl
+
+- 在指定节点添加（插入）新内容（根据模板html内容）
+
+```ts
+addByTmpl(template: string, renderId: string, type2: UEDragType2): Promise<void>;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| template  | string | 是 | 空 | 模板html内容 |
+| renderId  | string | 是 | 空 | 节点Id |
+| type2  | in, before, after | 是 | 空 | 位置 |
+
+#### isLocked
+
+- 节点是否锁定
+
+```ts
+isLocked(render: UERenderItem): boolean;
+isLocked(id: string): boolean;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| render  | UERenderItem | 是 | 空 | 节点 |
+| id  | string | 是 | 空 | 节点Id |
+
+#### locked
+
+- 锁定节点
+
+```ts
+locked(render: UERenderItem, locked: boolean): Promise<any>;
+locked(id: string, locked: boolean): Promise<any>;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| render  | UERenderItem | 是 | 空 | 节点 |
+| id  | string | 是 | 空 | 节点Id |
+| locked  | boolean | 是 | 空 | 是否锁定 |
+
+#### isCollapse
+
+- 是否折叠节点
+
+```ts
+isCollapse(render: UERenderItem): boolean;
+isCollapse(id: string): boolean;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| render  | UERenderItem | 是 | 空 | 节点 |
+| id  | string | 是 | 空 | 节点Id |
+
+#### collapse
+
+- 折叠节点
+
+```ts
+collapse(render: UERenderItem, isCollapse: boolean): Promise<any>;
+collapse(id: string, isCollapse: boolean): Promise<any>;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| render  | UERenderItem | 是 | 空 | 节点 |
+| id  | string | 是 | 空 | 节点Id |
+| isCollapse  | boolean | 是 | 空 | 是否折叠 |
+
+#### canRemove
+
+- 是否可以删除
+
+```ts
+canRemove(render: UERenderItem): boolean;
+canRemove(id: string): boolean;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| render  | UERenderItem | 是 | 空 | 节点 |
+| id  | string | 是 | 空 | 节点Id |
+
+#### canCopy
+
+- 是否可以复制
+
+```ts
+canCopy(render: UERenderItem): boolean;
+canCopy(id: string): boolean;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| render  | UERenderItem | 是 | 空 | 节点 |
+| id  | string | 是 | 空 | 节点Id |
+
+#### canSelect
+
+- 是否可以选中
+
+```ts
+canSelect(render: UERenderItem): boolean;
+canSelect(id: string): boolean;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| render  | UERenderItem | 是 | 空 | 节点 |
+| id  | string | 是 | 空 | 节点Id |
+
+#### canMove
+
+- 是否可以移动
+
+```ts
+canMove(fromId: string, toId: string, type2: UEDragType2): boolean;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| fromId  | string | 是 | 空 | 要移动节点Id |
+| toId  | string | 是 | 空 | 移动到节点Id |
+| type2  | in, before, after | 是 | 空 | 位置 |
+
+#### move
+
+- 移动节点
+
+```ts
+move(fromId: string, toId: string, type2: string): Promise<any>;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| fromId  | string | 是 | 空 | 要移动节点Id |
+| toId  | string | 是 | 空 | 移动到节点Id |
+| type2  | in, before, after | 是 | 空 | 位置 |
+
+#### copyCur
+
+- 复制当前节点
+
+```ts
+copyCur(): void;
+```
+
+#### copyCurToNext
+
+- 复制当前节点到后面位置
+
+```ts
+copyCurToNext(): void;
+```
+
+#### cutCur
+
+- 剪切当前节点
+
+```ts
+cutCur(): void;
+```
+
+#### pasteCur
+
+- 粘贴当前节点
+
+```ts
+pasteCur(pos?: 'before' | 'after' | 'child', keepCur?: boolean, currentId?: string, focus?: boolean): void;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| pos  | before, after, child | 否 | 空 | 位置 |
+| keepCur  | boolean | 否 | 空 | 保留当前节点 |
+| currentId  | string | 否 | 空 | 当前节点 |
+| focus  | boolean | 否 | 空 | 粘贴后选中 |
