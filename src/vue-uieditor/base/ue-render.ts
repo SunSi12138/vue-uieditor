@@ -77,12 +77,14 @@ function _mergeDefaultOption(options: UEOption): UEOption {
     },
     transferBefore(render, extend) {
       render = defaultOptions.transferBefore(render, extend);
-      render = transferBefore.call(options, render, extend);
+      if (transferBefore)
+        render = transferBefore.call(options, render, extend);
       return render;
     },
     transferAfter(render, extend) {
       render = defaultOptions.transferAfter(render, extend);
-      render = transferAfter.call(options, render, extend);
+      if (transferAfter)
+        render = transferAfter.call(options, render, extend);
       return render;
     }
   } as UEOption);
