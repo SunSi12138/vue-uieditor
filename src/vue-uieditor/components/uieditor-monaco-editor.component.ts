@@ -1,8 +1,6 @@
-import { UEService } from '../base/ue-service';
-import { UEVue, UEVueComponent, UEVueInject, UEVueLife, UEVueProp, UEVueWatch, UETransFn, UEVueValue } from '../base/vue-extends';
-import { LayuiRender } from '../layui/layui-render';
-import { UEHelper } from '../base/ue-helper';
 import _ from 'lodash';
+import { UEHelper } from '../base/ue-helper';
+import { UETransFn, UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueValue, UEVueWatch } from '../base/vue-extends';
 
 
 @UEVueComponent({})

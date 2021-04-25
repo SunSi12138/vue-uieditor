@@ -169,5 +169,20 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
         params: { order: 5, bind: true, enabledBind: false, row: true, desc: "传送params参数，可以使用this.params获取" }
       }
     }
+  },
+  'uieditor-monaco-editor': {
+    "editor": {
+      order: 6,
+      groupOrder,
+      group,
+      text: 'uieditor-monaco-editor',
+      icon: 'layui-icon layui-icon-senior',
+      empty: 'uieditor-monaco-editor',
+      attrs: {
+        'format-auto': { order: 1, type:'boolean-only' },
+        language: { order: 2, type:'select', datas:['javascript', 'html', 'css', 'json'] },
+        extraLib: { order: 3 }
+      }
+    }
   }
 });

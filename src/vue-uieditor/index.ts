@@ -16,6 +16,7 @@ export * from './base/ue-compiler';
 const components: any = {
   ...UEBaseComponents,
   'vue-uieditor': () => import(/* webpackChunkName: "vue_uieditor_cp" */ './vue-uieditor.component.vue'),
+  'uieditor-monaco-editor': () => import(/* webpackChunkName: "vue_uieditor_cp" */ './components/uieditor-monaco-editor.component.vue'),
   'vue-uieditor-render': () => import(/* webpackChunkName: "vue_uieditor_render_cp" */ './vue-uieditor-render.component.vue')
 };
 // 定义 install 方法，接收 Vue 作为参数。如果使用 use 注册插件，则所有的组件都将被注册

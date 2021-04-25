@@ -8,7 +8,6 @@ import { UEService } from './base/ue-service';
 import { UEVue, UEVueComponent, UEVueLife, UEVueProp, UEVueProvide, UEVueWatch } from './base/vue-extends';
 import uieditorCpAttr from './components/uieditor-cp-attr.component.vue';
 import uieditorCpTree from './components/uieditor-cp-tree.component.vue';
-import uieditorMonacoEditor from './components/uieditor-monaco-editor.component.vue';
 import { LayuiHelper } from './layui/layui-helper';
 import { LayuiRender } from './layui/layui-render';
 import './transfer';
@@ -47,8 +46,7 @@ function _makeMenuDivided(menus) {
 @UEVueComponent({
   components: {
     'uieditor-cp-tree': uieditorCpTree,
-    'uieditor-cp-attr': uieditorCpAttr,
-    'uieditor-monaco-editor': uieditorMonacoEditor
+    'uieditor-cp-attr': uieditorCpAttr
   }
 })
 export default class VueUieditor extends UEVue {
