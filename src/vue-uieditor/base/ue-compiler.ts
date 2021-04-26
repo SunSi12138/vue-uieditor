@@ -253,7 +253,7 @@ export class UECompiler {
    * Render 转成 Html
    * @param html 
    */
-  static async renderToHtmlAsync(render: UERenderItem, config?: UEJsonToHtmlConfig): Promise<string> {
+  static renderToHtml(render: UERenderItem, config?: UEJsonToHtmlConfig): string {
     render = _.cloneDeep(render);
     render = {
       type: 'temp_20200807_',
@@ -265,7 +265,7 @@ export class UECompiler {
     const scripts = [], styles = [];
     const json = renderToJson([render], scripts, styles);
     json[0].children = json[0].children.concat(styles).concat(scripts);
-    let html: any = await UECompiler.jsonToHtmlAsync(json[0], config);
+    let html: any = UECompiler.jsonToHtml(json[0], config);
     return html.replace(/<\/?temp_20200807_>/g, "");
   }
 

@@ -285,9 +285,9 @@ export class UEService {
     // this.setModeUI('other');
   }
 
-  async getTmpl() {
+  getTmpl() {
     const jsonTmpl = this.getJson();
-    const html = await UECompiler.renderToHtmlAsync(jsonTmpl, { wrap: true, indent: 2 });
+    const html = UECompiler.renderToHtml(jsonTmpl, { wrap: true, indent: 2 });
     return html;
   }
 
@@ -296,7 +296,7 @@ export class UEService {
     await this.setJson(json);
   }
 
-  async getScript(): Promise<string> {
+  getScript(): string {
     const render = this.getRenderByType('script');
     return render ? render.children[0] as string : "{\n  data() {\n    return {};\n  },\n  computed: {\n\n  },\n  watch: {},\n  methods: {},\n  created() {\n    \n  }\n}";
   }
