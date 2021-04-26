@@ -5,7 +5,7 @@ export interface UEJsonToHtmlConfig {
   raw?: boolean; // 显示转义字符
   wrap?: boolean; // 是否换行显示
   indent?: number; // 缩进，最大支持到8
-  clearPrivate?:boolean; //删除ue 特殊私有属性
+  clearPrivate?: boolean; //删除ue 特殊私有属性
   tagKey?: string; // 获取 tag 的字段
   childrenKey?: string; // 获取 children 的字段
 }
@@ -26,15 +26,10 @@ const allowedTags: Array<string> = [
 * @param attrsObject
 * @param extraAttrsObject
 */
-function resolveAttrs(attrsObject: any, extraAttrsObject?: object) {
+function resolveAttrs(attrsObject: any) {
+  if (_.size(attrsObject) == 0) return '';
 
-  let attrs = Object.assign(attrsObject, extraAttrsObject);
-
-  if (typeof attrs === 'object' && JSON.stringify(attrs) === '{}') {
-    return '';
-  }
-
-  let attrStrings = Object.keys(attrsObject).map(attrKey => {
+  let attrStrings = _.map(_.keys(attrsObject), function (attrKey) {
     let attrValue = attrsObject[attrKey];
 
     // deal: <com disabled></com>
@@ -87,12 +82,11 @@ function UEJsonToHtml(schema: any | Array<any> | string | number, config?: UEJso
   let {
     type: tag,
     children: children,
-    extraAttrs,
     props: rest
   } = schema;
   // let tag = schema[];
 
-  if (clearPrivate){
+  if (clearPrivate) {
     UEClearPrivateProps(rest);
   }
   // if (htmlOnly && !~allowedTags.indexOf(tag)) {
@@ -100,7 +94,7 @@ function UEJsonToHtml(schema: any | Array<any> | string | number, config?: UEJso
   //     return '';
   // }
   // let leftTag = `${indentToken}<${tag}${attrs} data-depth="${depth}">`;
-  let leftTag = `${indentToken}<${tag}${resolveAttrs(rest, extraAttrs)}>`;
+  let leftTag = `${indentToken}<${tag}${resolveAttrs(rest)}>`;
   let rightTag = `</${tag}>${wrapToken}`;
 
   let content: string | number = '';
