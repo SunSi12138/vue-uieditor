@@ -18,14 +18,10 @@ const _globalInitedKey = '__ue_g_inited_210329';
 
 const _initedKey = '__ue_inited_210329';
 function _isInited(p) {
-  return p && p[_initedKey];
+  return p && p['inited'];
 }
 function _inited(p) {
-  Object.defineProperty(p, _initedKey, {
-    enumerable: false,
-    configurable: false,
-    get() { return true; }
-  });
+  p.inited = true;
 }
 
 function _findRender(renders: UERenderItem[], isFn: any) {

@@ -25,6 +25,8 @@ export interface UEOption {
   global?(): UEObject;
   /** 是否开启 babel 在线编译（要加载babel-standalone js），默认为 true */
   babel?: boolean;
+  /** 是否已初始化 */
+  readonly inited?:boolean;
 }
 
 export type UETransferExtend = {

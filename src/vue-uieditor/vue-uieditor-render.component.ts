@@ -53,7 +53,7 @@ export default class VueUieditorRender extends UEVue {
   @UEVueProp()
   private options!: UEOption;
   get optionEx() {
-    const options = this.options;
+    const options = UERender.DefineOption(this.options);
     return UERender.GlobalToOptions(options);
   }
 
