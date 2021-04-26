@@ -144,7 +144,8 @@ export default class VueUieditorRender extends UEVue {
     let render;
 
     if (json) {
-      const globalOpt = _.assign({}, _defaultGlobalExtend, options?.global);
+      const optGlobal = options?.global && options.global();
+      const globalOpt = _.assign({}, _defaultGlobalExtend, optGlobal);
 
       previewOpt = preview && (function () {
         let opt = null;

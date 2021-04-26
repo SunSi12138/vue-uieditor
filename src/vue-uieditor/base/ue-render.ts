@@ -239,6 +239,7 @@ export class UERender {
     if (_isInited(options)) return options;
     _inited(options);
 
+    console.warn('options', options);
     options = _mergeDefaultOption(options);
     return UERender.AddTransfer(options, options.transfer);
   }
