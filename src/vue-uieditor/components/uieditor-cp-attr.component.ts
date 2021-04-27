@@ -89,7 +89,7 @@ export default class UieditorCpAttr extends UEVue {
     const vueList: UETransferEditorAttrsItem[] = [];
     const model = {};
     _.forEach(attrs, (attr, name) => {
-      if (attr.show === false) return;
+      if (_.isBoolean(attr) || attr.show === false) return;
       if (_.size(attr.datas) > 0) {
         const datas = [];
         _.forEach(attr.datas, function (item) {

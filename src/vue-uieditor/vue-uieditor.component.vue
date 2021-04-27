@@ -4,7 +4,7 @@
       <input class="editor-json-focus" ref="jsonFoucs" />
       <vue-uieditor-render
         v-if="current.json && isDesign"
-        :options="optionsEx"
+        :options="optionEx"
         :json="current.json"
         :mixin="current.mixin"
         editing
@@ -13,7 +13,7 @@
     <div class="editor-priview-content" v-show="isPreview">
       <vue-uieditor-render
         v-if="isPreview"
-        :options="optionsEx"
+        :options="optionEx"
         :json="current.monacoEditor.content"
         preview
       />

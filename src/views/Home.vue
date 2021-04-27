@@ -56,6 +56,13 @@ const group = "测试组件库/基础组件";
 })
 export default class Home extends UEVue {
   options: UEOption = UERender.DefineOption({
+    global(){
+      return {
+        merge(){
+           return 'merge ok';
+        }
+      };
+    },
     transfer: {
       "test-text": {
         transfer(render, extend) {

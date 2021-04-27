@@ -14,7 +14,6 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       if (content) {
         const babelContent = UECompiler.babelTransform(`function __bg_vue_def_ctx(){ return ${content}; }`);
         let contentDef = (new Function('__bg_vue_def_', `with(__bg_vue_def_) { return { mixins: [(function() { ${babelContent.code}; return __bg_vue_def_ctx(); })(), { data: function(){ __bg_vue_def_.$this = this; return {}; } }] } }`))({ $this: {}, ...extend.global });
-        console.warn('vue-def', extend, contentDef)
         extend.extendMixin(contentDef)
       }
       // if (extend.editing) return render;

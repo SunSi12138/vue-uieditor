@@ -137,7 +137,8 @@ export default class VueUieditorRender extends UEVue {
     if (this.mixin) vueDef.mixins = vueDef.mixins.concat([this.mixin]);
 
     const data = {};
-    let mixinExBefore = {};
+    let mixinExBefore:UEVueMixin = {
+    };
     let mixinEx = {};
     let previewOpt = null;
 
@@ -146,6 +147,7 @@ export default class VueUieditorRender extends UEVue {
     if (json) {
       const optGlobal = options?.global && options.global();
       const globalOpt = _.assign({}, _defaultGlobalExtend, optGlobal);
+      mixinExBefore.computed = _objectToComputed(globalOpt);
 
       previewOpt = preview && (function () {
         let opt = null;
@@ -437,4 +439,14 @@ function _closest(render, find) {
     if (!parent) return;
     return _closest.call(this, parent, find);
   }
+}
+
+function _objectToComputed(obj) {
+  const computed = {};
+  _.forEach(obj, function (item, key) {
+    computed[key] = function () {
+      return item;
+    }
+  });
+  return computed;
 }

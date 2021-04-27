@@ -26,7 +26,7 @@ export interface UEOption {
   /** 是否开启 babel 在线编译（要加载babel-standalone js），默认为 true */
   babel?: boolean;
   /** 是否已初始化 */
-  readonly inited?:boolean;
+  readonly inited?: boolean;
 }
 
 export type UETransferExtend = {
@@ -152,6 +152,8 @@ export interface UETransferEditorAttrsItem {
   click?(attr: UETransferEditorAttrsItem, service: UEService): Promise<boolean> | boolean;
   /** 改变时处理，返回false中断 */
   change?(attr: UETransferEditorAttrsItem, service: UEService): Promise<boolean> | boolean;
+  /** 是否已初始化 */
+  readonly inited?: boolean;
 }
 
 export interface UETransferEditorAttrs {
@@ -276,6 +278,8 @@ export interface UETransferEditor {
   hideAttrGroups?: string[];
   /** 属性栏 */
   attrs?: UETransferEditorAttrs;
+  /** 是否已初始化 */
+  readonly inited?: boolean;
 }
 
 
@@ -290,6 +294,8 @@ export interface UETransferItem {
    * 渲染时转换 render, 如果返回空不渲染
    */
   transfer?: (render: UERenderItem, extend?: UETransferExtend) => UERenderItem;
+  /** 是否已初始化 */
+  readonly inited?: boolean;
 }
 
 export interface UETransfer {
