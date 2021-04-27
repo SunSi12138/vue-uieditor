@@ -11,7 +11,9 @@
 
 - [本工程开发环境](https://gitee.com/days2020/vue-uieditor/blob/master/doc/DEVELOP.md)
 
-- 演示
+- [demo](http://days2020.gitee.io/iview-uieditor)
+
+- [演示](http://days2020.gitee.io/iview-uieditor/#/demo)
 
 ## 安装与使用
 
