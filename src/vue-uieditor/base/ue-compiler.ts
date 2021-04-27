@@ -232,7 +232,13 @@ export class UECompiler {
     const root = json[0];
     const template: any = _.find(root.children, { type: 'template' });
     const scriptTag = _.find(root.children, { type: 'script' });
+    if (scriptTag) {
+      scriptTag.children = [UECompiler.jsonToHtml(scriptTag.children, { wrap: false, clearPrivate: true })];
+    }
     const styleTag = _.find(root.children, { type: 'style' });
+    if (styleTag) {
+      styleTag.children = [UECompiler.jsonToHtml(styleTag.children, { wrap: false, clearPrivate: true })];
+    }
     let children = template && template.children;
     if (_.isEmpty(children) || children.length > 1) {
       children = [{ type: 'uieditor-div', children: children || [] }];
@@ -246,6 +252,8 @@ export class UECompiler {
         render.children = (render.children || []).concat([scriptTag]);
       }
     }
+    console.warn('json', _.cloneDeep(render))
+
     return render;
   }
 
