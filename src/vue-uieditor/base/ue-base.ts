@@ -416,6 +416,22 @@ export const UEIsLockProps = 'ue-is-lock';
 /** 标记节点是否折叠 */
 export const UEIsCollapseProps = 'ue-is-collapse';
 
+/** 所有特殊属性 */
+export const UEAllSpecialProps = {
+  UECanNotSelectProps,
+  UECanNotMoveProps,
+  UECanNotRemoveProps,
+  UECanNotCopyProps,
+  UECanNotSelectChildProps,
+  UECanNotMoveChildProps,
+  UECanNotRemoveChildProps,
+  UECanNotCopyChildProps,
+  UECanNotMoveInProps,
+  UECanNotMoveOutProps,
+  UEIsLockProps,
+  UEIsCollapseProps
+};
+
 const cantPropReg = /^\s*ue\-cant\-/;
 const isPropReg = /^\s*ue\-is\-/;
 

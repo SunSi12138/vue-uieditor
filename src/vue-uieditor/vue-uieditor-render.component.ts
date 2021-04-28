@@ -1,6 +1,7 @@
 
 import _ from 'lodash';
-import { UEOption, UETransferExtend } from './base/ue-base';
+import Vue from 'vue';
+import { UEAllSpecialProps, UEOption, UETransferExtend } from './base/ue-base';
 import { UECompiler } from './base/ue-compiler';
 import { UEHelper } from './base/ue-helper';
 import { UERender } from './base/ue-render';
@@ -8,11 +9,12 @@ import { UERenderItem } from './base/ue-render-item';
 import { UEService } from './base/ue-service';
 import { UEMergeMixin, UEVue, UEVueComponent, UEVueInject, UEVueLife, UEVueMixin, UEVueProp, UEVueWatch } from './base/vue-extends';
 import './transfer';
-import Vue from 'vue';
 
 const _defaultGlobalExtend = {
   UEHelper,
-  UECompiler
+  UECompiler,
+  UERender,
+  ...UEAllSpecialProps
 };
 
 function _defaultOptions() {
@@ -137,7 +139,7 @@ export default class VueUieditorRender extends UEVue {
     if (this.mixin) vueDef.mixins = vueDef.mixins.concat([this.mixin]);
 
     const data = {};
-    let mixinExBefore:UEVueMixin = {
+    let mixinExBefore: UEVueMixin = {
     };
     let mixinEx = {};
     let previewOpt = null;

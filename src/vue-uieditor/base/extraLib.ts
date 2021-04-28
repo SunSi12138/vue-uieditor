@@ -674,6 +674,1033 @@ declare class UEVue extends Vue {
 
 `;
 
+const _ueDef = `
+declare type UEObject = {
+  [key: string]: any;
+};
+interface UEOption {
+  /** vue 组合，扩展到组件内部，如：组件、指令或方法等 */
+  mixins?: UEVueMixin[];
+  /** 转换器，定义json的渲染行为 和 定义组件在编辑时的行为属性 */
+  transfer?: UETransfer;
+  /** 设置模板到编辑器左边树 */
+  templates?: UETemplate[];
+  /** 编辑器设置 */
+  readonly editor?: {
+      [type: string]: UETransferEditor;
+  };
+  /** 转换器处理之前 */
+  transferBefore?: (render: UERenderItem, extend?: UETransferExtend) => UERenderItem;
+  /** 转换器处理之后 */
+  transferAfter?: (render: UERenderItem, extend?: UETransferExtend) => UERenderItem;
+  /** 扩展代码智能提示声明 */
+  extraLib?(): Promise<string>;
+  /** 添加全局变量，object对象 */
+  global?(): UEObject;
+  /** 是否开启 babel 在线编译（要加载babel-standalone js），默认为 true */
+  babel?: boolean;
+  /** 是否已初始化 */
+  readonly inited?: boolean;
+}
+declare type UETransferExtend = {
+  /** Vue 初始化数据 */
+  data?: UEObject;
+  /** 编辑中 */
+  readonly editing?: boolean;
+  readonly service?: UEService;
+  readonly editor?: UETransferEditor;
+  /** 当前 render */
+  readonly render?: UERenderItem;
+  /** 全局变量 */
+  global?: any;
+  readonly options?: UEOption;
+  /**
+   * 添加 mixin
+   * @param mixin
+   * @param before
+   */
+  extendMixin(mixin: UEVueMixin, before?: boolean): any;
+  /**
+   * 设置prop内容
+   * @param name
+   * @param content
+   */
+  setProp(name: string, content: RenderProp): RenderProp;
+  /**
+   * 获取prop内容
+   * @param name
+   * @param remove 获取后是否删除
+   */
+  getProp(name: string, remove?: boolean): RenderProp;
+  /**
+   * 删除属性
+   * @param name
+   */
+  removeProp(name: string): void;
+  /**
+   * 获取prop值
+   * @param name
+   * @param remove  获取后是否删除
+   */
+  getPropValue(name: string, remove?: boolean): any;
+  setPropValue(name: string, content: RenderProp): any;
+  /**
+   * 获取prop text内容，如果bind返回 {{text}}
+   * @param name
+   * @param remove  获取后是否删除
+   */
+  getPropText(name: string, defaultValue?: any, remove?: boolean): any;
+  /**
+   * 向上查找节点，包括自己
+   * @param find 查找条件，默认上一级节点
+   */
+  closest(find: (render: UERenderItem) => boolean): UERenderItem;
+};
+declare type RenderProp = {
+  bind?: boolean;
+  has?: boolean;
+  event?: boolean;
+  name: string;
+  value?: any;
+};
+interface UETransferEditorAttrsItem {
+  /** render属性props名称，一般与key相同，请参考transition appear事件与属性的定义 */
+  readonly name?: string;
+  /** 定义attr的key */
+  readonly key?: string;
+  /** 是否自定义属性，属性栏自定义的属性，可删除的属性 */
+  readonly cust?: boolean;
+  /** 显示名称 */
+  text?: string;
+  /** 默认值 */
+  value?: any;
+  /** 编辑时代替value，保证组件编辑时的显示效果和防止使用value时出错 */
+  demoValue?: any;
+  /** 进入高级代码编写时，使用些属性代替 value 属性 */
+  editValue?: string | {
+      get(): any;
+      set(val: any): void;
+  };
+  /** 是否默认代码编辑按钮，默认为: true */
+  codeBtn?: boolean;
+  placeholder?: string;
+  /** 描述 */
+  desc?: string;
+  /** 代码编辑器的语言，javascript, typescript, ts, css */
+  language?: string;
+  row?: boolean;
+  /** 分组 */
+  group?: string;
+  /** 分组顺序，同组第一个为准 */
+  groupOrder?: number;
+  /** 顺序 */
+  order?: number;
+  /** 是否显示属性，默认：true */
+  show?: boolean;
+  /** 是否事件，默认：false */
+  event?: boolean;
+  /** 是否vue属性，默认：false */
+  vue?: boolean;
+  /** 是否在编辑时生效，默认：false */
+  effect?: boolean;
+  /** 此属性只使用于编辑器，即最终结果没有此属性 */
+  editorOlny?: boolean;
+  /** 显示类型，默认：text，custom为自定义（弹出对话框） */
+  type?: 'text' | 'slider' | 'select' | 'select-only' | 'boolean' | 'boolean-only' | 'number' | 'custom';
+  /** 显示类型的参数 */
+  typeOption?: any;
+  /** 数据源, string[] | {text:string;value:string;} */
+  datas?: any[] | ((p: {
+      attr: UETransferEditorAttrsItem;
+      attrs: UETransferEditorAttrs;
+      service: UEService;
+  }) => any[]);
+  /** 是否为bind属性，默认为 false */
+  bind?: boolean;
+  /** 是否允许编辑bind属性, 默认 true */
+  enabledBind?: boolean;
+  /** 编辑是否使用bind，默认: false */
+  editorBind?: boolean;
+  /** 是否支持 codeEditor, 不是全部属性支持，默认为: true */
+  codeEditor?: boolean;
+  /** 是否默认vue-def 内容，只在vue-def使用, 默认：false */
+  isVueDef?: boolean;
+  /** 点击时处理，返回false中断，type为custom时生效 */
+  click?(attr: UETransferEditorAttrsItem, service: UEService): Promise<boolean> | boolean;
+  /** 改变时处理，返回false中断 */
+  change?(attr: UETransferEditorAttrsItem, service: UEService): Promise<boolean> | boolean;
+  /** 是否已初始化 */
+  readonly inited?: boolean;
+}
+interface UETransferEditorAttrs {
+  [key: string]: UETransferEditorAttrsItem;
+}
+interface UETransferEditor {
+  /** 显示名称, 支持环境变量, 如:%label% */
+  text?: string | ((p: {
+      editor: UETransferEditor;
+      attrs: UETransferEditorAttrs;
+  }) => string);
+  /** 如果text为空时默认内容 */
+  defaultText?: string;
+  /** 格式化 text */
+  textFormat?(editor: UETransferEditor, attrs: UETransferEditorAttrs): string;
+  /** 名称 */
+  readonly name?: string;
+  placeholder?: string;
+  icon?: string;
+  /** 默认的模板内容(JSON) */
+  json?: UERenderItem;
+  /** 默认的模板内容 */
+  template?: string;
+  /** 排序，默认：99 */
+  order?: number;
+  /** 分组，可用"/"实现分组层级，如：基础库/基础组件 */
+  group?: string;
+  /** 分组顺序 */
+  groupOrder?: number;
+  /** 是否容器组件（可以插入子节点），默认为 false */
+  container?: boolean;
+  /** 是否显示容器边框，默认为 false */
+  containerBorder?: boolean;
+  /** 是否在左边留空方便控制 */
+  controlLeft?: boolean;
+  /** 是否基础组件，编辑时作为独立组件，内容不能拖动，默认：true */
+  base?: boolean;
+  /** 编辑时使用div代替显示 */
+  empty?: string;
+  /** 是否可以收起，容器时默认为 true */
+  collapse?: boolean;
+  /** 编辑时临时添加样式 */
+  className?: string | ((p: {
+      render: UERenderItem;
+      editor: UETransferEditor;
+      attrs: UETransferEditorAttrs;
+  }) => string);
+  /** 是否可以选中（编辑），默认：true */
+  select?: boolean;
+  /** 是否可以拖动（编辑），默认：true */
+  draggable?: boolean;
+  /** 是否显示在组件树，默认为 true */
+  showInTree?: boolean;
+  /** 编辑时是否显示 */
+  show?: boolean;
+  /** 编辑时是否强制显示为inline */
+  inline?: boolean;
+  /** 是否有placeholder属性， 默认为:false */
+  placeholderAttr?: boolean;
+  /** 是否有 disabled 属性， 默认为:false */
+  disabledAttr?: boolean;
+  /** 处理是否可以复制 */
+  coping?: (p: {
+      render: UERenderItem;
+      parent: UERenderItem;
+      service: UEService;
+  }) => boolean;
+  /** 是否可以拖动组件为子节点，容器时才会生产 */
+  contenting?: (p: {
+      /** 当前render(父层) */
+      fromRender: UERenderItem;
+      /** 移动到 render */
+      toRender: UERenderItem;
+      /** 当前render的editort */
+      fromEditor: UETransferEditor;
+      /** 移动到 render 的editort*/
+      toEditor: UETransferEditor;
+      /** 容器render(父层) */
+      fromParent: UERenderItem;
+      /** 容器render(父层) */
+      toParent: UERenderItem;
+      service: UEService;
+  }) => boolean;
+  /** 拖动时处理，返回true|false，决定是否可以拖动到目标 */
+  moving?: (p: {
+      /** 当前render(父层) */
+      fromRender: UERenderItem;
+      /** 移动到 render */
+      toRender: UERenderItem;
+      /** 当前render的editort */
+      fromEditor: UETransferEditor;
+      /** 移动到 render 的editort*/
+      toEditor: UETransferEditor;
+      /** 容器render(父层) */
+      fromParent: UERenderItem;
+      /** 容器render(父层) */
+      toParent: UERenderItem;
+      type2?: UEDragType2;
+      service: UEService;
+  }) => boolean;
+  /** 是否可以移动子节点 */
+  movingChild?: (p: {
+      /** 当前render(父层) */
+      fromRender: UERenderItem;
+      /** 移动到 render */
+      toRender: UERenderItem;
+      /** 当前render的editort */
+      fromEditor: UETransferEditor;
+      /** 移动到 render 的editort*/
+      toEditor: UETransferEditor;
+      /** 容器render(父层) */
+      fromParent: UERenderItem;
+      /** 容器render(父层) */
+      toParent: UERenderItem;
+      service: UEService;
+  }) => boolean;
+  /**
+   * 编辑渲染时转换 render 和 attr
+   */
+  transferAttr?: (p: {
+      render: UERenderItem;
+      attrs: UETransferEditorAttrs;
+      editor: UETransferEditor;
+      editing: boolean;
+      service: UEService;
+  }) => void;
+  /**
+   * 选中对像的快捷菜单
+   */
+  contextmenu?: (p: {
+      render: UERenderItem;
+      attrs: UETransferEditorAttrs;
+      editor: UETransferEditor;
+      service: UEService;
+  }) => UEContextmenuItem[];
+  /**
+   * 选中对像的工具栏
+   */
+  toolbar?: (p: {
+      render: UERenderItem;
+      attrs: UETransferEditorAttrs;
+      editor: UETransferEditor;
+      service: UEService;
+  }) => UEContextmenuItem[];
+  /** 隐藏attr，如: ['class'] */
+  hideAttrs?: string[];
+  /** 隐藏attr group，如: ['Vue'] */
+  hideAttrGroups?: string[];
+  /** 属性栏 */
+  attrs?: UETransferEditorAttrs;
+  /** 是否已初始化 */
+  readonly inited?: boolean;
+}
+interface UETransferItem {
+  /** 组件名称 */
+  type?: string;
+  /** 默认属性 */
+  props?: UEObject;
+  /** 编辑器配置 */
+  editor?: UETransferEditor;
+  /**
+   * 渲染时转换 render, 如果返回空不渲染
+   */
+  transfer?: (render: UERenderItem, extend?: UETransferExtend) => UERenderItem;
+  /** 是否已初始化 */
+  readonly inited?: boolean;
+}
+interface UETransfer {
+  [key: string]: UETransferItem;
+}
+/**
+* 获取 ExtraLib 智能提示声明内容
+*/
+declare function UEGetExtraLib(): Promise<string>;
+interface UETemplate {
+  /**
+   * 分组
+   */
+  group?: string;
+  /**
+   * 分组顺序，同分组的第一个groupOrder生效
+   */
+  groupOrder?: number;
+  /**
+   * 标题
+   */
+  title?: string;
+  icon?: string;
+  /**
+   * 描述
+   */
+  desc?: string;
+  /**
+   * json 模板，可以json字串或json对像
+   */
+  json?: string | UEObject;
+  /**
+   * html 模板，如果有json内容，优先使用json内容
+   */
+  template?: string;
+  /** 拖动时处理，返回true|false，决定是否可以拖动到目标 */
+  moving?: (p: {
+      /** 移动到 render */
+      toRender: UERenderItem;
+      /** 移动到 render 的editort*/
+      toEditor: UETransferEditor;
+      fromEditor: UETransferEditor;
+      /** 容器render(父层) */
+      toParent: UERenderItem;
+      type2?: UEDragType2;
+      service: UEService;
+  }) => boolean;
+}
+declare type UEThemeMode = 'json' | 'script' | 'tmpl';
+declare type UEMode = UEThemeMode | 'design' | 'json' | 'script' | 'tmpl' | 'preview' | 'other';
+interface UEThemeEvent {
+  item: any;
+  event: any;
+  service: UEService;
+}
+interface UEToolBar {
+  title?: string;
+  icon?: string;
+  divided?: boolean;
+  disabled?: boolean | ((e: UEThemeEvent) => boolean);
+  show?: boolean | ((e: UEThemeEvent) => boolean);
+  /** 点击, 返回 false 不处理默认行为 */
+  click?(e: UEThemeEvent): void | boolean | Promise<void | boolean>;
+}
+interface UETheme {
+  /**
+   * 设置关于对话框内容
+   * @param p
+   */
+  about?(p: {
+      service: UEService;
+  }): string | (Promise<string>);
+  /**
+   * 编辑器可用模式：'json' | 'script' | 'tmpl
+   */
+  modes?: UEThemeMode[];
+  /** 设置顶部工具栏 */
+  toolBar?: UEToolBar[];
+  /** 选中组件的添加快捷菜单 */
+  contextmenus?(p: {
+      render: UERenderItem;
+      parent: UERenderItem;
+      editor: UETransferEditor;
+      service: UEService;
+  }): UEContextmenuItem[];
+}
+declare type UEDragType = 'in' | 'top' | 'bottom' | 'left' | 'right';
+declare type UEDragType2 = 'in' | 'before' | 'after';
+/** 标记为不能选择 */
+declare const UECanNotSelectProps = "ue-cant-select";
+/** 标记为不能移动 */
+declare const UECanNotMoveProps = "ue-cant-move";
+/** 标记为不能删除 */
+declare const UECanNotRemoveProps = "ue-cant-remove";
+/** 标记为不能复制 */
+declare const UECanNotCopyProps = "ue-cant-copy";
+/** 标记为不能选择子节点 */
+declare const UECanNotSelectChildProps = "ue-cant-select-child";
+/** 标记为不能移动子节点 */
+declare const UECanNotMoveChildProps = "ue-cant-move-child";
+/** 标记为不能删除子节点 */
+declare const UECanNotRemoveChildProps = "ue-cant-remove-child";
+/** 标记为不能复制子节点 */
+declare const UECanNotCopyChildProps = "ue-cant-copy-child";
+/** 标记为不能移入子节点 */
+declare const UECanNotMoveInProps = "ue-cant-movein";
+/** 标记为不能移出子节点 */
+declare const UECanNotMoveOutProps = "ue-cant-moveout";
+/** 标记节点是否锁定 */
+declare const UEIsLockProps = "ue-is-lock";
+/** 标记节点是否折叠 */
+declare const UEIsCollapseProps = "ue-is-collapse";
+/**
+* 删除 ue 私有特殊属性，如：ue-cant-move
+* @param props
+*/
+declare function UEClearPrivateProps(props: any): void;
+/**
+* 是否不能标示属性名称
+* @param name
+*/
+declare function UEIsCanNotProps(name: string): boolean;
+/**
+* 是否不能操作
+* @param render
+* @param cantName 标记名称, 如：UECanNotSelectProps
+*/
+declare function UEIsCanNot(render: any, cantName: string): any;
+declare class UECompiler {
+  static toTemplate(items: (UERenderItem | string)[], editing?: boolean): string;
+  static vueCompile(template: string): {
+      render(createElement: any): VNode;
+      staticRenderFns: (() => VNode)[];
+  };
+  static vueTemplateCompiler(template: string): Promise<CompiledResult<string>>;
+  static compile(template: string | UERenderItem, debugInfo?: any, editing?: boolean): Promise<{
+      render: any;
+      staticRenderFns: any[];
+  }>;
+  static isEqual(p1: any, p2: any): boolean;
+  /** render to code(script) */
+  static renderToScriptJson(render: UERenderItem): string;
+  /** code(script) render */
+  static scriptJsonToRender(obj: string): UERenderItem;
+  /**
+   * Html 转成 Render
+   * @param html
+   */
+  static htmlToRenderAsync(html: string): Promise<string | UERenderItem>;
+  /**
+   * Html 转成 Render
+   * @param html
+   */
+  static htmlToRender(html: string): Promise<string | UERenderItem>;
+  private static _htmlToRender;
+  /**
+   * Render 转成 Html
+   * @param html
+   */
+  static renderToHtml(render: UERenderItem, config?: UEJsonToHtmlConfig): string;
+  /**
+   * Html 转成 Json
+   * @param html
+   */
+  static htmlToJsonAsync(html: string): Promise<any>;
+  /**
+   * Html 转成 Json，注意先使用 UECompiler 初始化
+   * @param html
+   */
+  static htmlToJson(html: string): any;
+  /**
+   * Json 转成 Html
+   * @param html
+   */
+  static jsonToHtmlAsync(json: any, config?: UEJsonToHtmlConfig): Promise<string>;
+  /**
+   * Json 转成 Html，注意先使用 UECompiler 初始化
+   * @param html
+   */
+  static jsonToHtml(json: any, config?: UEJsonToHtmlConfig): string;
+  /**
+   * 初始babel环境
+   */
+  static init(p?: {
+      bable?: boolean;
+  }): Promise<((html: string) => any[])[]>;
+  /**
+   * 使用 babel 编译，注意先使用 UECompiler 初始化
+   * @param script 脚本内容
+   * @param opt babel 参数
+   */
+  static babelTransform(script: string, opt?: any): {
+      code: string;
+      ast: any;
+      [key: string]: any;
+  };
+  /**
+   * 使用 babel 编译，返回一个fun name与code，注意先使用 UECompiler 初始化
+   * @param script 脚本内容
+   * @param hasRet 是否有返回值
+   * @param opt babel 参数
+   */
+  static babelTransformToFun(script: string, hasRet?: boolean, opt?: any): {
+      code: string;
+      ast: any;
+      fnName: string;
+  };
+  /**
+   * 使用 babel 编译，返回一个fun name与code，注意先使用 UECompiler 初始化
+   * @param args 新方法的参数名称，如：['name', 'id']
+   * @param script 脚本内容
+   * @param withThis with(this)
+   * @param opt babel 参数
+   * @example babelTransformToFunEx(['name', 'id'], 'return {name, id}')()
+   */
+  static babelTransformToFunEx(args: string[], script: string, withThis?: boolean, opt?: any): Function;
+  /**
+   * 使用 babel 编译，不用 UECompiler 初始化，直接可以使用
+   * @param strcipt 脚本内容
+   * @param opt babel 参数
+   */
+  static babelTransformAsync(script: string, opt?: any): Promise<{
+      [key: string]: any;
+      code: string;
+      ast: any;
+  }>;
+}
+declare class UEHelper {
+  static stringEmpty: string;
+  static noop(): void;
+  static error(...args: any[]): void;
+  /** 深 assign */
+  static assignDepth(...objs: any[]): any;
+  static isWindow(obj: any): boolean;
+  /**
+   * 比较两个对像是否相等，但不比较function类型
+   * @param p1
+   * @param p2
+   */
+  static isEqualNotFn(p1: any, p2: any): boolean;
+  static toArray(p: any, start?: number, count?: number): Array<any>;
+  static makeAutoId(): string;
+  /**
+   * 是否属于类或基类
+   * @param p 参数
+   * @param cls 类
+   */
+  static isClass(p: any, cls: any): boolean;
+  static offset(element: HTMLElement, offset?: {
+      top: number;
+      left: number;
+  }): {
+      top: number;
+      left: number;
+  };
+  /**
+   * setQuerystring
+   * @param url
+   * @param p
+   * @param json 如果为true , 属性内容 Array 或 Object 转为JSON, 默认为 false
+   * @param useToHttp 是否用于http，encode会不一样 , 默认为 false
+   */
+  static setQuerystring(url: string, p: object, json?: boolean, useToHttp?: boolean): string;
+  /**
+   * 获取url query, 如果name为空返回query部分
+   * @param url
+   * @param name
+   */
+  static getQuerystring(url: string, name?: string): string;
+  static queryParse(query: string): object;
+  /**
+   *
+   * @param query
+   * @param useToHttp 是否用于http，encode会不一样 , 默认为 false
+   */
+  static queryStringify(query: any, useToHttp?: boolean): string;
+  /**
+   * setHashQuerystring
+   * @param url
+   * @param p
+   * @param json 如果为true , 属性内容 Array 或 Object 转为JSON, 默认为 false
+   */
+  static setHashQuerystring(url: string, p: object, json?: boolean): string;
+  /**
+   * 获取url hash query, 如果name为空返回query部分
+   * @param url
+   * @param name
+   */
+  static getHashQuerystring(url: string, name?: string): string;
+  /**
+   * 获取 url hash部分
+   * @param url
+   */
+  static getUrlHash(url: string): string;
+  /**
+   * 获取url路径部分
+   * @param url
+   */
+  static getUrlPart(url: string): string;
+  /**
+   * url 是否绝对路径
+   * @param url
+   */
+  static isAbsolutelyUrl(url: string): boolean;
+  /**
+   * 发送一个事件
+   * @param element HTML Element
+   * @param eventName 事件名称
+   * @param type 事件类型，默认 MouseEvents
+   * @param bubbles 是否可以取消，默认 true
+   * @param cancelable 是否可以取消，默认 true
+   */
+  static dispatchEvent(element: Element | EventTarget, eventName: string, type?: "UIEvents" | "MouseEvents" | "MutationEvents" | "HTMLEvents", bubbles?: boolean, cancelable?: boolean): void;
+  /**
+   * 统一 await 返回值: [err, data]
+   * @param promise
+   */
+  static awaitWrap<T = any, U = any>(promise: Promise<T>): Promise<[U | null, T | null]>;
+  /**
+   * 暂停
+   * @param time 微秒
+   */
+  static pause(time: any): Promise<unknown>;
+}
+declare class UERender {
+  /**
+   * 将元数据转为vue 元数据
+   * @param renders
+   * @param extend
+   */
+  static JsonToVueRender(renders: UERenderItem[], extend: UETransferExtend, parentRender?: UERenderItem): UERenderItem[];
+  /**
+   * 添加公共模板，传入参数会被亏染
+   * @param options
+   * @param transfer
+   */
+  static AddGlobalTemplates(templates: UETemplate[]): void;
+  /**
+   * 添加公共 transfer，传入参数会被亏染
+   * @param options
+   * @param transfer
+   */
+  static AddGlobalTransfer(...transfers: UETransfer[]): void;
+  /** 将公共内容放到option */
+  static GlobalToOptions(options: UEOption): UEOption;
+  /**
+   * 添加新的 transfer 到 options，传入参数会被亏染
+   * @param options
+   * @param transfer
+   */
+  static AddTransfer(options: UEOption, transfer: UETransfer): UEOption;
+  /**
+   * 定义 options，传入参数会被亏染
+   * @param options
+   */
+  static DefineOption(options: UEOption): UEOption;
+  /**
+   * 定义 transfer，传入参数会被亏染
+   * @param transfer
+   */
+  static DefineTransfer(transfer: UETransfer): UETransfer;
+  /**
+   * 定义 transfer.editor，传入参数会被亏染
+   * @param type
+   * @param editor
+   */
+  static DefineTransferEditor(type: string, editor: UETransferEditor): UETransferEditor;
+  /**
+   * 定义 transfer.editor.attr，传入参数会被亏染
+   * @param name
+   * @param attr
+   * @param editor
+   */
+  static DefineTransferEditorAttr(name: string, attr: UETransferEditorAttrsItem, editor: UETransferEditor): UETransferEditorAttrsItem;
+  /**
+   * 新建一个自定义attr
+   * @param name
+   * @param attr
+   * @param editor
+   */
+  static NewCustAttr(name: string, attr: UETransferEditorAttrsItem, editor: UETransferEditor): UETransferEditorAttrsItem;
+  static newEditValue(fnName: string): {
+      get(): any;
+      set(val: any): void;
+  };
+  static findRender(renders: UERenderItem[], p: any): UERenderItem;
+  static getVueBindName(name: string): string;
+  static getVueBindNameEx(name: string): {
+      isBind: boolean;
+      isEvent: boolean;
+      name: string;
+  };
+  static makeExportDefault(content: string): string;
+  static removeExportDefault(content: string): string;
+}
+interface UERenderItem {
+  /** 标签类型 */
+  type?: string;
+  /** 属性 */
+  props?: any;
+  /** 子节点 */
+  children?: (UERenderItem | string)[];
+  /** 是否创建此节点，默认为 true */
+  isRender?: boolean;
+  /** 获取父节点 */
+  parent?(): UERenderItem;
+  content?: string;
+  /** 编辑时的ID */
+  readonly editorId?: string;
+  /** 编辑时的 parent ID */
+  readonly editorPId?: string;
+  /** 编辑器组件配置 */
+  readonly editor?: UETransferEditor;
+  /**
+   * 存放临时内容
+   */
+  readonly temp?: UEObject;
+  /** 编辑器组件属性配置 */
+  readonly attrs?: UETransferEditorAttrs;
+  /** 编辑器设计时使用 */
+  'editor-attrs'?: any;
+}
+declare type MonacoEditorContext = {
+  content?: string;
+  extraLib?: string;
+  formatAuto?: boolean;
+  show?: boolean;
+  language?: "javascript" | 'json' | 'html' | 'css';
+  save?(content?: string): Promise<void> | void;
+  close?(): Promise<void> | void;
+};
+declare type UEAddComponent = {
+  id?: string;
+  $isTmpl?: boolean;
+  uedrag?: boolean;
+  icon?: string;
+  title?: string;
+  type?: string;
+  item: any;
+};
+declare class UEService {
+  readonly $uieditor: UEVue;
+  constructor($uieditor: UEVue, options: UEOption);
+  private _options;
+  get options(): UEOption;
+  set options(options: UEOption);
+  _destroy(): void;
+  $emit(event: string, ...arg: any[]): void;
+  $on(event: string, callback: Function): void;
+  /** 历史记录 */
+  history: {
+      list: any[];
+      curList: any[];
+      pos: number;
+      max: number;
+      init: boolean;
+      canNext: boolean;
+      canPre: boolean;
+      _cacle: () => void;
+      add: (item: any) => void;
+      addCur: () => void;
+      next: () => Promise<void>;
+      pre: () => Promise<void>;
+  };
+  /** 当前处理内容 */
+  current: {
+      /** 当前选中Id */
+      id: string;
+      /** 当前选中parentId */
+      parentId: string;
+      /** 根Id */
+      rootId: string;
+      /** 面包屑 */
+      breadcrumbs: any[];
+      /** 是否属性栏 */
+      refreshAttr: boolean;
+      /** 编辑中的属性栏 */
+      attrs: any;
+      /** 编辑中的editor内容 */
+      editor: any;
+      /** 用于显示的vue mixin */
+      mixin: any;
+      /** 计算后用于显示的JSON */
+      json: any;
+      /** 模式：design, json, script, tmpl, preview */
+      mode: UEMode;
+      monacoEditor: MonacoEditorContext;
+      monacoEditorOther: MonacoEditorContext;
+  };
+  private _clearMonacoEditor;
+  setModeUI(mode: UEMode): void;
+  setMode(mode: UEMode): Promise<void>;
+  /**
+   * 打开代码编辑
+   * @param option
+   */
+  showMonacoEditorOther(option: MonacoEditorContext): Promise<void>;
+  getTmpl(): string;
+  setTmpl(html: any): Promise<void>;
+  getScript(): string;
+  setScript(script: string): Promise<void>;
+  /** 获取预览参数 */
+  getPreviewOpt(): string;
+  setPreviewOpt(content: string): Promise<void>;
+  showPreviewOpt(): void;
+  private _resetCurrent;
+  /** 编辑中的JSON */
+  private _editJson;
+  /** 编辑中的 root JSON，注意：不是完整JSON内容，如：collapse 后，子节点给删除了。 */
+  get rootRender(): UERenderItem;
+  setJson(json: UERenderItem): Promise<any>;
+  _lastcp: Vue;
+  private _setJson;
+  getRenderItem(id: string, context?: UERenderItem): UERenderItem;
+  /**
+ * 根据 type 获取 render
+ * @param type
+ * @param render 如果不为空，从些render开始查找
+ */
+  getRenderByType(type: string, context?: UERenderItem): UERenderItem;
+  /**
+   * 获取当前render
+   */
+  getCurRender(): UERenderItem;
+  /**
+   * 获取父节点
+   * @param render
+   * @param all 是否所有内容，否则根据select设置查找父节点，默认为：true
+   */
+  getParentRenderItem(render: UERenderItem, all?: boolean): UERenderItem;
+  getParentRenderByType(render: UERenderItem, type: string): any;
+  closest(render: UERenderItem, fn: (render: UERenderItem) => boolean): any;
+  empty(cnf?: boolean): Promise<void>;
+  /**
+   * 获取 render 的临时内容，使用内容传送
+   * @param id
+   * @param key
+   */
+  getRenderTemp(id: string, key: string): any;
+  /**
+   * 获取 render 的临时内容，使用内容传送
+   * @param render
+   * @param key
+   */
+  getRenderTemp(render: UERenderItem, key: string): any;
+  /**
+   * 设置 render 的临时内容(不会生成meta)，使用内容传送
+   * @param id
+   * @param key
+   * @param value
+   */
+  setRenderTemp(id: string, key: string, value: any): any;
+  /**
+   * 设置 render 的临时内容(不会生成meta)，使用内容传送
+   * @param render
+   * @param key
+   * @param value
+   */
+  setRenderTemp(render: UERenderItem, key: string, value: any): any;
+  /**
+   * 刷新导向栏
+   * @param render
+   */
+  refresBreadcrumbs(render?: UERenderItem): void;
+  private _makeBreadcrumbs;
+  /**
+   * 根据component创建render
+   * @param type
+   * @param parentId
+   */
+  private createRender;
+  /**
+   * 修改 render type(类型)
+   * @param render
+   * @param type
+   */
+  changeRenderType(render: UERenderItem, type: string): void;
+  /**
+   *
+   * @param cnf 是否要确认
+   * @param norefresh 是否刷新
+   */
+  delCur(cnf?: boolean, norefresh?: boolean): Promise<void>;
+  /** norefresh 是否刷新 */
+  deleteWidget(parentId: string, id: string, norefresh?: boolean): void;
+  getAttr(id: string, key: string): UETransferEditorAttrsItem;
+  /**
+   * 根据id， 设置render属性
+   * @param id
+   * @param attr
+   */
+  setAttr(id: string, attr: UETransferEditorAttrsItem, refresh?: boolean): Promise<void>;
+  /**
+   * 添加属性
+   * @param id
+   * @param attrName
+   */
+  addAttr(id: string, attrName: string): UETransferEditorAttrsItem;
+  /**
+   * 返回编辑最终render，保存时用
+   * @param editing 是否编辑中的render， 默认：false
+   * @param id 返回指定render内容
+   */
+  getJson(editing?: boolean, id?: string): any;
+  /**
+   * 返回编辑最终render，保存时用
+   * @param editing 是否编辑中的render， 默认：false
+   * @param render 返回指定render内容
+   */
+  getJson(editing?: boolean, render?: UERenderItem): any;
+  private _isRrefreshing;
+  /**
+   * 刷新编辑内容
+   * @param formHistory
+   */
+  refresh(): Promise<any>;
+  _currentTimeId: any;
+  /**
+   * 设置（选择）当前render
+   * @param render
+   */
+  setCurrent(render: UERenderItem): any;
+  /**
+   * 根据id，设置（选择）当前render
+   * @param id
+   */
+  setCurrent(id: string): any;
+  refeshSelectBox(): void;
+  private _components;
+  private _components_tree;
+  /** 组件栏数据 */
+  get components(): {
+      list: any[];
+      tree: any[];
+  };
+  /**
+   * 通过拖动添加
+   * @param cpId
+   * @param renderId
+   * @param type2
+   */
+  addByDrag(cpId: string, renderId: string, type2: UEDragType2): Promise<void>;
+  canAddByDrag(cpId: string, renderId: string, type2: UEDragType2): boolean;
+  /**
+   * 通过类型添加
+   * @param type
+   * @param renderId
+   * @param type2
+   */
+  addByType(type: string, renderId: string, type2: UEDragType2): Promise<void>;
+  /**
+   * 通过JSON添加
+   * @param json
+   * @param renderId
+   * @param type2
+   */
+  addByJson(json: any, renderId: string, type2: UEDragType2): Promise<void>;
+  /**
+   * 通过模板添加
+   * @param json
+   * @param renderId
+   * @param type2
+   */
+  addByTmpl(template: string, renderId: string, type2: UEDragType2): Promise<void>;
+  /**
+   * 添加组件 或 模板
+   * @param component
+   * @param renderId
+   * @param type2
+   */
+  addByComponent(component: UEAddComponent, renderId: string, type2: UEDragType2): Promise<any>;
+  isLocked(render: UERenderItem): boolean;
+  isLocked(id: string): boolean;
+  locked(render: UERenderItem, locked: boolean): Promise<any>;
+  locked(id: string, locked: boolean): Promise<any>;
+  isCollapse(render: UERenderItem): boolean;
+  isCollapse(id: string): boolean;
+  collapse(render: UERenderItem, isCollapse: boolean): Promise<any>;
+  collapse(id: string, isCollapse: boolean): Promise<any>;
+  canRemove(render: UERenderItem): boolean;
+  canRemove(id: string): boolean;
+  canCopy(render: UERenderItem): boolean;
+  canCopy(id: string): boolean;
+  canSelect(render: UERenderItem): boolean;
+  canSelect(id: string): boolean;
+  canMove(fromId: string, toId: string, type2: UEDragType2): boolean;
+  move(fromId: string, toId: string, type2: string): Promise<any>;
+  private _copyId;
+  private _copyParentId;
+  private _isCut;
+  copyCur(): void;
+  copyCurToNext(): void;
+  /** 剪切 */
+  cutCur(): void;
+  get canPaste(): boolean;
+  pasteCur(pos?: 'before' | 'after' | 'child', keepCur?: boolean, currentId?: string, focus?: boolean): void;
+  private selectById;
+  selectNext(): void;
+  selectPre(): void;
+  selectParent(): void;
+  selectChild(): void;
+  foucs(): void;
+}
+
+`;
+
 
 const _other = `
 
@@ -694,5 +1721,6 @@ export const ExtraLib = `
 ${_vueDef}
 ${_routerDef}
 ${_vueExtends}
+${_ueDef}
 ${_other}
 `;
