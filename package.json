@@ -11,7 +11,7 @@
     "build": "rimraf ./pages && vue-cli-service build",
     "lib": "rimraf ./lib && vue-cli-service build -lib && yarn run lib-file",
     "libToNM": "yarn run lib && yarn run NM-file",
-    "PU":"yarn run lib && npm publish ./lib",
+    "PU": "yarn run lib && npm publish ./lib",
     "dev": "yarn run serve",
     "output": "vue-cli-service inspect --mode production > output.js",
     "lib-file": "cpy ./*/** ../../../../lib/@types --cwd=./lib/@types-build/src/vue-uieditor --parents && rimraf ./lib/@types-build",
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@babel/standalone": "7.10.5",
+    "domhandler": "4.2.0",
     "htm": "3.0.4",
     "jsontoxml": "1.0.1",
     "less": "2.7.3",

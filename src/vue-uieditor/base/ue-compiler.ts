@@ -252,7 +252,7 @@ export class UECompiler {
         render.children = (render.children || []).concat([scriptTag]);
       }
     }
-    console.warn('json', _.cloneDeep(render))
+    // console.warn('json', _.cloneDeep(render))
 
     return render;
   }
@@ -282,7 +282,8 @@ export class UECompiler {
    * @param html 
    */
   static async htmlToJsonAsync(html: string) {
-    await initHtmlBind();
+    await initParserHtml();
+    // await initHtmlBind();
     const json = UECompiler.htmlToJson(html);
     return json;
   }
@@ -292,13 +293,15 @@ export class UECompiler {
    * @param html 
    */
   static htmlToJson(html: string) {
-    const htmlBind = _htmlBind;
-    htmlBind || console.warn(htmlBind);//这句防止优化掉htmlBind，无它用
-    html = _escapeES(html);
-    let json = eval("eval(\`htmlBind\\\`\$\{html\}\\\`\`)");
-    json = JSON.parse(_unEscapeES(JSON.stringify(json)));
-    checkJson([json]);
-    return json;
+    const jsons = _ParserHtmlToJson(html);
+    return _.first(jsons);
+    // const htmlBind = _htmlBind;
+    // htmlBind || console.warn(htmlBind);//这句防止优化掉htmlBind，无它用
+    // html = _escapeES(html);
+    // let json = eval("eval(\`htmlBind\\\`\$\{html\}\\\`\`)");
+    // json = JSON.parse(_unEscapeES(JSON.stringify(json)));
+    // checkJson([json]);
+    // return json;
   }
 
   /**
@@ -330,7 +333,8 @@ export class UECompiler {
    */
   static async init(p?: { bable?: boolean }) {
     const { bable } = p || {};
-    const list = [initHtmlBind(), initJsonToXml()];
+    // const list = [initParserHtml(), initHtmlBind(), initJsonToXml()];
+    const list = [initParserHtml()];
     if (bable !== false)
       list.push(initBabel());
     return Promise.all(list);
@@ -420,21 +424,93 @@ function htmlHandle(type, props, ...children) {
   return item;
 }
 
-let _htmlBind;
-async function initHtmlBind() {
-  if (_htmlBind) return _htmlBind;
-  let htmFn: any = await import(/* webpackChunkName: "ui-editor-other-tool" */ 'htm');
-  htmFn = checkDefault(htmFn);
-  _htmlBind = htmFn.bind(htmlHandle);
-  return _htmlBind;
-}
+// let _htmlBind;
+// async function initHtmlBind() {
+//   if (_htmlBind) return _htmlBind;
+//   let htmFn: any = await import(/* webpackChunkName: "ui-editor-other-tool" */ 'htm');
+//   htmFn = checkDefault(htmFn);
+//   _htmlBind = htmFn.bind(htmlHandle);
+//   return _htmlBind;
+// }
 
-// let _jsonxml;
-async function initJsonToXml() {
-  // if (_jsonxml) return _jsonxml;
-  // _jsonxml = await import(/* webpackChunkName: "ui-editor-other-tool" */ 'jsontoxml');
-  // _jsonxml = checkDefault(_jsonxml);
-  // return _jsonxml;
+// // let _jsonxml;
+// async function initJsonToXml() {
+//   // if (_jsonxml) return _jsonxml;
+//   // _jsonxml = await import(/* webpackChunkName: "ui-editor-other-tool" */ 'jsontoxml');
+//   // _jsonxml = checkDefault(_jsonxml);
+//   // return _jsonxml;
+// }
+
+function _parseToProps(attr) {
+  const props = {};
+  _.forEach(attr, function (value, key) {
+    props[key] = !value ? true : value;
+  });
+  return props;
+}
+function _parseDomToJson(list: any[], outList) {
+  _.forEach(list, function ({ type, name, attribs, data, children, endIndex, startIndex }) {
+    let jsonItem;
+    switch (type) {
+      case 'comment':
+        if (data) jsonItem = `<!--${data}-->`;
+        break;
+      // case 'text':
+      // case 'tag':
+      // case 'script':
+      // case 'style':
+      default:
+        if (name) {
+          if (endIndex > startIndex) {
+            jsonItem = {
+              type: name
+            };
+            if (_.size(attribs) > 0) jsonItem.props = _parseToProps(attribs);
+            if (_.size(children) > 0) {
+              _parseDomToJson(children, jsonItem.children = []);
+            }
+          }
+        } else {
+          if (data) {
+            if (_.isString(data)) data = _.trim(data);
+            if (data)
+              jsonItem = data;
+          }
+        }
+        break;
+    }
+    if (jsonItem) outList.push(jsonItem);
+
+  });
+}
+let _ParserHtmlToJson: (html: string) => any[];
+async function initParserHtml() {
+  if (_ParserHtmlToJson) return _ParserHtmlToJson;
+  let def;
+  def = await import(/* webpackChunkName: "ui-editor-other-tool" */ 'htmlparser2');
+  def = checkDefault(def);
+  const Parser = def.Parser;
+  def = await import(/* webpackChunkName: "ui-editor-other-tool" */ 'domhandler');
+  def = checkDefault(def);
+  const DomHandler = def;
+
+  _ParserHtmlToJson = function (html: string) {
+    const jsons = [];
+    const handler = new DomHandler((error, dom) => {
+      if (error) {
+        // Handle error
+      } else {
+        // console.warn('dom', dom)
+        _parseDomToJson(dom, jsons);
+      }
+    }, { normalizeWhitespace: true, withStartIndices: true, withEndIndices: true });
+    const parser = new Parser(handler, { lowerCaseTags: false, lowerCaseAttributeNames: false });
+    parser.write(html);
+    parser.end();
+    return jsons;
+  };
+
+  return _ParserHtmlToJson;
 }
 
 function toJson(renders: any[]) {

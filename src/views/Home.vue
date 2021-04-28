@@ -212,6 +212,7 @@ export default class Home extends UEVue {
   json: UERenderItem = {
     type: "uieditor-div",
     children: [
+      '<!-- aaa -->',
       {
         type: "uieditor-text",
         props: {
