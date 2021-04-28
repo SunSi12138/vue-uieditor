@@ -4,36 +4,7 @@ import { UEHelper } from "./ue-helper";
 import { UEJsonToHtml, UEJsonToHtmlConfig } from './ue-json-to-html';
 import { UERenderItem } from "./ue-render-item";
 
-// function _escape(str: string, addTry?: boolean) {
-
-//   return str && _.escape(str).replace(/\/\/[^\n].*\n/g, '');
-// }
-
-//处理 html 的 " 和 & 字符
-function _escapeS(str: string) {
-  return UEJsonToHtml.escape(str);
-}
-function _unEscapeS(str: string) {
-  return UEJsonToHtml.unEscape(str);
-}
-
-
-//处理 字串 的 ` $ 和 % 字符
-const _es2 = '%60';
-const _es2Reg = new RegExp(_.escapeRegExp(_es2), 'g');
-const _es21 = '%24';
-const _es21Reg = new RegExp(_.escapeRegExp(_es21), 'g');
-const _es22 = '%25';
-const _es22Reg = new RegExp(_.escapeRegExp(_es22), 'g');
-function _escapeES(str: string) {
-  return (_.isString(str) && str.replace(/\%/g, _es22).replace(/\$/g, _es21).replace(/\`/g, _es2)) || str;
-}
-function _unEscapeES(str: string) {
-  return (_.isString(str) && str.replace(_es2Reg, '`').replace(_es21Reg, '$').replace(_es22Reg, '%')) || str;
-}
-
 const _bKey = /^\s*(?:\:|v\-)/, _bEvent = /^\s*\@/;
-
 
 let _babelTransformList = [], _max = 35;
 function _getBabelTransformList(script, opt) {
@@ -59,41 +30,6 @@ export class UECompiler {
 
   static toTemplate(items: (UERenderItem | string)[], editing?: boolean): string {
     return UECompiler.jsonToHtml(items, { wrap: false, clearPrivate: true });
-    // let templates: string[] = [];
-    // _.forEach(items, function (item) {
-    //   if (_.isString(item)) item = { type: "", content: item };
-    //   let props = item.props;
-    //   let propList: string[];
-    //   if (props) {
-    //     let evals, evalfn
-    //     propList = _.map(_.keys(props), function (key) {
-    //       let item = { name: key, value: props[key] };
-    //       let value = item.value === true ? true : (_.isNil(item.value) ? '' : item.value.toString());
-    //       let pItem = value === true ? item.name : [item.name, '"' + _escape(value, editing && key.indexOf(':') == 0) + '"'].join('=');
-    //       switch (key) {
-    //         case ':_ue_eval':
-    //           evals = pItem;
-    //           return '';
-    //         case ':_ue_eval_fn':
-    //           evalfn = pItem;
-    //           return '';
-    //         default:
-    //           return pItem;
-    //       }
-    //     });
-    //     if (evals || evalfn) {
-    //       propList = propList.filter(function (item) { return !!item; });
-    //       evals && propList.unshift(evals);
-    //       evalfn && propList.unshift(evalfn);
-    //     }
-    //   }
-    //   let children = item.children;
-    //   let childrenHtml: string = children && children.length > 0 ? UECompiler.toTemplate(children, editing) : (item.content || '');
-    //   let attrHtml: string = propList && propList.length > 0 ? (' ' + propList.join(' ')) : '';
-    //   let tagHtml: string = item.type ? (!childrenHtml ? `<${item.type}${attrHtml} />` : `<${item.type}${attrHtml}>${childrenHtml}</${item.type}>`) : item.content;
-    //   templates.push(tagHtml);
-    // });
-    // return templates.join('');
   }
 
   static vueCompile(template: string) {
@@ -295,13 +231,6 @@ export class UECompiler {
   static htmlToJson(html: string) {
     const jsons = _ParserHtmlToJson(html);
     return _.first(jsons);
-    // const htmlBind = _htmlBind;
-    // htmlBind || console.warn(htmlBind);//这句防止优化掉htmlBind，无它用
-    // html = _escapeES(html);
-    // let json = eval("eval(\`htmlBind\\\`\$\{html\}\\\`\`)");
-    // json = JSON.parse(_unEscapeES(JSON.stringify(json)));
-    // checkJson([json]);
-    // return json;
   }
 
   /**
@@ -309,7 +238,6 @@ export class UECompiler {
    * @param html 
    */
   static async jsonToHtmlAsync(json: any, config?: UEJsonToHtmlConfig) {
-    // await initJsonToXml();
     let html: string = UECompiler.jsonToHtml(json, config);
     return html;
   }
@@ -320,10 +248,6 @@ export class UECompiler {
    */
   static jsonToHtml(json: any, config?: UEJsonToHtmlConfig) {
     json = _.cloneDeep(json);
-    // const newJson = {
-    //   root20200806: toJson([json])
-    // }
-    // const html: string = _.trim(_jsonxml(newJson).replace(/<\/?root20200806>/g, ""));
     const html: string = _.trim(UEJsonToHtml([json], config));
     return html;
   }
@@ -333,7 +257,6 @@ export class UECompiler {
    */
   static async init(p?: { bable?: boolean }) {
     const { bable } = p || {};
-    // const list = [initParserHtml(), initHtmlBind(), initJsonToXml()];
     const list = [initParserHtml()];
     if (bable !== false)
       list.push(initBabel());
@@ -406,40 +329,6 @@ ${script}
   }
 
 }
-function checkJson(jsons: any[]) {
-  _.forEach(jsons, function (item) {
-    if (!item) return;
-    const props = item.props;
-    _.forEach(props, function (p, n) {
-      props[n] = _unEscapeS(p);
-    });
-    if (item.children) checkJson(item.children);
-  });
-}
-
-function htmlHandle(type, props, ...children) {
-  let item: any = { type };
-  props && (item.props = props);
-  children && children.length > 0 && (item.children = children);
-  return item;
-}
-
-// let _htmlBind;
-// async function initHtmlBind() {
-//   if (_htmlBind) return _htmlBind;
-//   let htmFn: any = await import(/* webpackChunkName: "ui-editor-other-tool" */ 'htm');
-//   htmFn = checkDefault(htmFn);
-//   _htmlBind = htmFn.bind(htmlHandle);
-//   return _htmlBind;
-// }
-
-// // let _jsonxml;
-// async function initJsonToXml() {
-//   // if (_jsonxml) return _jsonxml;
-//   // _jsonxml = await import(/* webpackChunkName: "ui-editor-other-tool" */ 'jsontoxml');
-//   // _jsonxml = checkDefault(_jsonxml);
-//   // return _jsonxml;
-// }
 
 function _parseToProps(attr) {
   const props = {};
@@ -513,23 +402,6 @@ async function initParserHtml() {
   return _ParserHtmlToJson;
 }
 
-function toJson(renders: any[]) {
-  return _.map(renders, function (item) {
-    if (!item || _.isString(item)) return item || '';
-    const attrs = {};
-    _.forEach(item.props, function (p, n) {
-      attrs[n] = _escapeS(p);
-    });
-    const newItem = {
-      name: item.type,
-      attrs
-    };
-    let children = item.children;
-    if (children && children.length > 0)
-      newItem['children'] = toJson(children);
-    return newItem;
-  });
-}
 const _jsonBaseProps = ['type', 'props', 'children'];
 const _renderObjProps = ['editor-attrs'];
 function renderToJson(renders: any[], outScript: any[], outStyle: any[]) {
@@ -550,12 +422,10 @@ function renderToJson(renders: any[], outScript: any[], outStyle: any[]) {
       props: props
     };
     if (isScript) outScript.push(newItem);
-    // props = newItem.props;
     _.forEach(item, function (p, n) {
       if (n == 'parent' || n == 'children') return;
       if (!_.includes(_jsonBaseProps, n))
         props[n] = JSON.stringify(p);
-      // props[`#${n}`] = _.includes(_renderObjProps, n) ? JSON.stringify(p) : p;
     });
     let children = item.children;
     if (children && children.length > 0) {
@@ -585,11 +455,6 @@ function jsonToRender(json: any[]) {
         newItem[n] = JSON.parse(p);
       } else
         newProps[n] = p;
-      // if (n.indexOf('#') == 0) {
-      //   const newN = n.substr(1);
-      //   newItem[newN] = _.includes(_renderObjProps, newN) ? JSON.parse(p) : p;
-      // } else
-      //   newProps[n] = p;
     });
     let newChildren;
     const children = item.children;
