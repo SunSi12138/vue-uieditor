@@ -247,6 +247,39 @@ theme: UETheme = {
 | about  | Function | ({ service: UEService }): string | 设置关于对话框内容 |
 | contextmenus  | Function | ({ render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[] | 选中组件的添加快捷菜单 |
 
+## 特殊组件属性
+
+- 限制组件编辑行为操作属性
+
+```ts
+
+/** 标记为不能选择 */
+const UECanNotSelectProps = 'ue-cant-select';
+/** 标记为不能移动 */
+const UECanNotMoveProps = 'ue-cant-move';
+/** 标记为不能删除 */
+const UECanNotRemoveProps = 'ue-cant-remove';
+/** 标记为不能复制 */
+const UECanNotCopyProps = 'ue-cant-copy';
+/** 标记为不能选择子节点 */
+const UECanNotSelectChildProps = 'ue-cant-select-child';
+/** 标记为不能移动子节点 */
+const UECanNotMoveChildProps = 'ue-cant-move-child';
+/** 标记为不能删除子节点 */
+const UECanNotRemoveChildProps = 'ue-cant-remove-child';
+/** 标记为不能复制子节点 */
+const UECanNotCopyChildProps = 'ue-cant-copy-child';
+/** 标记为不能移入子节点 */
+const UECanNotMoveInProps = 'ue-cant-movein';
+/** 标记为不能移出子节点 */
+const UECanNotMoveOutProps = 'ue-cant-moveout';
+/** 标记节点是否锁定 */
+const UEIsLockProps = 'ue-is-lock';
+/** 标记节点是否折叠 */
+const UEIsCollapseProps = 'ue-is-collapse';
+
+```
+
 ## transfer: UETransfer
 
 - 转换器，定义json的渲染行为 和 定义组件在编辑时的行为属性
