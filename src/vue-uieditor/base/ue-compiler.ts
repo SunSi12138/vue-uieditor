@@ -389,11 +389,11 @@ async function initParserHtml() {
       if (error) {
         // Handle error
       } else {
-        // console.warn('dom', dom)
+        // console.warn('dom', html, dom)
         _parseDomToJson(dom, jsons);
       }
     }, { normalizeWhitespace: true, withStartIndices: true, withEndIndices: true });
-    const parser = new Parser(handler, { lowerCaseTags: false, lowerCaseAttributeNames: false });
+    const parser = new Parser(handler, { lowerCaseTags: false, lowerCaseAttributeNames: false, xmlMode:false, recognizeSelfClosing:true });
     parser.write(html);
     parser.end();
     return jsons;
