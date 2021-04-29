@@ -333,7 +333,7 @@ ${script}
 function _parseToProps(attr) {
   const props = {};
   _.forEach(attr, function (value, key) {
-    props[key] = !value ? true : value;
+    props[key] = !value ? true : UEJsonToHtml.unEscape(value);
   });
   return props;
 }
