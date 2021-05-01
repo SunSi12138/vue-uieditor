@@ -86,9 +86,9 @@ import 'vue-uieditor';
 | query  | any | 空 | 可以使用$this.$query获取内容 |
 | params  | any | 空 | 可以使用$this.$params获取内容 |
 
-## $this 对像
+## \$this 对像
 
-- 为统一和加强this对像，可以在任何脚本使用 $this
+- 为统一和加强this对像，可以在任何脚本使用 \$this，并建议使用此对像
 
 ## options: UEOption
 
