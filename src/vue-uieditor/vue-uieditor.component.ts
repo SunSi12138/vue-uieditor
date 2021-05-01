@@ -79,12 +79,12 @@ export default class VueUieditor extends UEVue {
   }
 
   @UEVueProp()
-  private template!: string;
+  private tmpl!: string;
 
-  @UEVueWatch('template')
-  private _wTemplate(template) {
+  @UEVueWatch('tmpl')
+  private _wTemplate(tmpl) {
     if (this.service) {
-      this.service.setTmpl(template);
+      this.service.setTmpl(tmpl);
     }
   }
 
@@ -237,8 +237,8 @@ export default class VueUieditor extends UEVue {
 
     if (this.json)
       await service.setJson(this.json);
-    else if (this.template)
-      await service.setTmpl(this.template);
+    else if (this.tmpl)
+      await service.setTmpl(this.tmpl);
     await this.$nextTick();
     this.keys();
     this._initEvents();

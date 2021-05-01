@@ -38,13 +38,13 @@ export default class VueUieditorRender extends UEVue {
   private tmpl!: string;
 
   @UEVueProp()
-  private mixin!: string;
+  private mixin!: any;
 
   @UEVueProp()
-  private query!: string;
+  private query!: any;
 
   @UEVueProp()
-  private params!: string;
+  private params!: any;
 
   @UEVueProp(Boolean)
   private editing!: boolean;

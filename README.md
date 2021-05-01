@@ -61,6 +61,35 @@ import 'vue-uieditor';
 
 # 开发文档（API）
 
+## vue-uieditor 组件属性列表
+
+|  名称   | 类型  | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  |
+| options  | UEOption | 空 | UEOption 参数 |
+| json  | JSON | 空 | json 内容 |
+| tmpl  | string | 空 | html 内容 |
+| theme  | UETheme | 空 | 主题 |
+| on-ready  | 事件 | ({service:UEService)=>void | 编辑准备好 |
+| on-change  | 事件 | ({service:UEService)=>void | 编辑内容改变 |
+| on-select  | 事件 | (p)=>void; | 选择时 |
+| on-add-component  | 事件 | (p)=>void; | 添加内容，如：拖入组件或模板 |
+| on-change-mode  | 事件 | (p)=>void; | 当前模式改变（design, json...） |
+
+## vue-uieditor-render 组件属性列表
+
+|  名称   | 类型  | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  |
+| options  | UEOption | 空 | UEOption 参数 |
+| json  | JSON | 空 | json 内容 |
+| tmpl  | string | 空 | html 内容 |
+| mixin  | vue mixin | 空 | 组合 vue |
+| query  | any | 空 | 可以使用$this.$query获取内容 |
+| params  | any | 空 | 可以使用$this.$params获取内容 |
+
+## $this 对像
+
+- 为统一和加强this对像，可以在任何脚本使用 $this
+
 ## options: UEOption
 
 - vue-uieditor 组件参数
