@@ -94,8 +94,9 @@ function UEJsonToHtml(schema: any | Array<any> | string | number, config?: UEJso
   //     return '';
   // }
   // let leftTag = `${indentToken}<${tag}${attrs} data-depth="${depth}">`;
-  let leftTag = `${indentToken}<${tag}${resolveAttrs(rest)}>`;
-  let rightTag = `</${tag}>${wrapToken}`;
+  const hasChild = _.size(children) > 0;
+  let leftTag = `${indentToken}<${tag}${resolveAttrs(rest)}${hasChild ? '' : ' /'}>`;
+  let rightTag = hasChild ? `</${tag}>${wrapToken}` : '';
 
   let content: string | number = '';
   if (
