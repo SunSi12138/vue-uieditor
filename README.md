@@ -1027,3 +1027,86 @@ pasteCur(pos?: 'before' | 'after' | 'child', keepCur?: boolean, currentId?: stri
 | keepCur  | boolean | 否 | 空 | 保留当前节点 |
 | currentId  | string | 否 | 空 | 当前节点 |
 | focus  | boolean | 否 | 空 | 粘贴后选中 |
+
+
+## export class UERender
+
+- UERender 常用方法
+
+```ts
+options: UEOption = UERender.DefineOption({
+    ...,
+    transfer:UERender.DefineTransfer({
+      'uieditor-div': {
+        "editor": {
+          text: "Div",
+          order: 2,
+          groupOrder:0,
+          group:'公用组件库/基础组件',
+          icon: 'layui-icon layui-icon-picture',
+          inline: true,
+          transferAttr({ service }) {
+            console.log('service', service.getJson())
+          }
+      }
+    })
+});
+```
+
+### 函数列表
+
+#### AddGlobalTemplates
+
+- 添加公共模板
+
+```ts
+static AddGlobalTemplates(templates: UETemplate[]): void;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| templates  | UETemplate[] | 是 | 空 | 模板内容 |
+
+#### AddGlobalTransfer
+
+- 添加公共 transfer
+
+```ts
+static AddGlobalTransfer(...transfers: UETransfer[]): void;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| transfers  | UETemplate[] | 是 | 空 | transfer |
+
+#### DefineOption
+
+- 定义 options
+
+```ts
+static DefineOption(options: UEOption): UEOption;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| options  | UEOption | 是 | 空 | 参数 |
+
+#### DefineTransfer
+
+- 定义 transfer
+
+```ts
+static DefineTransfer(transfer: UETransfer): UETransfer;
+```
+
+##### 参数
+
+|  名称   | 类型  | 是否必选 | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  | ----  |
+| transfer  | UETransfer | 是 | 空 | transfer |
