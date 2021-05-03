@@ -196,6 +196,7 @@ export default class UieditorCpAttr extends UEVue {
       isClose = !!htmlEnd;
 
 
+      let sliderCls = '';
       let attrInputHtml: string;
       if (isAddBtn) {
         attrInputHtml = `<input
@@ -218,8 +219,22 @@ export default class UieditorCpAttr extends UEVue {
       </div>`;
       } else {
         switch (attr.type) {
-          case 'slider':
+          case 'slider-only':
             attrInputHtml = `<div ue-slider name="${name}"></div>`;
+            break;
+          case 'slider':
+            if (!attrBind) {
+              attrInputHtml = `<div ue-slider name="${name}"></div>`;
+            } else {
+              sliderCls = attr.bind ? ' attr-slider-bind' : ' attr-slider'
+              attrInputHtml = `<div ue-slider name="${name}"></div><input
+              type="text"
+              name="${name}"
+              autocomplete="off"
+              placeholder="${attr.placeholder || ''}"
+              class="layui-input"
+            />`;
+            }
             break;
           case 'select':
           case 'boolean':
@@ -257,7 +272,7 @@ export default class UieditorCpAttr extends UEVue {
             ${desc}
             ${attr.text}
           </label>
-          <div class="layui-input-block${attrBind}${attrCode}">
+          <div class="layui-input-block${attrBind}${attrCode}${sliderCls}">
             ${attrBindHtml}
             ${attrInputHtml}
             ${codeBtn}
@@ -309,14 +324,27 @@ export default class UieditorCpAttr extends UEVue {
       var jo = $(e.target);
       const name = $(e.target).attr('name');
       const attr = $this._attrs[name];
+      const jParent = jo.parent();
 
+      //attr-slider-bind
       if (jo.hasClass('layui-bg-blue-active')) {
         jo.addClass('layui-bg-blue');
         jo.removeClass('layui-bg-blue-active');
+        if (jParent.hasClass('attr-slider-bind')){
+          jParent.addClass('attr-slider');
+          jParent.removeClass('attr-slider-bind');
+          const ue_slider = jParent.find('.layui-slider').data('ue_slider');
+          if (ue_slider) ue_slider.setValue(~~$this._model[name]);
+        }
         if (attr) attr.bind = false;
       } else {
         jo.addClass('layui-bg-blue-active');
         jo.removeClass('layui-bg-blue');
+        if (jParent.hasClass('attr-slider')){
+          jParent.addClass('attr-slider-bind');
+          jParent.removeClass('attr-slider');
+          jParent.find(`input[name="${name}"]`).val($this._model[name]);
+        }
         if (attr) attr.bind = true;
       }
       $this._changeAttr(name, false);

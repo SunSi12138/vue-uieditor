@@ -133,8 +133,9 @@ export default class Home extends UEVue {
             slider: {
               effect: false,
               row: false,
-              value: "0",
+              value: "2",
               type: "slider",
+              enabledBind:true,
               typeOption: { min: 1, max: 24, step: 1 },
               order: 1,
             },

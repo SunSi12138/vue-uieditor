@@ -133,7 +133,7 @@ export interface UETransferEditorAttrsItem {
   /** 此属性只使用于编辑器，即最终结果没有此属性 */
   editorOlny?: boolean;
   /** 显示类型，默认：text，custom为自定义（弹出对话框） */
-  type?: 'text' | 'slider' | 'select' | 'select-only' | 'boolean' | 'boolean-only' | 'number' | 'custom';
+  type?: 'text' | 'slider' | 'slider-only' | 'select' | 'select-only' | 'boolean' | 'boolean-only' | 'number' | 'custom';
   /** 显示类型的参数 */
   typeOption?: any;
   /** 数据源, string[] | {text:string;value:string;} */

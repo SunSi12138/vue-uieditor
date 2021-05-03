@@ -31,14 +31,16 @@ layui.define('jquery', function(exports){
   ,thisSlider = function(){
     var that = this
     ,options = that.config;
-
-    return {
+    var slider = {
       setValue: function(value, index){ //设置值
         options.value = value;
         return that.slide('set', value, index || 0);
       }
       ,config: options
-    }
+    };
+    if (that.elemTemp) that.elemTemp.data('ue_slider', slider);
+
+    return slider;
   }
 
   //字符常量
@@ -207,7 +209,8 @@ layui.define('jquery', function(exports){
     ,sliderTxt = sliderAct.next('.' + SLIDER_INPUT)
     ,inputValue = sliderTxt.children('.' + SLIDER_INPUT_TXT).children('input').val()
     ,step = 100 / ((options.max - options.min) / Math.ceil(options.step))
-    ,change = function(offsetValue, index){
+    ,change = function(offsetValue, index, isSet){
+      var offsetValueOrg = offsetValue;
       if(Math.ceil(offsetValue) * step > 100){
         offsetValue = Math.ceil(offsetValue) * step
       }else{
@@ -233,7 +236,7 @@ layui.define('jquery', function(exports){
       }else{
         sliderAct.find('.' + SLIDER_BAR).css({"width":wrapWidth + '%', "left":minLeft + '%'});
       };
-      var selfValue = options.min + Math.round((options.max - options.min) * offsetValue / 100);
+      var selfValue = isSet ? offsetValueOrg : options.min + Math.round((options.max - options.min) * offsetValue / 100);
       inputValue = selfValue;
       sliderTxt.children('.' + SLIDER_INPUT_TXT).children('input').val(inputValue);
       sliderWrap.eq(index).data('value', selfValue);
@@ -273,7 +276,7 @@ layui.define('jquery', function(exports){
     };
     
     //动态赋值
-    if(setValue === 'set') return change(value, i);
+    if(setValue === 'set') return change(value, i, true);
 
     //滑块滑动
     sliderAct.find('.' + SLIDER_WRAP_BTN).each(function(index){

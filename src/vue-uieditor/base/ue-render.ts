@@ -325,7 +325,7 @@ export class UERender {
 
     switch (attr.type) {
       case 'select-only':
-      case 'slider':
+      case 'slider-only':
         attr.enabledBind = false;
         attr.codeBtn = false;
         break;
