@@ -131,9 +131,9 @@ module.exports = {
       config.plugins.delete('copy');
 
       const packageFile = (function saveLibPackage() {
-        const { name, version, description, main, keyword, types, homepage } = package;
+        const { name, version, description, main, keyword, types, homepage, author } = package;
         const newPackage = {
-          name, version, description, main, keyword, types, homepage,
+          name, version, author, description, main, keyword, types, homepage,
           "scripts": {},
           "dependencies": {
             "vue": "^2.6.10",

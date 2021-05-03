@@ -1,7 +1,8 @@
 {
   "name": "vue-uieditor",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "VUE 可视化编辑器（Vue 2.x）",
+  "author": "days2020",
   "main": "./index.js",
   "keyword": "vue uieditor vue-uieditor",
   "types": "@types/index.d.ts",
