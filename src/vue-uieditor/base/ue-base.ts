@@ -373,7 +373,8 @@ export interface UEToolBar {
 
 export interface UESideBar {
   /** 是否显示，默认: true */
-  show:boolean;
+  show?: boolean;
+  filter?(p:{ item: any, all: any, service: UEService }): boolean;
 }
 
 export interface UETheme {
@@ -391,11 +392,11 @@ export interface UETheme {
   /**
    * 左边工具栏
    */
-  leftBar?:UESideBar;
+  leftBar?: UESideBar;
   /**
    * 右边工具栏
    */
-  rightBar?:UESideBar
+  rightBar?: UESideBar
   /** 选中组件的添加快捷菜单 */
   contextmenus?(p: { render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[];
 }

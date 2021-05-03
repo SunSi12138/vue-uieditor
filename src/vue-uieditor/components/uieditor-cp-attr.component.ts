@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { UETransferEditorAttrs, UETransferEditorAttrsItem } from '../base/ue-base';
+import { UETransferEditorAttrs, UETransferEditorAttrsItem, UETheme } from '../base/ue-base';
 import { UEHelper } from '../base/ue-helper';
 import { UEService } from '../base/ue-service';
 import { UETransFn, UEVue, UEVueComponent, UEVueInject, UEVueLife } from '../base/vue-extends';
@@ -40,6 +40,9 @@ export default class UieditorCpAttr extends UEVue {
 
   @UEVueInject('service')
   service: UEService;
+
+  @UEVueInject('theme')
+  theme: UETheme;
 
   isEmpty = false;
 
@@ -88,8 +91,11 @@ export default class UieditorCpAttr extends UEVue {
     const eventCustList: UETransferEditorAttrsItem[] = [];
     const vueList: UETransferEditorAttrsItem[] = [];
     const model = {};
+    const service = this.service;
+    const { filter } = this.theme?.rightBar || {};
     _.forEach(attrs, (attr, name) => {
       if (_.isBoolean(attr) || attr.show === false) return;
+      if (filter && !filter({ item: attr, all: attrs, service })) return;
       if (_.size(attr.datas) > 0) {
         const datas = [];
         _.forEach(attr.datas, function (item) {
@@ -330,7 +336,7 @@ export default class UieditorCpAttr extends UEVue {
       if (jo.hasClass('layui-bg-blue-active')) {
         jo.addClass('layui-bg-blue');
         jo.removeClass('layui-bg-blue-active');
-        if (jParent.hasClass('attr-slider-bind')){
+        if (jParent.hasClass('attr-slider-bind')) {
           jParent.addClass('attr-slider');
           jParent.removeClass('attr-slider-bind');
           const ue_slider = jParent.find('.layui-slider').data('ue_slider');
@@ -340,7 +346,7 @@ export default class UieditorCpAttr extends UEVue {
       } else {
         jo.addClass('layui-bg-blue-active');
         jo.removeClass('layui-bg-blue');
-        if (jParent.hasClass('attr-slider')){
+        if (jParent.hasClass('attr-slider')) {
           jParent.addClass('attr-slider-bind');
           jParent.removeClass('attr-slider');
           jParent.find(`input[name="${name}"]`).val($this._model[name]);

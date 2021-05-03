@@ -3,6 +3,7 @@ import { UEHelper } from '../base/ue-helper';
 import { UEService } from '../base/ue-service';
 import { UEVue, UEVueComponent, UEVueInject, UEVueLife, UETransFn } from '../base/vue-extends';
 import { LayuiRender } from '../layui/layui-render';
+import { UETheme } from '../base/ue-base';
 
 
 @UEVueComponent({})
@@ -10,6 +11,9 @@ export default class UieditorCpTree extends UEVue {
 
   @UEVueInject('service')
   service: UEService;
+
+  @UEVueInject('theme')
+  theme: UETheme;
 
   @UEVueLife('mounted')
   private _m1() {

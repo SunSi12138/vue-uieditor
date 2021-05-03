@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UECanNotCopyChildProps, UECanNotCopyProps, UECanNotMoveChildProps, UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotRemoveChildProps, UECanNotRemoveProps, UECanNotSelectChildProps, UECanNotSelectProps, UEDragType2, UEIsCanNot, UEIsCanNotProps, UEIsCollapseProps, UEIsLockProps, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
+import { UECanNotCopyChildProps, UECanNotCopyProps, UECanNotMoveChildProps, UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotRemoveChildProps, UECanNotRemoveProps, UECanNotSelectChildProps, UECanNotSelectProps, UEDragType2, UEIsCanNot, UEIsCanNotProps, UEIsCollapseProps, UEIsLockProps, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem, UETheme } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -884,7 +884,12 @@ export class UEService {
     //添加 cp editor
     const editor = this.options.editor;
     if (_.size(editor) > 0) {
+      const theme: UETheme = this.$uieditor && this.$uieditor['themeEx'];
+      const leftBar = theme?.leftBar;
+      const { filter } = leftBar || {};
+      const service = this;
       _.forEach(editor, function (item, type) {
+        if (filter && !filter({ item, all: editor, service })) return;
         const newItem = { id: UEHelper.makeAutoId(), $isTmpl: false, uedrag: true, icon: item.icon, title: item.defaultText || item.text, type, item };
         if (item.show !== false && item.showInTree !== false) {
           const group = _getCpTreeGroup(tree, (item.group || '').split('/'));

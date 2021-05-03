@@ -103,7 +103,10 @@ export default class VueUieditor extends UEVue {
   private _pUiEditor() {
     return this;
   }
-
+  @UEVueProvide('theme')
+  private _pTheme() {
+    return this.themeEx;
+  }
 
   @UEVueProp()
   private theme!: UETheme;
@@ -138,19 +141,28 @@ export default class VueUieditor extends UEVue {
     return this.themeEx.contextmenus;
   }
 
+  get showLeftBarTheme() {
+    return this.themeEx.leftBar?.show !== false
+  }
+  @UEVueWatch('showLeftBarTheme', { immediate: true })
+  private _wSLT(show) {
+    this.leftBar.show = show !== false
+  }
   leftBar = {
     show: true
   };
-  get showLeftBar() {
-    return this.leftBar.show && this.themeEx.leftBar?.show !== false
-  }
 
+  get showRightBarTheme() {
+    return this.themeEx.rightBar?.show !== false
+  }
+  @UEVueWatch('showRightBarTheme', { immediate: true })
+  private _wSRT(show) {
+    this.rightBar.show = show !== false
+  }
   rightBar = {
     show: true
   }
-  get showRightBar() {
-    return this.rightBar.show && this.themeEx.leftBar?.show !== false
-  }
+
 
   current: any = null;
   history: any = null;

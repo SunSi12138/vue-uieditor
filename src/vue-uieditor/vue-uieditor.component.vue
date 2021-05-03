@@ -227,8 +227,8 @@
         </ul>
         <div class="layui-tab-content">
           <div class="layui-tab-item layui-show">
-            <div class="editor-pane" :class="{ 'left-hide': !showLeftBar, 'right-hide': !showRightBar }">
-              <div class="left" v-if="showLeftBar">
+            <div class="editor-pane" :class="{ 'left-hide': !leftBar.show, 'right-hide': !rightBar.show }">
+              <div class="left" v-if="leftBar.show">
                 <div class="left-content">
                   <uieditor-cp-tree />
                 </div>
@@ -267,7 +267,7 @@
                   </div>
                 </div>
               </div>
-              <div class="right" v-if="showRightBar">
+              <div class="right" v-if="rightBar.show">
                 <div class="right-content">
                   <uieditor-cp-attr
                     v-if="!current.refreshAttr && current.attrs"
