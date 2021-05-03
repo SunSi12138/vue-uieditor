@@ -138,6 +138,20 @@ export default class VueUieditor extends UEVue {
     return this.themeEx.contextmenus;
   }
 
+  leftBar = {
+    show: true
+  };
+  get showLeftBar() {
+    return this.leftBar.show && this.themeEx.leftBar?.show !== false
+  }
+
+  rightBar = {
+    show: true
+  }
+  get showRightBar() {
+    return this.rightBar.show && this.themeEx.leftBar?.show !== false
+  }
+
   current: any = null;
   history: any = null;
 

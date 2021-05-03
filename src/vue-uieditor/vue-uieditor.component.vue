@@ -82,7 +82,9 @@
               type="button"
               layui-tip="删除"
               layui-tip-direction="3"
-              :class="{ 'layui-disabled': !current.id || !service.canRemove(current.id) }"
+              :class="{
+                'layui-disabled': !current.id || !service.canRemove(current.id),
+              }"
               class="layui-btn layui-btn-primary layui-btn-sm"
               @click="service.delCur()"
             >
@@ -96,6 +98,24 @@
           >
             <i class="layui-icon layui-icon-set-fill"></i>
           </button> -->
+            <button
+              type="button"
+              layui-tip="显示/隐藏左边组件栏"
+              layui-tip-direction="3"
+              class="layui-btn layui-btn-primary layui-btn-sm divided"
+              @click="leftBar.show = !leftBar.show"
+            >
+              <i class="layui-icon layui-icon-app"></i>
+            </button>
+            <button
+              type="button"
+              layui-tip="显示/隐藏右边属性栏"
+              layui-tip-direction="3"
+              class="layui-btn layui-btn-primary layui-btn-sm"
+              @click="rightBar.show = !rightBar.show"
+            >
+              <i class="layui-icon layui-icon-slider"></i>
+            </button>
             <button
               type="button"
               layui-tip="关于"
@@ -207,8 +227,8 @@
         </ul>
         <div class="layui-tab-content">
           <div class="layui-tab-item layui-show">
-            <div class="editor-pane">
-              <div class="left">
+            <div class="editor-pane" :class="{ 'left-hide': !showLeftBar, 'right-hide': !showRightBar }">
+              <div class="left" v-if="showLeftBar">
                 <div class="left-content">
                   <uieditor-cp-tree />
                 </div>
@@ -247,7 +267,7 @@
                   </div>
                 </div>
               </div>
-              <div class="right">
+              <div class="right" v-if="showRightBar">
                 <div class="right-content">
                   <uieditor-cp-attr
                     v-if="!current.refreshAttr && current.attrs"

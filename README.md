@@ -450,7 +450,7 @@ options: UEOption = UERender.DefineOption({
 | vue  | boolean | false | 是否vue属性 |
 | effect  | boolean | false | 是否在编辑时生效 |
 | editorOlny  | boolean | false | 此属性只使用于编辑器，即最终结果没有此属性 |
-| type  | text, slider, select, select-only, boolean, boolean-only, number, custom' | text | 显示类型 |
+| type  | text, slider, slider-only, select, select-only, boolean, boolean-only, number, custom' | text | 显示类型 |
 | typeOption  | any | 空 | 显示类型的参数，如：type为'slider'时，typeOption={min:1,max:24} |
 | datas  | string[] | 空 | 显示类型数据源，如：type为'select'时，datas=['small', 'large'] |
 | bind  | boolean | false | 是否为bind属性 |

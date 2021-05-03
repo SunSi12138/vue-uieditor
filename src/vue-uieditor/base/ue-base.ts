@@ -371,6 +371,11 @@ export interface UEToolBar {
   click?(e: UEThemeEvent): void | boolean | Promise<void | boolean>;
 }
 
+export interface UESideBar {
+  /** 是否显示，默认: true */
+  show:boolean;
+}
+
 export interface UETheme {
   /**
    * 设置关于对话框内容
@@ -383,6 +388,14 @@ export interface UETheme {
   modes?: UEThemeMode[],
   /** 设置顶部工具栏 */
   toolBar?: UEToolBar[];
+  /**
+   * 左边工具栏
+   */
+  leftBar?:UESideBar;
+  /**
+   * 右边工具栏
+   */
+  rightBar?:UESideBar
   /** 选中组件的添加快捷菜单 */
   contextmenus?(p: { render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[];
 }
