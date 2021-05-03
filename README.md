@@ -205,7 +205,7 @@ options: UEOption = UERender.DefineOption({
 
 ## theme: UETheme
 
-- vue-uieditor 组件主题
+- 组件主题
 
 ```html
 <vue-uieditor :theme="theme" />
@@ -245,12 +245,14 @@ theme: UETheme = {
 |  ----  | ----  | ----  | ----  |
 | modes  | Array | ['json', 'script', 'tmpl] | 编辑器可用模式：json, script, tmpl |
 | toolBar  | UEToolBar[] | [] | 设置顶部工具栏 |
+| leftBar  | UESideBar | 空 | 左边工具栏（组件与模板） |
+| rightBar  | UESideBar | 空 | 右边工具栏（属性） |
 | about  | Function | ({ service: UEService }): string | 设置关于对话框内容 |
 | contextmenus  | Function | ({ render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[] | 选中组件的添加快捷菜单 |
 
 ## toolBar: UEToolBar
 
-- vue-uieditor 组件顶部工具栏
+- 顶部工具栏
 
 ```ts
 theme: UETheme = {
@@ -271,10 +273,33 @@ theme: UETheme = {
 
 |  名称   | 类型  | 默认值 | 描述 |
 |  ----  | ----  | ----  | ----  |
-| modes  | Array | ['json', 'script', 'tmpl] | 编辑器可用模式：json, script, tmpl |
-| toolBar  | UEToolBar[] | [] | 设置顶部工具栏 |
-| about  | Function | ({ service: UEService }): string | 设置关于对话框内容 |
-| contextmenus  | Function | ({ render: UERenderItem; parent: UERenderItem; editor: UETransferEditor; service: UEService; }): UEContextmenuItem[] | 选中组件的添加快捷菜单 |
+| title  | string | 空 | 标题，如有图标，用于tip |
+| icon  | string | 空 | 图标 |
+| divided  | boolean | false | 分离线 |
+| disabled  | boolean | false | 禁用 |
+| show  | boolean | false | 是否显示 |
+| click  | 方法 | (e: any): void | 点击 |
+
+## leftBar / rightBar: UESideBar
+
+- 则边工具栏
+
+```ts
+theme: UETheme = {
+  ...,
+  leftBar: {
+    show:true,
+    filter({item}){ return item.name.indexOf('text') >= 0; }
+  }
+};
+```
+
+### 成员变量列表
+
+|  名称   | 类型  | 默认值 | 描述 |
+|  ----  | ----  | ----  | ----  |
+| show  | boolean | false | 是否显示 |
+| filter  | 方法 | ({item,all,service}): boolean | 过滤 |
 
 ## 特殊组件属性
 
