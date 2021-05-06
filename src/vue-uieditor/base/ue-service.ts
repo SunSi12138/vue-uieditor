@@ -1729,10 +1729,18 @@ function _makeResultJson(renderList: UERenderItem[], editing?: boolean, service?
   });
 }
 
+
+function _getValue(obj, key) {
+  try {
+    return obj[key];
+  } catch (e) {
+  }
+}
+
 function _makeTypeDts(obj, keys, lv = 1) {
 
   const types = _.map(keys, function (key) {
-    const item = obj[key];
+    const item = _getValue(obj, key);
     let typeName = _.isNil(item) ? 'any' : typeof item;
     if (typeName == 'function') {
       let fnDts = /^[\s\r\n]*function[^\(]*(\([^\)]*\))/i.exec(item.valueOf().toString());
