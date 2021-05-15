@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { LayuiHelper } from '../layui/layui-helper';
 import { LayuiRender } from '../layui/layui-render';
-import { UECanNotCopyChildProps, UECanNotCopyProps, UECanNotMoveChildProps, UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotRemoveChildProps, UECanNotRemoveProps, UECanNotSelectChildProps, UECanNotSelectProps, UEDragType2, UEIsCanNot, UEIsCanNotProps, UEIsCollapseProps, UEIsLockProps, UEMode, UEOption, UETemplate, UETransferEditor, UETransferEditorAttrsItem, UETheme } from './ue-base';
+import { UECanNotCopyChildProps, UECanNotCopyProps, UECanNotMoveChildProps, UECanNotMoveInProps, UECanNotMoveOutProps, UECanNotMoveProps, UECanNotRemoveChildProps, UECanNotRemoveProps, UECanNotSelectChildProps, UECanNotSelectProps, UEDragType2, UEIsCanNot, UEIsCanNotProps, UEIsCollapseProps, UEIsLockProps, UEMode, UEOption, UETemplate, UETheme, UETransferEditor, UETransferEditorAttrsItem } from './ue-base';
 import { UECompiler } from './ue-compiler';
 import { UEHelper } from './ue-helper';
 import { UERender } from './ue-render';
@@ -156,6 +156,36 @@ export class UEService {
     monacoEditorOther: {} as MonacoEditorContext
   };
 
+
+  private _makeModelAndRefDts(list: UERenderItem[], outObj: any) {
+    _.forEach(list, (item) => {
+      if (_.isString(item)) return;
+      let attrs = item.attrs
+      if (attrs) {
+        const { 'v-model': model, ref } = attrs;
+        let value = _.trim(model.value);
+        if (value && !_.has(outObj, value)){
+          console.warn('value', value)
+          _.set(outObj, value, {});
+        }
+        value = _.trim(ref.value);
+        if (value && !_.has(outObj.$refs, value)){
+          _.set(outObj.$refs, value, {});
+        }
+      }
+      if (item.children) {
+        this._makeModelAndRefDts(item.children as any, outObj);
+      }
+    });
+  }
+
+  private _makeThisDTS(withThis?: boolean){
+    this._makeModelAndRefDts([this._editJson], this._lastcp);
+    const extraLib = _makeThisDTS(this._lastcp, withThis);
+    return extraLib;
+  }
+
+
   private _clearMonacoEditor() {
     _.assign(this.current, {
       monacoEditor: null,
@@ -195,7 +225,7 @@ export class UEService {
         break;
       case 'script':
         const extraLib = await this.options.extraLib();
-        const thisExtraLib = _makeThisDTS(this._lastcp);
+        const thisExtraLib = this._makeThisDTS();
 
         const scrtiptContent = await this.getScript();
         this._clearMonacoEditor();
@@ -257,7 +287,7 @@ export class UEService {
     let extraLibAll = '';
     if (!option.language || option.language == 'javascript') {
       const extraLib = await this.options.extraLib();
-      const thisExtraLib = _makeThisDTS(this._lastcp, true);
+      const thisExtraLib = this._makeThisDTS(true);
       extraLibAll = `${extraLib}; ${thisExtraLib}`;
     }
     current.monacoEditorOther = _.assign({
