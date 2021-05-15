@@ -1858,33 +1858,45 @@ function _canMoving(p: {
   if (UEIsCanNot(fromParent, UECanNotMoveChildProps)) {
     return false;
   }
+  const movingIn = fromEditor?.movingIn;
+  const movinP = { fromParent, toParent, fromRender, fromEditor, toRender, toEditor, service };
   if (type2 == 'in') {
-    if (toRender && toRender != fromRender && UEIsCanNot(toRender, UECanNotMoveInProps)) return false;
+    if (toRender && toRender != fromRender) {
+      if (UEIsCanNot(toRender, UECanNotMoveInProps)) return false;
+      const movingIn = toEditor?.movingIn;
+      if (movingIn && !movingIn(movinP)) return false;
+    }
   } else {
-    if (toParent && toParent != fromParent && UEIsCanNot(toParent, UECanNotMoveInProps)) return false;
+    if (toParent && toParent != fromParent) {
+      if (UEIsCanNot(toParent, UECanNotMoveInProps)) return false;
+      const movingIn = toParent.editor?.movingIn;
+      if (movingIn && !movingIn(movinP)) return false;
+    }
   }
 
   if (toParent && fromParent != toParent) {
     if (UEIsCanNot(fromParent, UECanNotMoveOutProps)) return false;
+    const movingOut = fromParent?.editor?.movingOut;
+    if (movingOut && !movingOut(movinP)) return false;
   }
 
   if (fromEditor) {
     if (fromEditor.draggable === false) return false;
-    if (fromEditor.moving && !fromEditor.moving({ fromParent, toParent, fromRender, fromEditor, toRender, toEditor, type2, service })) {
+    if (fromEditor.moving && !fromEditor.moving({ ...movinP, type2 })) {
       return false;
     }
   }
 
   if (fromParent?.editor) {
     const pEditor = fromParent?.editor;
-    if (pEditor.movingChild && !pEditor.movingChild({ fromParent, toParent, fromRender, fromEditor, toRender, toEditor, service })) {
+    if (pEditor.movingChild && !pEditor.movingChild(movinP)) {
       return false;
     }
   }
 
   if (toParent?.editor) {
     const pEditor = toParent?.editor;
-    if (pEditor.contenting && !pEditor.contenting({ fromParent, toParent, fromRender, fromEditor, toRender, toEditor, service })) {
+    if (pEditor.contenting && !pEditor.contenting(movinP)) {
       return false;
     }
   }

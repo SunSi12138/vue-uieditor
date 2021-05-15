@@ -260,6 +260,38 @@ export interface UETransferEditor {
     toParent: UERenderItem;
     service: UEService;
   }) => boolean;
+  /** 是否可以将子节点移出本节点 */
+  movingOut?: (p: {
+    /** 当前render(父层) */
+    fromRender: UERenderItem;
+    /** 移动到 render */
+    toRender: UERenderItem;
+    /** 当前render的editort */
+    fromEditor: UETransferEditor;
+    /** 移动到 render 的editort*/
+    toEditor: UETransferEditor;
+    /** 容器render(父层) */
+    fromParent: UERenderItem;
+    /** 容器render(父层) */
+    toParent: UERenderItem;
+    service: UEService;
+  }) => boolean;
+  /** 是否可以移出入节点 */
+  movingIn?: (p: {
+    /** 当前render(父层) */
+    fromRender: UERenderItem;
+    /** 移动到 render */
+    toRender: UERenderItem;
+    /** 当前render的editort */
+    fromEditor: UETransferEditor;
+    /** 移动到 render 的editort*/
+    toEditor: UETransferEditor;
+    /** 容器render(父层) */
+    fromParent: UERenderItem;
+    /** 容器render(父层) */
+    toParent: UERenderItem;
+    service: UEService;
+  }) => boolean;
   /**
    * 编辑渲染时转换 render 和 attr
    */
