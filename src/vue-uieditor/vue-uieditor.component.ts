@@ -172,10 +172,12 @@ export default class VueUieditor extends UEVue {
   }
 
   get isDesign() {
-    return this.current.mode == 'design' && !this.current.monacoEditorOther.show;
+    const current = this.current;
+    return current.mode == 'design' && !current.monacoEditorOther.show;
   }
   get isPreview() {
-    return this.current.mode == 'preview' && !this.current.monacoEditorOther.show;
+    const current = this.current;
+    return current.mode == 'preview' && !current.monacoEditorOther.show;
   }
   private _initEvents() {
     const $: JQueryStatic = layui.$,
@@ -192,6 +194,9 @@ export default class VueUieditor extends UEVue {
       let height = jEditorJsonContentIn.outerHeight() - 5;
       let width = jEditorJsonContentIn.outerWidth();
       _.assign(rest, { height, width });
+      if (!this.current.caclSize) {
+        this.$nextTick(() => this.current.caclSize = true);
+      }
       if (_.isEqual(jEditorJsonContentRest, rest)) return;
       jEditorJsonContentRest = rest;
       jEditorJsonContent.offset(rest).width(width).height(height);
@@ -212,7 +217,9 @@ export default class VueUieditor extends UEVue {
         let height = jPreviewJsonContentIn.outerHeight() - 15;
         let width = jPreviewJsonContentIn.outerWidth() - 10;
         _.assign(rest, { height, width });
-        if (_.isEqual(jPriviewJsonContentRest, rest)) return;
+        if (!this.current.caclSize) {
+          this.$nextTick(() => this.current.caclSize = true);
+        } if (_.isEqual(jPriviewJsonContentRest, rest)) return;
         jPriviewJsonContentRest = rest;
         jPreviewJsonContent.offset(rest).width(width).height(height);
       }

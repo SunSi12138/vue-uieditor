@@ -1,6 +1,10 @@
 <template>
   <div class="vue-uieditor" v-if="current">
-    <div class="editor-json-content" v-show="isDesign">
+    <div
+      class="editor-json-content"
+      v-show="isDesign"
+      :style="{ overflow: current.caclSize ? '' : 'hidden' }"
+    >
       <input class="editor-json-focus" ref="jsonFoucs" />
       <vue-uieditor-render
         v-if="current.json && isDesign"
@@ -10,7 +14,11 @@
         editing
       />
     </div>
-    <div class="editor-priview-content" v-show="isPreview">
+    <div
+      class="editor-priview-content"
+      v-show="isPreview"
+      :style="{ overflow: current.caclSize ? '' : 'hidden' }"
+    >
       <vue-uieditor-render
         v-if="isPreview"
         :options="optionEx"
@@ -227,7 +235,13 @@
         </ul>
         <div class="layui-tab-content">
           <div class="layui-tab-item layui-show">
-            <div class="editor-pane" :class="{ 'left-hide': !leftBar.show, 'right-hide': !rightBar.show }">
+            <div
+              class="editor-pane"
+              :class="{
+                'left-hide': !leftBar.show,
+                'right-hide': !rightBar.show,
+              }"
+            >
               <div class="left" v-if="leftBar.show">
                 <div class="left-content">
                   <uieditor-cp-tree />

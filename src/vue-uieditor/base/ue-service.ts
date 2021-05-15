@@ -152,6 +152,8 @@ export class UEService {
     json: null,
     /** 模式：design, json, script, tmpl, preview */
     mode: 'design' as UEMode,
+    /** 模式：design, preview 是否已经计算好大小 */
+    caclSize: false,
     monacoEditor: null as MonacoEditorContext,
     monacoEditorOther: {} as MonacoEditorContext
   };
@@ -164,12 +166,12 @@ export class UEService {
       if (attrs) {
         const { 'v-model': model, ref } = attrs;
         let value = _.trim(model.value);
-        if (value && !_.has(outObj, value)){
+        if (value && !_.has(outObj, value)) {
           console.warn('value', value)
           _.set(outObj, value, {});
         }
         value = _.trim(ref.value);
-        if (value && !_.has(outObj.$refs, value)){
+        if (value && !_.has(outObj.$refs, value)) {
           _.set(outObj.$refs, value, {});
         }
       }
@@ -179,7 +181,7 @@ export class UEService {
     });
   }
 
-  private _makeThisDTS(withThis?: boolean){
+  private _makeThisDTS(withThis?: boolean) {
     this._makeModelAndRefDts([this._editJson], this._lastcp);
     const extraLib = _makeThisDTS(this._lastcp, withThis);
     return extraLib;
@@ -200,6 +202,7 @@ export class UEService {
   }
 
   async setMode(mode: UEMode) {
+    this.current.caclSize = false;
     if (!mode) mode = 'design';
 
     const jTitle = layui.$(this.$uieditor.$el).find('.layui-tab-title');
