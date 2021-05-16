@@ -1859,13 +1859,12 @@ function _canMoving(p: {
   if (UEIsCanNot(fromParent, UECanNotMoveChildProps)) {
     return false;
   }
-  const movingIn = fromEditor?.movingIn;
   const movinP = { fromParent, toParent, fromRender, fromEditor, toRender, toEditor, service };
   if (type2 == 'in') {
     if (toRender && toRender != fromRender) {
       if (UEIsCanNot(toRender, UECanNotMoveInProps)) return false;
       const movingIn = toEditor?.movingIn;
-      if (movingIn && !movingIn(movinP)) return false;
+      if (movingIn && !movingIn({ ...movinP, toParent: toRender })) return false;
     }
   } else {
     if (toParent && toParent != fromParent) {
