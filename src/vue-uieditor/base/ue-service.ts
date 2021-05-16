@@ -624,7 +624,7 @@ export class UEService {
     let editor = render.editor
     let pId = render.editorPId
     const pRender = this.getRenderItem(pId);
-    if (editor && editor.select) {
+    if (editor && editor.select && pRender?.editor?.selectChild !== false) {
       // const pEditor = pRender.editor
       outList.unshift({
         text: (editor.textFormat && editor.textFormat(editor, render.attrs)) || editor.name,
@@ -1135,9 +1135,9 @@ export class UEService {
   canRemove(p: string | UERenderItem) {
     const render = _.isString(p) ? this.getRenderItem(p) : p;
     if (!render) return true;
-    if (UEIsCanNot(render, UECanNotRemoveProps)) return false;
+    if (UEIsCanNot(render, UECanNotRemoveProps) || render?.editor.remove === false) return false;
     const pRender = this.getRenderItem(render.editorPId);
-    if (UEIsCanNot(pRender, UECanNotRemoveChildProps)) return false;
+    if (UEIsCanNot(pRender, UECanNotRemoveChildProps) || pRender?.editor?.removeChild === false) return false;
     return true;
   }
 
@@ -1162,6 +1162,7 @@ export class UEService {
     if (editor && !editor.select) return false;
     const pRender = this.getRenderItem(render.editorPId);
     if (UEIsCanNot(pRender, UECanNotSelectChildProps)) return false;
+    if (pRender?.editor?.selectChild === false) return false;
     return true;
   }
 
@@ -1687,7 +1688,7 @@ function _getDroprender(renderList: UERenderItem[], parentRender?: UERenderItem)
     }
     if (!collapse && editor.controlLeft) className = `${className} control-left`;
 
-    if (className && (!editor.select || UEIsCanNot(render, UECanNotSelectProps) || UEIsCanNot(parentRender, UECanNotSelectChildProps))) {
+    if (className && (!editor.select || parentRender?.editor?.selectChild === false || UEIsCanNot(render, UECanNotSelectProps) || UEIsCanNot(parentRender, UECanNotSelectChildProps))) {
       // className = className.replace('uieditor-drag-item', '')
       //   .replace('uieditor-drag-content', '');
       className = className.replace('control-left', '');

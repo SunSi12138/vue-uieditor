@@ -197,6 +197,12 @@ export interface UETransferEditor {
   className?: string | ((p: { render: UERenderItem, editor: UETransferEditor, attrs: UETransferEditorAttrs }) => string);
   /** 是否可以选中（编辑），默认：true */
   select?: boolean;
+  /** 是否可以选中子节点（编辑），默认：true */
+  selectChild?: boolean;
+  /** 是否可以删除（编辑），默认：true */
+  remove?:boolean;
+  /** 是否可以删除子节点（编辑），默认：true */
+  removeChild?:boolean;
   /** 是否可以拖动（编辑），默认：true */
   draggable?: boolean;
   /** 是否显示在组件树，默认为 true */
