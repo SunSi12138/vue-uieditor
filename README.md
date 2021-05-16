@@ -407,6 +407,9 @@ options: UEOption = UERender.DefineOption({
 | empty  | string | 空 | 编辑时使用黑块代替组件显示，处理大型组件占用性能 |
 | collapse  | boolean | true |  是否可以收起，容器时默认为 true |
 | select  | boolean | true |  是否可以选中（编辑） |
+| selectChild  | boolean | true |  是否可以选中子节点（编辑） |
+| remove  | boolean | true |  是否可以删除（编辑） |
+| removeChild  | boolean | true |  是否可以删除子节点（编辑） |
 | draggable  | boolean | true |  是否可以拖动（编辑） |
 | showInTree  | boolean | true |  是否显示在组件树 |
 | show  | boolean | true |  是否显示 |
