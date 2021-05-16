@@ -1883,6 +1883,7 @@ function _canMoving(p: {
 
   if (fromEditor) {
     if (fromEditor.draggable === false) return false;
+    if (fromParent?.editor?.draggableChild === false) return false;
     if (fromEditor.moving && !fromEditor.moving({ ...movinP, type2 })) {
       return false;
     }

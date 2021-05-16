@@ -200,11 +200,13 @@ export interface UETransferEditor {
   /** 是否可以选中子节点（编辑），默认：true */
   selectChild?: boolean;
   /** 是否可以删除（编辑），默认：true */
-  remove?:boolean;
+  remove?: boolean;
   /** 是否可以删除子节点（编辑），默认：true */
-  removeChild?:boolean;
+  removeChild?: boolean;
   /** 是否可以拖动（编辑），默认：true */
   draggable?: boolean;
+  /** 是否可以拖动子节点（编辑），默认：true */
+  draggableChild?: boolean;
   /** 是否显示在组件树，默认为 true */
   showInTree?: boolean;
   /** 编辑时是否显示 */
@@ -412,7 +414,7 @@ export interface UEToolBar {
 export interface UESideBar {
   /** 是否显示，默认: true */
   show?: boolean;
-  filter?(p:{ item: any, all: any, service: UEService }): boolean;
+  filter?(p: { item: any, all: any, service: UEService }): boolean;
 }
 
 export interface UETheme {

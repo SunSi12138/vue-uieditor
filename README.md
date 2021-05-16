@@ -411,6 +411,7 @@ options: UEOption = UERender.DefineOption({
 | remove  | boolean | true |  是否可以删除（编辑） |
 | removeChild  | boolean | true |  是否可以删除子节点（编辑） |
 | draggable  | boolean | true |  是否可以拖动（编辑） |
+| draggableChild  | boolean | true |  是否可以拖动子节点（编辑） |
 | showInTree  | boolean | true |  是否显示在组件树 |
 | show  | boolean | true |  是否显示 |
 | inline  | boolean | true |  编辑时是否强制显示为inline |
