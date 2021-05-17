@@ -111,6 +111,7 @@
               layui-tip="显示/隐藏左边组件栏"
               layui-tip-direction="3"
               class="layui-btn layui-btn-primary layui-btn-sm divided"
+              :class="{'ue-active':leftBar.show}"
               @click="leftBar.show = !leftBar.show"
             >
               <i class="layui-icon layui-icon-app"></i>
@@ -120,6 +121,7 @@
               layui-tip="显示/隐藏右边属性栏"
               layui-tip-direction="3"
               class="layui-btn layui-btn-primary layui-btn-sm"
+              :class="{'ue-active':rightBar.show}"
               @click="rightBar.show = !rightBar.show"
             >
               <i class="layui-icon layui-icon-slider"></i>
