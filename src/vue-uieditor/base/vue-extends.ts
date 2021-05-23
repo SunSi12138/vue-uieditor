@@ -383,6 +383,87 @@ export function UEVueValue<T>(change?: (self: T, val, oldVal) => void) {
 
 export class UEVue extends Vue {
 
+
+  /**
+   * 获取 Vue 定义资源，'components'|'directives'|'filters'
+   * @param vue 
+   * @param type 
+   */
+  static getAsset(vue: Vue, type: 'components' | 'directives' | 'filters') {
+    const optAssets = (vue?.$options || {})[type];
+    const assets = {};
+    if (optAssets) {
+      for (var n in optAssets) assets[n] = optAssets[n];
+    }
+    return assets;
+  }
+  
+  static getCpDef(componentDef, componentName) {
+    // if (!_.has(cp, 'cid') || !_.has(cp, 'options')) return;
+    const props = [];
+    const isAsync = (!_.has(componentDef, 'cid') || !_.has(componentDef, 'options')) && _.isFunction(componentDef);
+    if (!isAsync) {
+      let order = 0;
+      _.forEach(componentDef.options && componentDef.options.props, function (p, pName) {
+        const pType = p?.type, pDefautl = p?.default;
+        let type = 'text', valueType = pType && pType.name;
+        if (pType == Boolean) {
+          type = 'boolean';
+          // valueType = 'Boolean';
+        } else if (pType == Number) {
+          valueType = 'number';
+          // valueType = 'Number';
+        }// else if (pType == String) {
+        //   valueType = 'String';
+        // } else if (pType == Array) {
+        //   valueType = 'Array';
+        // } else if (pType == Object) {
+        //   valueType = 'Object';
+        // }
+        valueType = `类型：${valueType || 'Any'}` + (pDefautl ? `；默认值：${pDefautl}` : '');
+        props.push({
+          name: pName, text: pName,
+          order: order, value: '', valueType, type,
+          datas: '', bind: false
+        });
+        order++;
+      });
+    }
+    const cpDef = { value: componentName, text: componentName, props, asyncCp: null };
+    if (isAsync) {
+      cpDef.asyncCp = async () => {
+        const asyncCpDef: any = await componentDef();
+        const cpDef2 = asyncCpDef && UEVue.getCpDef(asyncCpDef.default, cpDef.value);
+        cpDef2 && _.assign(cpDef, cpDef2);
+        cpDef.asyncCp = null;
+      };
+    }
+    return cpDef;
+  }
+
+
+  private _components;
+  /** 获取当前组件所有注册组件 */
+  get $components() {
+    if (this._components) return this._components;
+    return this._components = UEVue.getAsset(this, 'components');
+  }
+
+  private _directives;
+  /** 获取当前组件所有注册指令 */
+  get $directives() {
+    if (this._directives) return this._directives;
+    return this._directives = UEVue.getAsset(this, 'directives');
+  }
+
+  private _filters;
+  /** 获取当前组件所有注册过滤器 */
+  get $filters() {
+    if (this._filters) return this._filters;
+    return this._filters = UEVue.getAsset(this, 'filters');
+  }
+
+
   static getVueName(vnode) {
     return vnode && vnode.componentOptions ? vnode.componentOptions.Ctor.options.name : '';
   }
