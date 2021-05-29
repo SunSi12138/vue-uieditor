@@ -292,7 +292,6 @@ interface CreateElement {
 }
 
 class Vue {
-  readonly $http:HttpRequest;
   readonly $el: Element;
   readonly $options: ComponentOptions<Vue>;
   readonly $parent: Vue;

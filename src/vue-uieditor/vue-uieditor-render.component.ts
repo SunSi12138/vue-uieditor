@@ -279,6 +279,10 @@ export default class VueUieditorRender extends UEVue {
     let options = this.optionEx;
     vueDef.mixins = (vueDef.mixins || []).concat([{
       data() {
+        Object.defineProperty(this, '$http', {
+          enumerable: true,
+          get() { return options.http && options.http() || {}; }
+        });
         if (previewOpt && previewOpt.$init_0326_) {
           previewOpt.$init_0326_(this);
         }
@@ -303,6 +307,7 @@ export default class VueUieditorRender extends UEVue {
             : $uieditorRender.$query;
         },
         $isEditing() { return $uieditorRender.editing; },
+        regeneratorRuntime(){ return window['regeneratorRuntime']; }
       },
       methods: {
         $babelTransform(script, opt) {

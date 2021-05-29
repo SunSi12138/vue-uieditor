@@ -56,11 +56,18 @@ const group = "测试组件库/基础组件";
 })
 export default class Home extends UEVue {
   options: UEOption = UERender.DefineOption({
-    global(){
+    global() {
       return {
-        merge(){
-           return 'merge ok';
-        }
+        merge() {
+          return "merge ok";
+        },
+      };
+    },
+    http() {
+      return {
+        async get(url, config) {
+          return { name: "aaaa" };
+        },
       };
     },
     transfer: {
@@ -135,7 +142,7 @@ export default class Home extends UEVue {
               row: false,
               value: "2",
               type: "slider",
-              enabledBind:true,
+              enabledBind: true,
               typeOption: { min: 1, max: 24, step: 1 },
               order: 1,
             },
@@ -190,7 +197,7 @@ export default class Home extends UEVue {
         title: "JSON Object",
         group: "测试模板库/测试模板",
         json: {
-          type: "uieditor-div"
+          type: "uieditor-div",
         },
       },
       {
@@ -213,7 +220,7 @@ export default class Home extends UEVue {
   json: UERenderItem = {
     type: "uieditor-div",
     children: [
-      '<!-- aaa -->',
+      "<!-- aaa -->",
       {
         type: "uieditor-text",
         props: {
