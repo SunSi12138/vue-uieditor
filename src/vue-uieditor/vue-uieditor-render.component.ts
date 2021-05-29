@@ -14,6 +14,7 @@ const _defaultGlobalExtend = {
   UEHelper,
   UECompiler,
   UERender,
+  regeneratorRuntime: window['regeneratorRuntime'],
   ...UEAllSpecialProps
 };
 
@@ -307,7 +308,7 @@ export default class VueUieditorRender extends UEVue {
             : $uieditorRender.$query;
         },
         $isEditing() { return $uieditorRender.editing; },
-        regeneratorRuntime(){ return window['regeneratorRuntime']; }
+        // regeneratorRuntime(){ return window['regeneratorRuntime']; }
       },
       methods: {
         $babelTransform(script, opt) {
