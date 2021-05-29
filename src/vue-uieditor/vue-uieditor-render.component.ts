@@ -151,7 +151,7 @@ export default class VueUieditorRender extends UEVue {
       const globalOpt = _.assign({}, _defaultGlobalExtend, optGlobal);
       mixinExBefore.computed = _objectToComputed(globalOpt);
 
-      previewOpt = preview && (function () {
+      previewOpt = (preview || editing) && (function () {
         let opt = null;
         const previewItem = UERender.findRender([json], { type: 'preview-opt' });
         if (previewItem) opt = _.first(previewItem.children);
@@ -160,6 +160,9 @@ export default class VueUieditorRender extends UEVue {
           opt = (new Function('__ue_vue_def_', `with(__ue_vue_def_) { return (function() { ${babelContent.code}; return _.assign(__ue_vue_def_ctx(),{$init_0326_:function($this){__ue_vue_def_.$this= $this;}});})(); }`))({ $this: {}, ...globalOpt });
         }
 
+        if (editing && opt?.vueDef) {
+          opt.vueDef = _makeEditMixin(opt.vueDef);
+        }
         return opt;
       })();
 
@@ -331,7 +334,6 @@ export default class VueUieditorRender extends UEVue {
     } as UEVueMixin]);
 
     if (_.size(previewOpt?.vueDef) > 0) {
-      console.warn('previewOpt.vueDef', previewOpt, vueDef)
       vueDef.mixins.push(previewOpt.vueDef);
     }
   }

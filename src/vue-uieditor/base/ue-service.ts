@@ -1781,16 +1781,18 @@ function _makeTypeDts(obj, keys, lv = 1) {
       typeName = fnDts ? `${fnDts[1]}=>any` : '()=>any';
     }
     if (_.isArray(item)) {
-      typeName = 'any[]';
+      let typeNameIn = _.size(item) > 0 ? _makeTypeDts(item, _.keys(_.first(item)), lv + 1).join(';') : '';
+      typeName = !typeNameIn ? 'any[]' : `({${typeNameIn};})[]`;
     } else if (typeName == 'object') {
       const oKeys = Object.keys(item);
-      if (oKeys && oKeys.length > 0 && lv == 1) {
+      if (oKeys && oKeys.length > 0 && lv <= 4) {
+        let typeNameIn;
         if (key == '$refs') {
-          typeName = `{${_.map(oKeys, (item) => `${item}:Vue`).join(';')};}`;
-
+          typeNameIn = _.map(oKeys, (item) => `${item}:Vue`).join(';');
         } else {
-          typeName = `{${_makeTypeDts(item, oKeys, 2).join(';')};}`;
+          typeNameIn = _makeTypeDts(item, oKeys, lv + 1).join(';');
         }
+        typeName = !typeNameIn ? 'any' : `{${typeNameIn};}`;;
       } else {
         typeName = 'any';
       }
@@ -1807,7 +1809,7 @@ function _makeThisDTS(cp: any, withThis?: boolean) {
 
   const cpKeys = _.keysIn(cp);
   const vueKeys = _.keysIn(new Vue());
-  const excludes = ["$uieditor", "$service", "$el"];
+  const excludes = ["$uieditor", "$service", "$el", "$this"];
   const keys = _.filter(cpKeys, function (key) {
     return !_.includes(vueKeys, key) && !_.includes(excludes, key) && !privateVar.test(key);
   }).concat(['$refs']);
@@ -1820,10 +1822,12 @@ const {
  }  = $this;
 `;
 
+  const orderTypes = _.orderBy(types, 'length', 'asc');
+
   const dts = `
 
 class UIEditorThis extends Vue {
- ${types.join(';')};
+ ${orderTypes.join(';\n')};
 }
 
 const $this = new UIEditorThis();
