@@ -90,6 +90,7 @@ export default class UieditorCpAttr extends UEVue {
     const eventList: UETransferEditorAttrsItem[] = [];
     const eventCustList: UETransferEditorAttrsItem[] = [];
     const vueList: UETransferEditorAttrsItem[] = [];
+    const dsList: UETransferEditorAttrsItem[] = [];
     const model = {};
     const service = this.service;
     const { filter } = this.theme?.rightBar || {};
@@ -109,7 +110,9 @@ export default class UieditorCpAttr extends UEVue {
       // 是否 v- 属性，如 v-if....
       attr['isPrefxV'] = _vReg.test(name);
 
-      if (attr.event) {
+      if (attr.datasource) {
+          dsList.push(attr);
+      } else if (attr.event) {
         if (attr.cust)
           eventCustList.push(attr);
         else
@@ -165,6 +168,10 @@ export default class UieditorCpAttr extends UEVue {
     const vueGroupList = _makeGroupList(vueList);
     html = this._makeFormDom(vueGroupList);
     $(this.$refs.vueContent).html(html);
+
+    const dsGroupList = _makeGroupList(dsList);
+    html = this._makeFormDom(dsGroupList);
+    $(this.$refs.dsContent).html(html);
 
     this._renderDom();
 

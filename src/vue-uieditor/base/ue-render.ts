@@ -278,6 +278,8 @@ export class UERender {
     if (!editor.text) editor.text = type;
     if (editor.placeholderAttr) editor.attrs = UEHelper.assignDepth({}, _defaultplaceholderAttr, editor.attrs);
     if (editor.disabledAttr) editor.attrs = UEHelper.assignDepth({}, _defaultDisabledAttr, editor.attrs);
+    editor.attrs = UEHelper.assignDepth({}, _dataSourceAttr, editor.attrs);
+
     const attrs = editor.attrs;
     const newAttrs = {};
     //支持 'text:aaa,id':{}
@@ -350,7 +352,8 @@ export class UERender {
     }
     // if (!attr.placeholder) attr.placeholder = attr.text;
     if (attr.event) {
-      attr.group = '组件事件';
+      if (!attr.group) attr.group = '组件事件';
+      attr.groupOrder = 999;
       attr.effect = false;
       attr.enabledBind = false;
       attr.row = attr.row !== false;
@@ -536,7 +539,7 @@ function _defautlOption(): UEOption {
           }
         }
       }
-
+      _makeDatasource(newRender, extend);
       return newRender;
     },
     transferAfter(render: UERenderItem, extend?: UETransferExtend): UERenderItem {
@@ -552,3 +555,127 @@ const _defaultplaceholderAttr: UETransferEditorAttrs = {
 const _defaultDisabledAttr: UETransferEditorAttrs = {
   'disabled': { order: -2, bind: true, type: 'boolean' }
 };
+
+
+const _dataSourceAttr: UETransferEditorAttrs = {};
+(function () {
+  const attrs: UETransferEditorAttrs = {
+    name: { groupOrder: 999, order: 1, desc:'数据名称，通过名称获取数据' },
+    url: { },
+    method: {
+      order: 2,
+      type: 'select',
+      // datas: ["get", "post", "delete", "head", "put", "patch"]
+    },
+    'data,query': { bind: true, enabledBind: false, order: 3 },
+    auto: {
+      order: 5,
+      type: 'boolean',
+      bind: true,
+      desc: '是否自动请求，比如相关绑定数据变动时'
+    },
+    config: { bind: true, order: 7 },
+    'on-send': { event: true, order: 31 },
+    'on-map': { event: true, order: 32 },
+    'on-success': { event: true, order: 33 },
+    'on-error': { event: true, order: 34 },
+    'on-complete': { event: true, order: 35 }
+  };
+  _.forEach(attrs, function (attr, key) {
+    attr.text = key;
+    attr.datasource = true;
+    attr.group = attr.event ? '事件' : '属性';
+    _dataSourceAttr[`datasource-${key}`] = attr;
+  });
+})();
+
+
+function _makePropPathVar(render: UERenderItem, p: { dsKey?: string; dsId?: string } = {}) {
+  // if (_.isString(render)) return;
+  // const props = render.props || {};
+
+  // let id = render.id || "",
+  //   key = render.key || "";
+  // const owner = render.rednerOwner || '$this';
+  // const undef = 'undefined';
+  // id = !id ? undef : `${owner}.${id}`;
+  // key = !key ? undef : `${owner}.${key}`;
+
+  // const dsKey = p.dsKey && `$this.${p.dsKey}` || undef;
+  // const dsId = p.dsId && `$this.${p.dsId}` || undef;
+
+  // _.forEach(props, function (value, name) {
+  //   if (value && _.isString(value)) {
+  //     props[name] = value.replace(/(\$|\%24)datasourceKey\1/gi, dsKey)
+  //       .replace(/(\$|\%24)datasourceId\1/gi, dsId)
+  //       .replace(/(\$|\%24)key\1/gi, key)
+  //       .replace(/(\$|\%24)id\1/gi, id)
+  //   }
+  // });
+
+  // _.forEach(render, function (value, name) {
+  //   if (value && _.isString(value)) {
+  //     render[name] = value.replace(/(\$|\%24)datasourceKey\1/gi, dsKey)
+  //       .replace(/(\$|\%24)datasourceId\1/gi, dsId)
+  //       .replace(/(\$|\%24)key\1/gi, key)
+  //       .replace(/(\$|\%24)id\1/gi, id)
+  //   }
+  // });
+
+}
+
+const _dsRegex = /^([\:\@])?datasource\-(.+)$/;
+
+function _makeDatasource(render: UERenderItem, extend: UETransferExtend) {
+  const props = render.props;
+  const datasource = [], dsRegex = _dsRegex;
+  const datafield = [], reffield = [];
+  _.forEach(props, function (value, key) {
+    let [find, type, sKey] = dsRegex.exec(key) || [];
+    if (!find) return;
+    delete props[key];
+    switch (type) {
+      case ":":
+        datasource.push(`"${sKey}": ${value}`);
+        break;
+      case "@":
+        datasource.push(`"${sKey}": ($event) => { ${value} }`);
+        break;
+      default:
+        if (value) {
+          if (sKey == 'datafield') {
+            datafield.push(value.replace(/\s+/g, '').split(','));
+          } else if (sKey == 'reffield') {
+            reffield.push(value.replace(/\s+/g, '').split(','));
+          } else
+            datasource.push(`"${sKey}": ${JSON.stringify(value)}`);
+        }
+        break;
+    }
+  });
+  if (!_.isEmpty(datasource)) {
+
+    const key = `ds_${UEHelper.makeAutoId()}`;
+    const id = `${key}_id`;
+    _makePropPathVar(render, { dsKey: key, dsId: id });
+
+    _.forEach(datafield, function (dkey) {
+      dkey = `:${dkey}`;
+      if (props[dkey] == '数据源') {
+        props[dkey] = key;
+      }
+    });
+    _.forEach(reffield, function (rkey) {
+      rkey = `:${rkey}`;
+      if (props[rkey] == '数据源') {
+        props[rkey] = id;
+      }
+    });
+    _.set(extend.data, key, undefined);
+    _.set(extend.data, id, undefined);
+    const newDatasource = `{ key:"${key}", id:"${id}",  ${datasource.join(', ')}}`;
+    props['v-uieditor-ds'] = `[$datasourceOpt, ${newDatasource}]`;
+  } else {
+    _makePropPathVar(render);
+  }
+}

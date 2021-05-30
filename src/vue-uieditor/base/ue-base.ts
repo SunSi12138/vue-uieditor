@@ -144,6 +144,8 @@ export interface UETransferEditorAttrsItem {
   show?: boolean;
   /** 是否事件，默认：false */
   event?: boolean;
+  /** 是否数据源，默认：false */
+  datasource?:boolean;
   /** 是否vue属性，默认：false */
   vue?: boolean;
   /** 是否在编辑时生效，默认：false */

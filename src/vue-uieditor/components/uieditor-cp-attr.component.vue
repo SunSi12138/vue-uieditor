@@ -8,6 +8,7 @@
       <li class="layui-this" @click="setTab(0)">属性</li>
       <li @click="setTab(1)">事件</li>
       <li @click="setTab(2)">Vue</li>
+      <li @click="setTab(3)">数据源</li>
     </ul>
     <div class="layui-tab-content">
       <!-- 属性 -->
@@ -46,6 +47,14 @@
           class="layui-collapse editor-pane-collapse"
           lay-filter="vuecollapse"
           ref="vueContent"
+        ></div>
+      </div>
+      <!-- 数据源 -->
+      <div class="layui-tab-item">
+        <div
+          class="layui-collapse editor-pane-collapse"
+          lay-filter="dscollapse"
+          ref="dsContent"
         ></div>
       </div>
     </div>
