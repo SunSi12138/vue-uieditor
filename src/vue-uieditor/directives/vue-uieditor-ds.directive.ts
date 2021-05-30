@@ -6,11 +6,12 @@ import { UEHttpRequestConfig } from '../base/ue-base';
 function _setDatasource(binding: Readonly<VNodeDirective>, vnode: VNode) {
   if (!binding.value) return;
   const context = vnode.context;
-  if (!context || !_.has(context, '$datasource')) return;
+  if (!context) return;
+  const { $datasource } = context as any;
+  if (!$datasource) return;
   const [http, option] = binding.value;
   const { name, url, auto } = option || {};
   if (!http || !name || !url) return;
-  const { $datasource } = context as any;
   let ds = _.get($datasource, name);
 
   const newDS = _.assign(ds || {}, {
@@ -20,17 +21,17 @@ function _setDatasource(binding: Readonly<VNodeDirective>, vnode: VNode) {
       const { method, url, query, data } = option;
       //返回数据
       return http[method || 'get'](url, _.assign({ method, url, query, data }, p)).then(function (data) {
-        _.get(context, name).data = data;
+        _.get($datasource, name).data = data;
         return data;
       });
     }
   });
   if (!ds) {
     context.$set($datasource, name, { data: null });
-    _.assign(_.get(context, name), newDS);
+    _.assign(_.get($datasource, name), newDS);
   }
-  if (auto) {
-    _.get(context, name).send();
+  if (auto !== false) {
+    _.get($datasource, name).send();
   }
 }
 
@@ -52,11 +53,12 @@ export const UieditorDSDirective: DirectiveOptions = {
   unbind(el, binding, vnode, oldVnode) {
     if (!binding.value) return;
     const context = vnode.context;
-    if (!context || !_.has(context, '$datasource')) return;
+    if (!context) return;
+    const { $datasource } = context as any;
+    if (!$datasource) return;
     const [http, config] = binding.value;
     const { name } = config || {};
     if (!http || !name) return;
-    const { $datasource } = context as any;
     _.set($datasource, name, null);
   }
 };

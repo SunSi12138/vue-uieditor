@@ -630,11 +630,13 @@ const _dsRegex = /^([\:\@])?datasource\-(.+)$/;
 function _makeDatasource(render: UERenderItem, extend: UETransferExtend) {
   const props = render.props;
   const datasource = [], dsRegex = _dsRegex;
-  const datafield = [], reffield = [];
+  // const datafield = [], reffield = [];
+  const optKeys = [];
   _.forEach(props, function (value, key) {
     let [find, type, sKey] = dsRegex.exec(key) || [];
     if (!find) return;
     delete props[key];
+    optKeys.push(sKey);
     switch (type) {
       case ":":
         datasource.push(`"${sKey}": ${value}`);
@@ -644,39 +646,15 @@ function _makeDatasource(render: UERenderItem, extend: UETransferExtend) {
         break;
       default:
         if (value) {
-          if (sKey == 'datafield') {
-            datafield.push(value.replace(/\s+/g, '').split(','));
-          } else if (sKey == 'reffield') {
-            reffield.push(value.replace(/\s+/g, '').split(','));
-          } else
-            datasource.push(`"${sKey}": ${JSON.stringify(value)}`);
+          datasource.push(`"${sKey}": ${JSON.stringify(value)}`);
         }
         break;
     }
   });
-  if (!_.isEmpty(datasource)) {
-
-    const key = `ds_${UEHelper.makeAutoId()}`;
-    const id = `${key}_id`;
-    _makePropPathVar(render, { dsKey: key, dsId: id });
-
-    _.forEach(datafield, function (dkey) {
-      dkey = `:${dkey}`;
-      if (props[dkey] == '数据源') {
-        props[dkey] = key;
-      }
-    });
-    _.forEach(reffield, function (rkey) {
-      rkey = `:${rkey}`;
-      if (props[rkey] == '数据源') {
-        props[rkey] = id;
-      }
-    });
-    _.set(extend.data, key, undefined);
-    _.set(extend.data, id, undefined);
-    const newDatasource = `{ key:"${key}", id:"${id}",  ${datasource.join(', ')}}`;
-    props['v-uieditor-ds'] = `[$datasourceOpt, ${newDatasource}]`;
+  if (!_.isEmpty(datasource) && _.includes(optKeys, 'url') && _.includes(optKeys, 'name')) {
+    const newDatasource = `{ ${datasource.join(', ')}}`;
+    props['v-uieditor-ds'] = `[$this.$http, ${newDatasource}]`;
   } else {
-    _makePropPathVar(render);
+    // _makePropPathVar(render);
   }
 }

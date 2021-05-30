@@ -83,7 +83,7 @@ export const BaseTransfer: UETransfer = UERender.DefineTransfer({
           value: "文本内容",
           order: 0
         },
-        click: { event: true }
+        'click.native': { event: true }
       }
     }
   },
