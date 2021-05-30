@@ -29,6 +29,7 @@
 </style>
 <script lang="ts">
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import { UEHelper } from "../vue-uieditor";
 import {
   UECanNotMoveInProps,
   UECanNotMoveOutProps,
@@ -66,7 +67,7 @@ export default class Home extends UEVue {
     http() {
       return {
         async get(url, config) {
-          return { name: "aaaa" };
+          return { name: "aaaa" + UEHelper.makeAutoId() };
         },
       };
     },

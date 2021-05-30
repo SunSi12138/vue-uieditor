@@ -13,10 +13,11 @@ function _setDatasource(binding: Readonly<VNodeDirective>, vnode: VNode) {
   const { name, url, auto } = option || {};
   if (!http || !name || !url) return;
   let ds = _.get($datasource, name);
+  const isAuto = auto !== false;
 
   const newDS = _.assign(ds || {}, {
     option,
-    data: null,
+    data: ds && !isAuto ? ds.data : null,
     send(p?: UEHttpRequestConfig) {
       const { method, url, query, data } = option;
       //返回数据
@@ -30,7 +31,7 @@ function _setDatasource(binding: Readonly<VNodeDirective>, vnode: VNode) {
     context.$set($datasource, name, { data: null });
     _.assign(_.get($datasource, name), newDS);
   }
-  if (auto !== false) {
+  if (isAuto) {
     _.get($datasource, name).send();
   }
 }

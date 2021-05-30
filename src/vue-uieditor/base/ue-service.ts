@@ -167,12 +167,29 @@ export class UEService {
         const { 'v-model': model, ref } = attrs;
         let value = _.trim(model.value);
         if (value && !_.has(outObj, value)) {
-          console.warn('value', value)
           _.set(outObj, value, {});
         }
         value = _.trim(ref.value);
         if (value && !_.has(outObj.$refs, value)) {
           _.set(outObj.$refs, value, {});
+        }
+        const dsName = attrs['datasource-name'] || attrs[':datasource-name'];
+        if (dsName) {
+          const ds = outObj?.$datasource;
+          value = _.trim(dsName.value);
+          if (value && !_.has(ds, value)) {
+            _.set(ds, value, {
+              option: {
+                auto: true,
+                url: '',
+                method: '',
+                data: null,
+                query: null
+              },
+              data: null,
+              send() { }
+            });
+          }
         }
       }
       if (item.children) {
@@ -1827,7 +1844,6 @@ const {
   const dts = `
 
 class UIEditorThis extends Vue {
-  $datasource:{ option:UEHttpRequestConfig & {auto:boolean;}; data:any; send(config?:UEHttpRequestConfig)=>Promise<any>;};
 
  ${orderTypes.join(';\n')};
 }
