@@ -1,42 +1,36 @@
 import _ from "lodash";
 import { DirectiveOptions, VNode, VNodeDirective } from "vue";
 import { UEHelper } from '../base/ue-helper';
+import { UEHttpRequestConfig } from '../base/ue-base';
 
 function _setDatasource(binding: Readonly<VNodeDirective>, vnode: VNode) {
-  const inst = vnode.componentInstance;
+  if (!binding.value) return;
   const context = vnode.context;
-  if (!inst || !context) return;
-  const [datasourceOpt, opt] = binding.value;
-  const { http } = datasourceOpt || {};
-  if (!http || !opt) return;
-  if (UEHelper.isEqualNotFn(inst['$datasource']?.optBak, opt)) return;
-  const { key, id } = opt;
-  vnode['bg_ds_info'] = { key, id };
-  const newOpt = {
-    ...opt,
-    inst,
-    context
-  };
-  let datasource = id ? _.get(context, id) : '';
-  const newDatasource = _.assign(datasource || {}, {
-    optBak: { ...opt },
-    opt: newOpt,
+  if (!context || !_.has(context, '$datasource')) return;
+  const [http, option] = binding.value;
+  const { name, url, auto } = option || {};
+  if (!http || !name || !url) return;
+  const { $datasource } = context as any;
+  let ds = _.get($datasource, name);
+
+  const newDS = _.assign(ds || {}, {
+    option,
     data: null,
-    send(params?: any) {
+    send(p?: UEHttpRequestConfig) {
+      const { method, url, query, data } = option;
       //返回数据
-      return http(params, newOpt).then(function (data) {
-        context && _.set(context, key, data);
-        newDatasource.data = data;
+      return http[method || 'get'](url, _.assign({ method, url, query, data }, p)).then(function (data) {
+        _.get(context, name).data = data;
         return data;
       });
     }
   });
-  if (!datasource) {
-    id && _.set(context, id, newDatasource);
-    inst['$datasource'] = newDatasource;
+  if (!ds) {
+    context.$set($datasource, name, { data: null });
+    _.assign(_.get(context, name), newDS);
   }
-  if (newOpt.auto) {
-    newDatasource.send();
+  if (auto) {
+    _.get(context, name).send();
   }
 }
 
@@ -56,15 +50,13 @@ export const UieditorDSDirective: DirectiveOptions = {
   },
   /** 只调用一次，指令与元素解绑时调用 */
   unbind(el, binding, vnode, oldVnode) {
+    if (!binding.value) return;
     const context = vnode.context;
-    const info = vnode['bg_ds_info'];
-    if (info?.key) _.set(context, info.key, undefined);
-    if (info?.id) _.set(context, info.id, undefined);
-    const oldInfo = oldVnode && oldVnode['bg_ds_info'];
-    if (oldInfo && !_.isEqual(oldInfo, info)) {
-      if (oldInfo?.key) _.set(context, oldInfo.key, undefined);
-      if (oldInfo?.id) _.set(context, oldInfo.id, undefined);
-    }
-    if (vnode.componentInstance) vnode.componentInstance['$datasource'] = null;
+    if (!context || !_.has(context, '$datasource')) return;
+    const [http, config] = binding.value;
+    const { name } = config || {};
+    if (!http || !name) return;
+    const { $datasource } = context as any;
+    _.set($datasource, name, null);
   }
 };

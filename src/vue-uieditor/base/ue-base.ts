@@ -32,6 +32,8 @@ export interface UEOption {
 }
 
 export type UEHttpRequestConfig = {
+  url?:string;
+  method?:string;
   data?: any;
   query?: any;
   [key: string]: any;

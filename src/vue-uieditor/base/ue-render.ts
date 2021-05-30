@@ -560,21 +560,22 @@ const _defaultDisabledAttr: UETransferEditorAttrs = {
 const _dataSourceAttr: UETransferEditorAttrs = {};
 (function () {
   const attrs: UETransferEditorAttrs = {
-    name: { groupOrder: 999, order: 1, desc:'数据名称，通过名称获取数据' },
-    url: { },
+    name: { groupOrder: 999, order: 1, row: true, desc: '数据名称，通过$this.$datasource[name]获取数据源' },
+    url: { order: 2, row: true },
+    data: { bind: true, enabledBind: false, order: 3 },
+    query: { bind: true, enabledBind: false, order: 4 },
     method: {
-      order: 2,
+      order: 5,
       type: 'select',
       // datas: ["get", "post", "delete", "head", "put", "patch"]
     },
-    'data,query': { bind: true, enabledBind: false, order: 3 },
     auto: {
-      order: 5,
+      order: 6,
       type: 'boolean',
       bind: true,
       desc: '是否自动请求，比如相关绑定数据变动时'
     },
-    config: { bind: true, order: 7 },
+    config: { bind: true, enabledBind: false, order: 7 },
     'on-send': { event: true, order: 31 },
     'on-map': { event: true, order: 32 },
     'on-success': { event: true, order: 33 },

@@ -287,9 +287,14 @@ export default class VueUieditorRender extends UEVue {
         if (previewOpt && previewOpt.$init_0326_) {
           previewOpt.$init_0326_(this);
         }
-        return {};
+        return {
+          ue_ds_210530: {}
+        };
       },
       computed: {
+        $datasource() {
+          return this.ue_ds_210530;
+        },
         $value: {
           get() { return $uieditorRender.$value; },
           set(val) { $uieditorRender.$value = val; }

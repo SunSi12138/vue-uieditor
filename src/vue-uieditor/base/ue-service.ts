@@ -1827,6 +1827,8 @@ const {
   const dts = `
 
 class UIEditorThis extends Vue {
+  $datasource:{ option:UEHttpRequestConfig & {auto:boolean;}; data:any; send(config?:UEHttpRequestConfig)=>Promise<any>;};
+
  ${orderTypes.join(';\n')};
 }
 
