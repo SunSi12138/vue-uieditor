@@ -839,7 +839,7 @@ export class UEService {
       render = _.isString(p) ? this.getRenderItem(p) : p;
     render = _.cloneDeep(render);
     _makeResultJson([render], editing, this);
-    if (render.type == _editorType && _.size(render.children) == 1)
+    if (render.editorId == this.rootRender.editorId && _.size(render.children) == 1)
       render = render.children[0] as any;
     return render;
   }
