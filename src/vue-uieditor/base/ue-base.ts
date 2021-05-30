@@ -24,22 +24,28 @@ export interface UEOption {
   /** 添加全局变量，object对象 */
   global?(): UEObject;
   /** 设置http对象 */
-  http?():UEHttpRequest;
+  http?(): UEHttpRequest;
   /** 是否开启 babel 在线编译（要加载babel-standalone js），默认为 true */
   babel?: boolean;
   /** 是否已初始化 */
   readonly inited?: boolean;
 }
 
-export interface UEHttpRequest {
-  get?(url: string, config?: any): Promise<any>;
-  delete?(url: string, config?: any): Promise<any>;
-  head?(url: string, config?: any): Promise<any>;
-  post?(url: string, data?: any, config?: any): Promise<any>;
-  put?(url: string, data?: any, config?: any): Promise<any>;
-  patch?(url: string, data?: any, config?: any): Promise<any>;
+export type UEHttpRequestConfig = {
+  data?: any;
+  query?: any;
   [key: string]: any;
-}
+};
+
+export type UEHttpRequest = {
+  get?(url: string, config?: UEHttpRequestConfig): Promise<any>;
+  delete?(url: string, config?: UEHttpRequestConfig): Promise<any>;
+  head?(url: string, config?: UEHttpRequestConfig): Promise<any>;
+  post?(url: string, config?: UEHttpRequestConfig): Promise<any>;
+  put?(url: string, config?: UEHttpRequestConfig): Promise<any>;
+  patch?(url: string, config?: UEHttpRequestConfig): Promise<any>;
+  [key: string]: (url: string, config?: UEHttpRequestConfig) => Promise<any>;
+};
 
 export type UETransferExtend = {
   /** Vue 初始化数据 */
