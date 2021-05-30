@@ -55,6 +55,11 @@ export class UEService {
   }
   set options(options) {
     this._options = options;
+    const http = options?.http && options.http();
+    if (http) {
+      const methods = _.keys(http);
+      this.current.dsMethods = methods;
+    }
   }
 
   _destroy() {
@@ -152,12 +157,12 @@ export class UEService {
     json: null,
     /** 模式：design, json, script, tmpl, preview */
     mode: 'design' as UEMode,
+    dsMethods: [],
     /** 模式：design, preview 是否已经计算好大小 */
     caclSize: false,
     monacoEditor: null as MonacoEditorContext,
     monacoEditorOther: {} as MonacoEditorContext
   };
-
 
   private _makeModelAndRefDts(list: UERenderItem[], outObj: any) {
     _.forEach(list, (item) => {

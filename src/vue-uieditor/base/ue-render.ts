@@ -590,47 +590,10 @@ const _dataSourceAttr: UETransferEditorAttrs = {};
   });
 })();
 
-
-function _makePropPathVar(render: UERenderItem, p: { dsKey?: string; dsId?: string } = {}) {
-  // if (_.isString(render)) return;
-  // const props = render.props || {};
-
-  // let id = render.id || "",
-  //   key = render.key || "";
-  // const owner = render.rednerOwner || '$this';
-  // const undef = 'undefined';
-  // id = !id ? undef : `${owner}.${id}`;
-  // key = !key ? undef : `${owner}.${key}`;
-
-  // const dsKey = p.dsKey && `$this.${p.dsKey}` || undef;
-  // const dsId = p.dsId && `$this.${p.dsId}` || undef;
-
-  // _.forEach(props, function (value, name) {
-  //   if (value && _.isString(value)) {
-  //     props[name] = value.replace(/(\$|\%24)datasourceKey\1/gi, dsKey)
-  //       .replace(/(\$|\%24)datasourceId\1/gi, dsId)
-  //       .replace(/(\$|\%24)key\1/gi, key)
-  //       .replace(/(\$|\%24)id\1/gi, id)
-  //   }
-  // });
-
-  // _.forEach(render, function (value, name) {
-  //   if (value && _.isString(value)) {
-  //     render[name] = value.replace(/(\$|\%24)datasourceKey\1/gi, dsKey)
-  //       .replace(/(\$|\%24)datasourceId\1/gi, dsId)
-  //       .replace(/(\$|\%24)key\1/gi, key)
-  //       .replace(/(\$|\%24)id\1/gi, id)
-  //   }
-  // });
-
-}
-
 const _dsRegex = /^([\:\@])?datasource\-(.+)$/;
-
 function _makeDatasource(render: UERenderItem, extend: UETransferExtend) {
   const props = render.props;
   const datasource = [], dsRegex = _dsRegex;
-  // const datafield = [], reffield = [];
   const optKeys = [];
   _.forEach(props, function (value, key) {
     let [find, type, sKey] = dsRegex.exec(key) || [];
@@ -654,7 +617,5 @@ function _makeDatasource(render: UERenderItem, extend: UETransferExtend) {
   if (!_.isEmpty(datasource) && _.includes(optKeys, 'url') && _.includes(optKeys, 'name')) {
     const newDatasource = `{ ${datasource.join(', ')}}`;
     props['v-uieditor-ds'] = `[$this.$http, ${newDatasource}]`;
-  } else {
-    // _makePropPathVar(render);
   }
 }

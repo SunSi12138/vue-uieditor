@@ -97,6 +97,9 @@ export default class UieditorCpAttr extends UEVue {
     _.forEach(attrs, (attr, name) => {
       if (_.isBoolean(attr) || attr.show === false) return;
       if (filter && !filter({ item: attr, all: attrs, service })) return;
+      if (attr.name == 'datasource-method'){
+        attr.datas = _.cloneDeep(this.service.current.dsMethods || []);
+      }
       if (_.size(attr.datas) > 0) {
         const datas = [];
         _.forEach(attr.datas, function (item) {
