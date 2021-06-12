@@ -157,7 +157,8 @@ export class UEService {
     json: null,
     /** 模式：design, json, script, tmpl, preview */
     mode: 'design' as UEMode,
-    dsMethods: [],
+    /** 可用的 http method */
+    dsMethods: [] as string[],
     /** 模式：design, preview 是否已经计算好大小 */
     caclSize: false,
     monacoEditor: null as MonacoEditorContext,

@@ -39,7 +39,10 @@ config.plugin('copy-vue-uieditor-assets').use(CopyWebpackPlugin, [
 ### 引用 vue-uieditor
 
 ```ts
-import 'vue-uieditor';
+import Vue from 'vue';
+import VueUieditor from 'vue-uieditor';
+
+Vue.use(VueUieditor);
 ```
 
 ### 使用编辑器组件
