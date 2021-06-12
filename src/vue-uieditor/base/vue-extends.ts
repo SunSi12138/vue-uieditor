@@ -397,14 +397,17 @@ export class UEVue extends Vue {
     }
     return assets;
   }
-  
+
   static getCpDef(componentDef, componentName) {
+    if (!componentDef) componentDef = { render: function () { } };
     // if (!_.has(cp, 'cid') || !_.has(cp, 'options')) return;
     const props = [];
-    const isAsync = (!_.has(componentDef, 'cid') || !_.has(componentDef, 'options')) && _.isFunction(componentDef);
+    const isAsync = !(_.has(componentDef, 'render') || _.has(componentDef, 'cid') || _.has(componentDef, 'options')) && _.isFunction(componentDef);
     if (!isAsync) {
       let order = 0;
-      _.forEach(componentDef.options && componentDef.options.props, function (p, pName) {
+      const cpProps = componentDef.props ||
+        (componentDef.options && componentDef.options.props);
+      _.forEach(cpProps, function (p, pName) {
         const pType = p?.type, pDefautl = p?.default;
         let type = 'text', valueType = pType && pType.name;
         if (pType == Boolean) {
@@ -436,6 +439,7 @@ export class UEVue extends Vue {
         const cpDef2 = asyncCpDef && UEVue.getCpDef(asyncCpDef.default, cpDef.value);
         cpDef2 && _.assign(cpDef, cpDef2);
         cpDef.asyncCp = null;
+        return cpDef2;
       };
     }
     return cpDef;

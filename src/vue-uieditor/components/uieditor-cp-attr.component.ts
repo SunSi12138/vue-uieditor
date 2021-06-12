@@ -14,6 +14,26 @@ type GroupItem = {
   items: UETransferEditorAttrsItem[];
 }
 
+const _addAttrName = '_ue_cust_attr_add_';
+
+
+function _camelCase(name: string) {
+  return name && name.replace(/[A-Z]/g, function (find) { return '-' + find.toLowerCase(); }).replace(/^\-/, '');
+}
+function _baseCamelCase(name: string) {
+  return name && name.replace(/\-([a-z])/gi, function (find, item) { return item.toUpperCase(); });
+}
+//小驼峰
+function _lowerCamelCase(name: string) {
+  name = _baseCamelCase(name);
+  return name && name.replace(/^([a-z])/i, function (find, item) { return item.toLowerCase(); });
+}
+//大驼峰
+function _upperCamelCase(name: string) {
+  name = _baseCamelCase(name);
+  return name && name.replace(/^([a-z])/i, function (find, item) { return item.toUpperCase(); });
+}
+
 const _vReg = /^\s*v\-.*/;
 const $: JQueryStatic = layui.$;
 
@@ -61,10 +81,60 @@ export default class UieditorCpAttr extends UEVue {
   }
 
   @UEVueLife('mounted')
-  private _m1() {
+  private async _m1() {
     if (this.isEmpty) return;
+    this._attrs = _.cloneDeep(this.service.current.attrs);
+    await this._makeCustAttrList();
     this._initEvent();
     this._makeAttrs();
+  }
+
+  private async _getCpDef() {
+
+    const render = this.service.getCurRender();
+    const { editor: { name } } = render;
+    if (name) {
+      const cpAll = this.$components;
+      let cp = cpAll[name];
+      if (!cp) {
+        let newName = _lowerCamelCase(name);
+        cp = cpAll[newName];
+        if (!cp) {
+          newName = _upperCamelCase(newName);
+          cp = cpAll[newName];
+        }
+        if (!cp) {
+          _.forEach(cpAll, function (item) {
+            if (item.name == name) {
+              cp = item;
+              return false;
+            }
+          });
+        }
+      }
+      const cpDef = UEVue.getCpDef(cp, name);
+      if (!cpDef.asyncCp)
+        return cpDef;
+      else
+        return await cpDef.asyncCp();
+    }
+  }
+
+  private _noneAttrs = [];
+  private async _makeCustAttrList() {
+    const cpDef = await this._getCpDef();
+    const { props } = cpDef;
+    if (_.size(props) > 0) {
+      const noneAttrs = [];
+      const attrs = this._attrs;
+      _.forEach(props, function ({ name }) {
+        if (!attrs[name] && !attrs[_camelCase(name)] && !attrs[_lowerCamelCase(name)]) {
+          name = _camelCase(name);
+          noneAttrs.push({ value: name, text: name });
+        }
+      });
+      this._noneAttrs = noneAttrs;
+    }
   }
 
   @UEVueLife('destroyed')
@@ -73,10 +143,12 @@ export default class UieditorCpAttr extends UEVue {
     LayuiRender.destroy(this.$el);
   }
 
-  private refresh() {
+  private async refresh() {
     layui.off('select', 'form');
     const current = this.service.current;
-    this.isEmpty = _.size(current.attrs) == 0
+    this.isEmpty = _.size(current.attrs) == 0;
+    this._attrs = _.cloneDeep(this.service.current.attrs);
+    await this._makeCustAttrList();
     this._makeAttrs();
   }
 
@@ -84,7 +156,7 @@ export default class UieditorCpAttr extends UEVue {
   private _attrs: UETransferEditorAttrs;
   private _makeAttrs() {
     if (this.isEmpty) return;
-    const attrs: UETransferEditorAttrs = this._attrs = _.cloneDeep(this.service.current.attrs);
+    const attrs: UETransferEditorAttrs = this._attrs;
     const attrList: UETransferEditorAttrsItem[] = [];
     const attrCustList: UETransferEditorAttrsItem[] = [];
     const eventList: UETransferEditorAttrsItem[] = [];
@@ -97,7 +169,7 @@ export default class UieditorCpAttr extends UEVue {
     _.forEach(attrs, (attr, name) => {
       if (_.isBoolean(attr) || attr.show === false) return;
       if (filter && !filter({ item: attr, all: attrs, service })) return;
-      if (attr.name == 'datasource-method'){
+      if (attr.name == 'datasource-method') {
         attr.datas = _.cloneDeep(this.service.current.dsMethods || []);
       }
       if (_.size(attr.datas) > 0) {
@@ -114,7 +186,7 @@ export default class UieditorCpAttr extends UEVue {
       attr['isPrefxV'] = _vReg.test(name);
 
       if (attr.datasource) {
-          dsList.push(attr);
+        dsList.push(attr);
       } else if (attr.event) {
         if (attr.cust)
           eventCustList.push(attr);
@@ -141,7 +213,7 @@ export default class UieditorCpAttr extends UEVue {
         ..._.orderBy(attrCustList, 'name', 'asc'),
         {
           [isAddBtn]: true, value: '',
-          name: '_ue_cust_attr_add_', text: '添加属性',
+          name: _addAttrName, text: '添加属性',
           placeholder: '属性名称', order: 999,
           codeBtn: false, enabledBind: false
         }
@@ -215,14 +287,18 @@ export default class UieditorCpAttr extends UEVue {
       let sliderCls = '';
       let attrInputHtml: string;
       if (isAddBtn) {
-        attrInputHtml = `<input
+        const addAttrInputHtml = name == _addAttrName && _.size(this._noneAttrs) > 0 ?
+          `<div ue-selectInput name="${name}" ue-attr-addinput></div>` :
+          `<input
         type="text"
         name="${name}"
         ue-attr-addinput
         placeholder="${attr.placeholder || ''}"
         autocomplete="off"
         class="layui-input"
-      />
+      />`
+
+        attrInputHtml = `${addAttrInputHtml}
       <div class="layui-btn-group">
         <button
           type="button"
@@ -424,6 +500,7 @@ export default class UieditorCpAttr extends UEVue {
   }
 
   private _renderDom() {
+    const $this = this;
     const jo = $(this.$el);
     const form = layui.form;
     const selectInput = layui.selectInput,
@@ -441,8 +518,8 @@ export default class UieditorCpAttr extends UEVue {
     jo.find('[ue-selectInput]').each(function (index, el) {
       const jItem = $(el);
       const name = jItem.attr('name');
-      const attr = attrs[name];
-      const datas = attr.datas || [];
+      const attr = attrs[name] || {};
+      const datas = name == _addAttrName ? $this._noneAttrs : attr.datas;
       selectInput.render({
         elem: jItem,
         data: _.map(datas, function (item) { return { value: item.value, name: item.text }; }),
