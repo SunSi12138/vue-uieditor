@@ -452,12 +452,14 @@ export default class VueUieditor extends UEVue {
       {
         title: 'Tmpl',
         divided: _.size(addMenus) > 0,
+        disabled: !render,
         click: (item) => {
           this.service.setModeUI('tmpl', true);
         }
       },
       {
         title: 'JSON',
+        disabled: !render,
         click: (item) => {
           this.service.setModeUI('json', true);
         }
@@ -465,6 +467,7 @@ export default class VueUieditor extends UEVue {
       {
         title: '复 制',
         divided: true,
+        disabled: !render,
         click: (item) => {
           this.service.copyCur();
         }
