@@ -161,6 +161,7 @@ export class UEService {
     dsMethods: [] as string[],
     /** 模式：design, preview 是否已经计算好大小 */
     caclSize: false,
+    monacoEditorCur: false,
     monacoEditor: null as MonacoEditorContext,
     monacoEditorOther: {} as MonacoEditorContext
   };
@@ -214,6 +215,9 @@ export class UEService {
 
 
   private _clearMonacoEditor() {
+    if (this.current.monacoEditor?.close) {
+      this.current.monacoEditor?.close();
+    }
     _.assign(this.current, {
       monacoEditor: null,
       monacoEditorOther: {}
@@ -221,7 +225,8 @@ export class UEService {
 
   }
 
-  setModeUI(mode: UEMode) {
+  setModeUI(mode: UEMode, cur?: boolean) {
+    this.current.monacoEditorCur = cur;
     const $: JQueryStatic = layui.$;
     $(this.$uieditor.$el).find('.layui-tab-title').children(`[${mode}]`).trigger('click');
   }
@@ -233,6 +238,7 @@ export class UEService {
     const jTitle = layui.$(this.$uieditor.$el).find('.layui-tab-title');
     if (mode == 'other') {
       jTitle.children().hide();
+      this._clearMonacoEditor();
       return;
     } else {
       jTitle.children().show();
@@ -271,7 +277,7 @@ export class UEService {
         };
         break;
       case 'json':
-        const json = JSON.stringify(this.getJson(), null, 2)
+        const json = JSON.stringify(this.getJson(false, current.monacoEditorCur ? this.current.id : null), null, 2);
         this._clearMonacoEditor();
         current.monacoEditor = {
           content: json,
@@ -279,24 +285,35 @@ export class UEService {
           formatAuto: false,
           language: "json",
           save: async () => {
+            const cur = current.monacoEditorCur;
+            current.monacoEditorCur = false;
             const json = JSON.parse(current.monacoEditor.content);
-            await this.setJson(json);
+            await this.setJson(json, cur);
             await this.$uieditor.$nextTick();
             this.setModeUI('design');
+          },
+          close() {
+            current.monacoEditorCur = false;
           }
         };
         break;
       case 'tmpl':
-        const html = await this.getTmpl();
+        const html = await this.getTmpl(current.monacoEditorCur ? this.current.id : null);
+        this._clearMonacoEditor();
         current.monacoEditor = {
           content: html,
           extraLib: '',
           formatAuto: true,
           language: "html",
           save: async () => {
+            const cur = current.monacoEditorCur;
+            current.monacoEditorCur = false;
             const tmpl = current.monacoEditor.content || '<div></div>';
-            await this.setTmpl(tmpl);
+            await this.setTmpl(tmpl, cur);
             this.setModeUI('design');
+          },
+          close() {
+            current.monacoEditorCur = false;
           }
         };
         break;
@@ -343,15 +360,20 @@ export class UEService {
     // this.setModeUI('other');
   }
 
-  getTmpl() {
-    const jsonTmpl = this.getJson();
+  getTmpl(id?: string) {
+    const jsonTmpl = this.getJson(false, id);
     const html = UECompiler.renderToHtml(jsonTmpl, { wrap: true, indent: 2 });
     return html;
   }
 
-  async setTmpl(html) {
+  /**
+   * 
+   * @param html 
+   * @param cur 是否设置当前节点
+   */
+  async setTmpl(html, cur?:boolean) {
     const json: any = await UECompiler.htmlToRenderAsync(html);
-    await this.setJson(json);
+    await this.setJson(json, cur);
   }
 
   getScript(): string {
@@ -433,7 +455,30 @@ export class UEService {
     return this.current.json;
   }
 
-  setJson(json: UERenderItem): Promise<any> {
+  /**
+   * 
+   * @param json 
+   * @param cur 是否设置当前节点
+   */
+  setJson(json: UERenderItem, cur?: boolean): Promise<any> {
+
+    if (cur) {
+      const curRender = this.getCurRender();
+      if (!curRender) return;
+      const id = UEHelper.makeAutoId();
+      curRender.props = _.assign(curRender.props || {}, {
+        _cur_id_0612: id
+      });
+      const jsonAll = this.getJson();
+      const curJson = UERender.findRender([jsonAll], function (render) {
+        return render?.props?._cur_id_0612 == id;
+      });
+      if (!curJson) return;
+      delete curJson.props._cur_id_0612;
+      _.assign(curJson, json);
+      json = jsonAll;
+    }
+
     this._resetCurrent();
     this.history.add(_.cloneDeep(json));
     return this._setJson(json);

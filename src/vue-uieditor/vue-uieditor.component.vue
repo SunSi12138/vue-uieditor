@@ -225,7 +225,7 @@
             代码
           </li>
           <li tmpl @click="service.setMode('tmpl')" v-if="hasMode('tmpl')">
-            模板
+            Tmpl
           </li>
           <li json @click="service.setMode('json')" v-if="hasMode('json')">
             JSON

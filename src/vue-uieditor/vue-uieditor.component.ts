@@ -450,8 +450,21 @@ export default class VueUieditor extends UEVue {
     const menus = [
       ...addMenus,
       {
-        title: '复 制',
+        title: 'Tmpl',
         divided: _.size(addMenus) > 0,
+        click: (item) => {
+          this.service.setModeUI('tmpl', true);
+        }
+      },
+      {
+        title: 'JSON',
+        click: (item) => {
+          this.service.setModeUI('json', true);
+        }
+      },
+      {
+        title: '复 制',
+        divided: true,
         click: (item) => {
           this.service.copyCur();
         }
