@@ -288,11 +288,15 @@ export default class VueUieditorRender extends UEVue {
           previewOpt.$init_0326_(this);
         }
         return {
+          ue_dsrefs_210530: {},
           ue_ds_210530: {}
         };
       },
       computed: {
-        $datasource() {
+        $dsRefs() {
+          return this.ue_dsrefs_210530;
+        },
+        $ds() {
           return this.ue_ds_210530;
         },
         $value: {

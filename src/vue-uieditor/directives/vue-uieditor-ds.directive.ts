@@ -1,38 +1,45 @@
 import _ from "lodash";
 import { DirectiveOptions, VNode, VNodeDirective } from "vue";
-import { UEHelper } from '../base/ue-helper';
 import { UEHttpRequestConfig } from '../base/ue-base';
+import { UEHelper } from '../base/ue-helper';
+
+let _undef;
 
 function _setDatasource(binding: Readonly<VNodeDirective>, vnode: VNode) {
   if (!binding.value) return;
   const context = vnode.context;
   if (!context) return;
-  const { $datasource } = context as any;
-  if (!$datasource) return;
+  const { $dsRefs, $ds } = context as any;
+  if (!$dsRefs) return;
   const [http, option] = binding.value;
-  const { name, url, auto } = option || {};
-  if (!http || !name || !url) return;
-  let ds = _.get($datasource, name);
+  const { name, auto } = option || {};
+  if (!name) return;
+  let dsInst = _.get($dsRefs, name);
   const isAuto = auto !== false;
 
-  const newDS = _.assign(ds || {}, {
+  const newDS = _.assign(dsInst || {}, {
     option,
-    data: ds && !isAuto ? ds.data : null,
+    data: dsInst && !isAuto ? dsInst.data : _undef,
     send(p?: UEHttpRequestConfig) {
+      if (!http) return;
       const { method, url, query, data } = option;
       //返回数据
       return http[method || 'get'](url, _.assign({ method, url, query, data }, p)).then(function (data) {
-        _.get($datasource, name).data = data;
+        _.get($dsRefs, name).data = data;
+        _.set($ds, name, data);
         return data;
       });
     }
   });
-  if (!ds) {
-    context.$set($datasource, name, { data: null });
-    _.assign(_.get($datasource, name), newDS);
+  if (!_.has($ds, name)) {
+    context.$set($ds, name, _undef);
+  }
+  if (!dsInst) {
+    context.$set($dsRefs, name, { data: _undef });
+    _.assign(_.get($dsRefs, name), newDS);
   }
   if (isAuto) {
-    _.get($datasource, name).send();
+    _.get($dsRefs, name).send();
   }
 }
 
@@ -55,11 +62,11 @@ export const UieditorDSDirective: DirectiveOptions = {
     if (!binding.value) return;
     const context = vnode.context;
     if (!context) return;
-    const { $datasource } = context as any;
-    if (!$datasource) return;
+    const { $dsRefs } = context as any;
+    if (!$dsRefs) return;
     const [http, config] = binding.value;
     const { name } = config || {};
-    if (!http || !name) return;
-    _.set($datasource, name, null);
+    if (!name) return;
+    _.set($dsRefs, name, null);
   }
 };

@@ -181,10 +181,12 @@ export class UEService {
         }
         const dsName = attrs['datasource-name'] || attrs[':datasource-name'];
         if (dsName) {
-          const ds = outObj?.$datasource;
+          const dsRefs = outObj?.$dsRefs;
           value = _.trim(dsName.value);
-          if (value && !_.has(ds, value)) {
-            _.set(ds, value, {
+          if (value && !_.has(dsRefs, value)) {
+            const ds = outObj?.$ds;
+            _.set(ds, value, null);
+            _.set(dsRefs, value, {
               option: {
                 auto: true,
                 url: '',

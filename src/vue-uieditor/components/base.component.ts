@@ -3,17 +3,37 @@ import { UEVueMixin } from "../base/vue-extends";
 function _makeBaseComponent(type: string, hasChild?: boolean): UEVueMixin {
   return {
     render(h) {
+      const $this = this;
       if (!hasChild)
-        return h(type);
+        return h(type, {
+          on: {
+            click(e) {
+              $this.$emit('click', e);
+            }
+          }
+        });
       else
-        return h(type, {}, this.$slots.default);
+        return h(type, {
+          on: {
+            click(e) {
+              $this.$emit('click', e);
+            }
+          }
+        }, this.$slots.default);
     }
   } as UEVueMixin;
 }
 
 const uieditorText = {
   render(h) {
-    return h('span', this.text);
+    const $this = this;
+    return h('span', {
+      on: {
+        click(e) {
+          $this.$emit('click', e);
+        }
+      }
+    }, this.text);
   },
   props: ['text']
 } as UEVueMixin;
@@ -21,9 +41,15 @@ const uieditorText = {
 
 const uieditorHtml = {
   render(h) {
-    return h(this.type || 'div', {
+    const $this = this;
+    return h($this.type || 'div', {
       domProps: {
-        innerHTML: this.content
+        innerHTML: $this.content
+      },
+      on: {
+        click(e) {
+          $this.$emit('click', e);
+        }
       }
     }, this.$slots.default);
   },

@@ -560,7 +560,7 @@ const _defaultDisabledAttr: UETransferEditorAttrs = {
 const _dataSourceAttr: UETransferEditorAttrs = {};
 (function () {
   const attrs: UETransferEditorAttrs = {
-    name: { groupOrder: 999, order: 1, row: true, desc: '数据名称，通过$this.$datasource[name]获取数据源' },
+    name: { groupOrder: 999, order: 1, row: true, desc: '数据名称，通过$this.$ds[name]获取数据源请求数据' },
     url: { order: 2, row: true },
     data: { bind: true, enabledBind: false, order: 3 },
     query: { bind: true, enabledBind: false, order: 4 },
