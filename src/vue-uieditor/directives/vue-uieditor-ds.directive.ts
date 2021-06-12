@@ -23,10 +23,14 @@ function _setDatasource(binding: Readonly<VNodeDirective>, vnode: VNode) {
     send(p?: UEHttpRequestConfig) {
       if (!http) return;
       const { method, url, query, data } = option;
+      if (option['on-send-before']) option['on-send-before'](option);
       //返回数据
       return http[method || 'get'](url, _.assign({ method, url, query, data }, p)).then(function (data) {
-        _.get($dsRefs, name).data = data;
-        _.set($ds, name, data);
+        const dsRef = _.get($dsRefs, name);
+        dsRef.data = data;
+        if (option['on-map']) option['on-map'](dsRef);
+        _.set($ds, name, dsRef.data);
+        if (option['on-complete']) option['on-complete'](dsRef);
         return data;
       });
     }

@@ -576,11 +576,9 @@ const _dataSourceAttr: UETransferEditorAttrs = {};
       desc: '是否自动请求，比如相关绑定数据变动时'
     },
     config: { bind: true, enabledBind: false, order: 7 },
-    'on-send': { event: true, order: 31 },
-    'on-map': { event: true, order: 32 },
-    'on-success': { event: true, order: 33 },
-    'on-error': { event: true, order: 34 },
-    'on-complete': { event: true, order: 35 }
+    'on-send-before': { event: true, order: 31, desc:'请求前，$event内容为config' },
+    'on-map': { event: true, order: 32, desc:'请求后处理数据，$event内容为$dsRef' },
+    'on-complete': { event: true, order: 33, desc:'请求完成，$event内容为$dsRef' }
   };
   _.forEach(attrs, function (attr, key) {
     attr.text = key;
