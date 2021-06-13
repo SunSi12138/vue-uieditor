@@ -164,6 +164,7 @@ options: UEOption = UERender.DefineOption({
 | transferBefore  | Function | (render: UERenderItem, extend?: UETransferExtend) => UERenderItem | 转换器处理之前 |
 | transferAfter  | Function | (render: UERenderItem, extend?: UETransferExtend) => UERenderItem | 转换器处理之后 |
 | extraLib  | Function | ()=> Promise<string> | 扩展代码智能提示声明 |
+| http  | Function | ()=> object | $http或数据源method配置，[参考](http://days2020.gitee.io/iview-uieditor/#/demo?id=options_http) |
 | global  | Function | ()=> object | 定义全局变量 |
 | babel  | Boolean | true | 是否开启 babel 在线编译（要加载babel-standalone js），默认为 true |
 
