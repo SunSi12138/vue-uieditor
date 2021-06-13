@@ -238,7 +238,8 @@ export class UEService {
     const jTitle = layui.$(this.$uieditor.$el).find('.layui-tab-title');
     if (mode == 'other') {
       jTitle.children().hide();
-      this._clearMonacoEditor();
+      this.current.monacoEditorCur = false;
+      // this._clearMonacoEditor();
       return;
     } else {
       jTitle.children().show();
