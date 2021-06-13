@@ -562,11 +562,12 @@ const _dataSourceAttr: UETransferEditorAttrs = {};
   const attrs: UETransferEditorAttrs = {
     name: { groupOrder: 999, order: 1, row: true, desc: '数据名称，通过$this.$ds[name]获取数据源请求数据' },
     url: { order: 2, row: true },
-    data: { bind: true, enabledBind: false, order: 3 },
-    query: { bind: true, enabledBind: false, order: 4 },
+    data: { bind: true, enabledBind: false, order: 3, desc:'请求数据时body内容' },
+    query: { bind: true, enabledBind: false, order: 4, desc:'请求数据时query内容' },
     method: {
       order: 5,
       type: 'select',
+      desc: '数据源方法，如果没有内容，请到编辑组件的options.http配置内容'
       // datas: ["get", "post", "delete", "head", "put", "patch"]
     },
     auto: {
@@ -576,9 +577,9 @@ const _dataSourceAttr: UETransferEditorAttrs = {};
       desc: '是否自动请求，比如相关绑定数据变动时'
     },
     config: { bind: true, enabledBind: false, order: 7 },
-    'on-send-before': { event: true, order: 31, desc:'请求前，$event内容为config' },
-    'on-map': { event: true, order: 32, desc:'请求后处理数据，$event内容为$dsRef' },
-    'on-complete': { event: true, order: 33, desc:'请求完成，$event内容为$dsRef' }
+    'on-send-before': { event: true, order: 31, desc: '请求前，$event内容为config' },
+    'on-map': { event: true, order: 32, desc: '请求后处理数据，$event内容为$dsRef' },
+    'on-complete': { event: true, order: 33, desc: '请求完成，$event内容为$dsRef' }
   };
   _.forEach(attrs, function (attr, key) {
     attr.text = key;
