@@ -8,7 +8,7 @@
       <li class="layui-this" @click="setTab(0)">属性</li>
       <li @click="setTab(1)">事件</li>
       <li @click="setTab(2)">Vue</li>
-      <li @click="setTab(3)">数据源</li>
+      <li @click="setTab(3)" v-if="hasHttp">数据源</li>
     </ul>
     <div class="layui-tab-content">
       <!-- 属性 -->

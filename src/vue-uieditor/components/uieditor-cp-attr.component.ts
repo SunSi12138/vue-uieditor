@@ -72,9 +72,11 @@ export default class UieditorCpAttr extends UEVue {
     this.service['_attr_tabcurindex_'] = index;
   }
 
+  hasHttp = false;
   @UEVueLife('created')
   private _c1() {
     const current = this.service.current;
+    this.hasHttp = _.size(current.dsMethods) > 0;
     this.renderId = current.id;
     this.isEmpty = _.size(current.attrs) == 0
     if (this.isEmpty) return;
