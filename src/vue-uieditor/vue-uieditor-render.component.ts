@@ -14,7 +14,7 @@ const _defaultGlobalExtend = {
   UEHelper,
   UECompiler,
   UERender,
-  regeneratorRuntime: window['regeneratorRuntime'],
+  get regeneratorRuntime() { return window['regeneratorRuntime']; },
   ...UEAllSpecialProps
 };
 
@@ -467,5 +467,6 @@ function _objectToComputed(obj) {
       return item;
     }
   });
+
   return computed;
 }

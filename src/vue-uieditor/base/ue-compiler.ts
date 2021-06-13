@@ -80,12 +80,12 @@ export class UECompiler {
           UEHelper.error(e);
           return null;
         });
-        return new Function(`${output.code}; return _renderFns;`)();
+        return new Function('regeneratorRuntime', `${output.code}; return _renderFns;`)(window['regeneratorRuntime']);
       }));
     }
     if (output) compileEx.render = output.code;
     return !output ? UECompiler.vueCompile(template) : {
-      render: new Function(`${output.code}; return _render;`)(),
+      render: new Function('regeneratorRuntime', `${output.code}; return _render;`)(window['regeneratorRuntime']),
       staticRenderFns: staticRenderFns
     };
 
