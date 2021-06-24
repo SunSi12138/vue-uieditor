@@ -372,7 +372,7 @@ export class UEService {
    * @param html 
    * @param cur 是否设置当前节点
    */
-  async setTmpl(html, cur?:boolean) {
+  async setTmpl(html, cur?: boolean) {
     const json: any = await UECompiler.htmlToRenderAsync(html);
     await this.setJson(json, cur);
   }
@@ -517,6 +517,11 @@ export class UEService {
       let _this = this;
       this.current.json = rootRender;
       this.current.mixin = {
+        methods: {
+          unescape(s) {
+            return unescape(s);
+          }
+        },
         // data: function () {
         //   return {
         //     current: _this && _this.current || {}
