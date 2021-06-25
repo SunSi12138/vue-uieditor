@@ -327,10 +327,14 @@ export interface UETransferEditor {
    */
   initAttr?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; editing: boolean; service: UEService; }) => void;
   /**
-  * 编辑渲染时转换 render 和 attr
+  * 编辑渲染时转换 render.attrs 到 render
   */
   transferAttr?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; editing: boolean; service: UEService; }) => void;
   /**
+  * 编辑渲染时转换 render.attrs 到 render 之后
+  */
+   transferAttrAfter?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; editing: boolean; service: UEService; }) => void;
+   /**
    * 选中对像的快捷菜单
    */
   contextmenu?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; service: UEService; }) => UEContextmenuItem[];

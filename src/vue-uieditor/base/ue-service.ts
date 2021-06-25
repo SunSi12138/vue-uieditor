@@ -1696,6 +1696,7 @@ function _setRenderAttrs(render: UERenderItem, editor: UETransferEditor, editing
           delete render.props;
         }
       }
+      editor.transferAttrAfter && editor.transferAttrAfter({ render, attrs, editor, editing, service });
     }
   }
 
