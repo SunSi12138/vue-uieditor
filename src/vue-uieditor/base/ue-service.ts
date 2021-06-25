@@ -1522,9 +1522,10 @@ function _initRender(renderList: UERenderItem[], parent: UERenderItem, editorOpt
  */
 function _initRenderAttrs(render: UERenderItem, editorOpt: { [type: string]: UETransferEditor; }, service: UEService): boolean {
   if (render) {
+    const editing = true;
     let type = render.type;
     if (render.attrs) {
-      _setRenderAttrs(render, render.editor, true, service);
+      _setRenderAttrs(render, render.editor, editing, service);
       return true;
     }
     let editor = editorOpt[type];
@@ -1532,8 +1533,8 @@ function _initRenderAttrs(render: UERenderItem, editorOpt: { [type: string]: UET
       editor = _.cloneDeep(editor);
       (render as any).attrs = editor.attrs;
       (render as any).editor = editor;
-      _initAttrsFromRender(render);
-      _setRenderAttrs(render, editor, true, service);
+      _initAttrsFromRender(render, { editing, service });
+      _setRenderAttrs(render, editor, editing, service);
     }
   }
   return false;
@@ -1544,7 +1545,7 @@ function _initRenderAttrs(render: UERenderItem, editorOpt: { [type: string]: UET
  * 从 render 初始 attrs.value，清空 render.props
  * @param render 
  */
-function _initAttrsFromRender(render: UERenderItem) {
+function _initAttrsFromRender(render: UERenderItem, { editing, service }: { editing: boolean; service: UEService }) {
   const editor: UETransferEditor = render.editor;
   let attrs = render.attrs;
   let props = render.props || {};
@@ -1618,6 +1619,7 @@ function _initAttrsFromRender(render: UERenderItem) {
     }
   });
   render.props && (render.props = {});
+  editor.initAttr && editor.initAttr({ render, attrs, editor, editing, service });
 }
 
 function _setAttrValue(attr: UETransferEditorAttrsItem, value: any) {

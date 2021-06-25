@@ -32,8 +32,8 @@ export interface UEOption {
 }
 
 export type UEHttpRequestConfig = {
-  url?:string;
-  method?:string;
+  url?: string;
+  method?: string;
   data?: any;
   query?: any;
   [key: string]: any;
@@ -147,7 +147,7 @@ export interface UETransferEditorAttrsItem {
   /** 是否事件，默认：false */
   event?: boolean;
   /** 是否数据源，默认：false */
-  datasource?:boolean;
+  datasource?: boolean;
   /** 是否vue属性，默认：false */
   vue?: boolean;
   /** 是否在编辑时生效，默认：false */
@@ -323,8 +323,12 @@ export interface UETransferEditor {
     service: UEService;
   }) => boolean;
   /**
-   * 编辑渲染时转换 render 和 attr
+   * 编辑时初始化render.attrs
    */
+  initAttr?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; editing: boolean; service: UEService; }) => void;
+  /**
+  * 编辑渲染时转换 render 和 attr
+  */
   transferAttr?: (p: { render: UERenderItem; attrs: UETransferEditorAttrs; editor: UETransferEditor; editing: boolean; service: UEService; }) => void;
   /**
    * 选中对像的快捷菜单
