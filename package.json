@@ -12,7 +12,7 @@
     "build": "rimraf ./pages && vue-cli-service build",
     "lib": "rimraf ./lib && vue-cli-service build -lib && yarn run lib-file",
     "libToNM": "yarn run lib && yarn run NM-file",
-    "PU": "yarn run lib && npm publish ./lib",
+    "PU": "yarn run lib && npm publish ./lib --registry=https://registry.npmjs.org/",
     "dev": "yarn run serve",
     "output": "vue-cli-service inspect --mode production > output.js",
     "lib-file": "cpy ./*/** ../../../../lib/@types --cwd=./lib/@types-build/src/vue-uieditor --parents && rimraf ./lib/@types-build",
