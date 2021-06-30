@@ -431,7 +431,9 @@ options: UEOption = UERender.DefineOption({
 | movingChild  | Function | (p: any) => boolean | 拖动时处理，返回true|false，决定是否可以移动子节点 |
 | movingOut  | Function | (p: any) => boolean | 拖动时处理，返回true|false，决定是否可以将子节点移出本节点 |
 | movingIn  | Function | (p: any) => boolean | 拖动时处理，返回true|false，决定是否可以移出入节点 |
+| initAttr  | Function | (p: any) => void | 编辑时初始化render.attrs |
 | transferAttr  | Function | (p: any) => void | 编辑渲染时转换 render 和 attr，转换内容会生成到JSON |
+| transferAttrAfter  | Function | (p: any) => void | 编辑渲染时转换 render.attrs 到 render 之后 |
 | contextmenu  | Function | (p: any) => void | 选中对像的快捷菜单 |
 | toolbar  | Function | (p: any) => void | 选中对像的工具栏 |
 
