@@ -1,5 +1,9 @@
 # VUE 可视化编辑器(vue-uieditor)
 
+[![image](https://img.shields.io/badge/vue-2.6.x-brightgreen.svg)](https://github.com/vuejs/vue)
+[![image](https://img.shields.io/badge/vue--cli-3.x-brightgreen.svg)](https://cli.vuejs.org/zh/)
+
+
 - 基于 VUE 2.x
 - 在线可视化VUE开发，所见即所得
 - 支持 es2015 JS 语法
