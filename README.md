@@ -2,6 +2,8 @@
 
 [![image](https://img.shields.io/badge/vue-2.6.x-brightgreen.svg)](https://github.com/vuejs/vue)
 [![image](https://img.shields.io/badge/vue--cli-3.x-brightgreen.svg)](https://cli.vuejs.org/zh/)
+[![image](https://img.shields.io/badge/vue--template--compiler-2.6.x-brightgreen.svg)](https://cli.vuejs.org/zh/)
+[![image](https://img.shields.io/badge/lodash-4.x-brightgreen.svg)](https://lodash.com/docs/4.17.15)
 
 
 - 基于 VUE 2.x
