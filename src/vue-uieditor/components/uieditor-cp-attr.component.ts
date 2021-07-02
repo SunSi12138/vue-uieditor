@@ -335,7 +335,7 @@ export default class UieditorCpAttr extends UEVue {
             attrInputHtml = `<div ue-selectInput name="${name}"></div>`;
             break;
           case 'boolean-only':
-            attrInputHtml = `<input type="checkbox" name="${name}" lay-skin="switch" title="开关">`;
+            attrInputHtml = `<input type="checkbox" ${this._model[name] === true ? 'checked ' : ''}name="${name}" lay-skin="switch" title="开关">`;
             break;
           case 'select-only':
             const datas = attr.datas;
@@ -552,6 +552,7 @@ export default class UieditorCpAttr extends UEVue {
 
     //初始赋值
     form.val(this.formName, model || {});
+    console.warn('this.formName', this.formName, model, this);
 
     // //事件监听
     form.on('select', (data) => {
