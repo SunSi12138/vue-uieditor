@@ -156,10 +156,9 @@ export default class Home extends UEVue {
               order: 2,
             },
             boolean: {
-              effect: false,
+              effect: true,
               row: false,
-              value: "true",
-              type: "boolean",
+              type: "boolean-only",
               order: 2,
             },
             click: { event: true, order: 30 },

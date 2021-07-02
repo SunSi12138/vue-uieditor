@@ -383,7 +383,7 @@ export default class UieditorCpAttr extends UEVue {
   }
 
 
-  private _formName = `attrform-${UEHelper.makeAutoId()}`
+  private formName = `attrform-${UEHelper.makeAutoId()}`
 
   private _makeFormDom(groupList: GroupItem[]) {
 
@@ -396,7 +396,7 @@ export default class UieditorCpAttr extends UEVue {
     </h2><div class="layui-colla-content layui-show"><form
     class="layui-form layui-form-pane1 uieditor-form"
     action=""
-    lay-filter="${this._formName}"
+    lay-filter="${this.formName}"
   >${this._makeFormItemDom(groupItem)}</form></div></div>`;
       htmlGroupList.push(htmlGroup);
     });
@@ -512,7 +512,7 @@ export default class UieditorCpAttr extends UEVue {
 
     form.render();
 
-    jo.find('.layui-form[lay-filter="' + this._formName + '"]').change((e) => {
+    jo.find('.layui-form[lay-filter="' + this.formName + '"]').change((e) => {
       var jInput = $(e.target);
       this._change(jInput.attr('name'), jInput.val());
     });
@@ -551,7 +551,7 @@ export default class UieditorCpAttr extends UEVue {
     });
 
     //初始赋值
-    form.val(this._formName, model || {});
+    form.val(this.formName, model || {});
 
     // //事件监听
     form.on('select', (data) => {
