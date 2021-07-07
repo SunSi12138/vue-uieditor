@@ -282,17 +282,18 @@ export class UERender {
 
     const attrs = editor.attrs;
     const newAttrs = {};
-    //支持 'name:value:desc:type:effect,id':{}
+    //支持 'name:value:desc:type:effect,data1,id':{}
     _.forEach(attrs, function (attr, key) {
       if (key.indexOf(',') >= 0 || key.indexOf(':') >= 0) {
         let order = attr.order || 1;
         _.forEach(key.split(','), function (newKey) {
-          const [key1, value1, desc1, type1, effect1] = newKey.split(':');
+          const [key1, value1, desc1, type1, effect1, data1] = newKey.split(':');
           let newAttr = _.assign({}, _.cloneDeep(attr), { order: order++ });
           if (value1) newAttr.value = _.trim(value1);
           if (type1) newAttr.type = _.trim(type1) as any;
           if (desc1) newAttr.desc = _.trim(desc1);
           if (effect1) newAttr.effect = _.trim(effect1) === 'true';
+          if (data1) newAttr.datas = _.trim(data1).split('|');
           newAttrs[_.trim(key1)] = newAttr;
         });
       } else {
