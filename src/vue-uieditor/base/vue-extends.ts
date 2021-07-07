@@ -16,7 +16,7 @@ export interface UEVueComponentOptions<V extends Vue> extends ComponentOptions<V
 }
 
 export function UEMergeMixin<V extends Vue = Vue>(mixin1: UEVueMixin<V>, mixin2: UEVueMixin<V>): UEVueMixin<V> {
-  return Vue['util'].mergeOptions(mixin1 || {}, mixin2 || {});
+  return (Vue['util'] as any).mergeOptions(mixin1 || {}, mixin2 || {});
 }
 
 export function UEVueComponent<V extends Vue>(options: UEVueComponentOptions<V> & ThisType<V>): <VC extends VueClass<V>>(target: VC) => VC {
