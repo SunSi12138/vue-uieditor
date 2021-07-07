@@ -552,7 +552,6 @@ export default class UieditorCpAttr extends UEVue {
 
     //初始赋值
     form.val(this.formName, model || {});
-    console.warn('this.formName', this.formName, model, this);
 
     // //事件监听
     form.on('select', (data) => {
