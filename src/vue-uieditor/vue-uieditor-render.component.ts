@@ -10,11 +10,14 @@ import { UEService } from './base/ue-service';
 import { UEMergeMixin, UEVue, UEVueComponent, UEVueInject, UEVueLife, UEVueMixin, UEVueProp, UEVueWatch } from './base/vue-extends';
 import './transfer';
 
+import * as VueCompositionApi from '@vue/composition-api';
+
 const _defaultGlobalExtend = {
   UEHelper,
   UECompiler,
   UERender,
   get regeneratorRuntime() { return window['regeneratorRuntime']; },
+  get VueCompositionApi() { return VueCompositionApi; },
   ...UEAllSpecialProps
 };
 

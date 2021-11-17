@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@babel/standalone": "7.10.5",
+    "@vue/composition-api": "^1.4.0",
     "domhandler": "4.2.0",
     "htm": "3.0.4",
     "jsontoxml": "1.0.1",
@@ -42,9 +43,10 @@
     "@vue/cli-plugin-unit-mocha": "3.12.1",
     "@vue/cli-service": "3.12.1",
     "@vue/test-utils": "1.0.0-beta.29",
+    "tslib": "^2.3.1",
     "chai": "4.3.4",
     "cpy-cli": "3.1.1",
     "rimraf": "3.0.2",
-    "typescript": "3.9.9"
+    "typescript": "4.2.2"
   }
 }

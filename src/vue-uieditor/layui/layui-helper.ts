@@ -36,7 +36,7 @@ export class LayuiHelper {
       }, option, {
         end() {
           if (option?.end) option.end();
-          fn();
+          fn(null);
         }
       }), function (index) {
         layer.close(index);
@@ -57,7 +57,7 @@ export class LayuiHelper {
         // btn: ['确定', '取消'],
         end() {
           if (option?.end) option.end();
-          r()
+          r(null)
         }
       }));
     });
@@ -72,7 +72,7 @@ export class LayuiHelper {
       layer.prompt(_.assign({ title: msg, formType: 1 }, option, {
         end() {
           if (option?.end) option.end();
-          r();
+          r(null);
         }
       }), function (s, index) {
         layer.close(index);
@@ -89,7 +89,7 @@ export class LayuiHelper {
       }, option, {
         end() {
           if (option?.end) option.end();
-          r()
+          r(null)
         }
       }));
     });
