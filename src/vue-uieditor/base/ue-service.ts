@@ -1851,8 +1851,20 @@ function _getValue(obj, key) {
 }
 
 function _makeTypeDts(obj, keys, lv = 1) {
+  let mKeys;
+  let mTypeNameIn = [];
+  const methods = obj.$options?.methods;
+  if (methods) {
+    mKeys = _.keys(methods);
+  }
+  let newKeys = keys;
+  if (_.size(mKeys) > 0) {
+    newKeys = _.filter(keys, function (key) { return !_.includes(mKeys, key); });
+    mTypeNameIn = _makeTypeDts(methods, mKeys, lv + 1);
+    // console.warn('mTypeNameIn', mKeys, mTypeNameIn)
+  }
 
-  const types = _.map(keys, function (key) {
+  const types = _.map(newKeys, function (key) {
     const item = _getValue(obj, key);
     let typeName = _.isNil(item) ? 'any' : typeof item;
     if (typeName == 'function') {
@@ -1879,7 +1891,7 @@ function _makeTypeDts(obj, keys, lv = 1) {
 
     return `${key}: ${typeName}`
   });
-  return types;
+  return types.concat(mTypeNameIn);;
 }
 
 const privateVar = /^_/;
