@@ -546,6 +546,471 @@ interface Route {
 }
 `;
 
+const _vueCompositionApi = `
+
+declare namespace VueCompositionApi {
+  type Data = {
+      [key: string]: unknown;
+  };
+
+   type ComponentPropsOptions<P = Data> = ComponentObjectPropsOptions<P> | string[];
+   type ComponentObjectPropsOptions<P = Data> = {
+      [K in keyof P]: Prop<P[K]> | null;
+  };
+   type Prop<T, D = T> = PropOptions<T, D> | PropType<T>;
+   type DefaultFactory<T> = () => T | null | undefined;
+  interface PropOptions<T = any, D = T> {
+      type?: PropType<T> | true | null;
+      required?: boolean;
+      default?: D | DefaultFactory<D> | null | undefined | object;
+      validator?(value: unknown): boolean;
+  }
+   type PropType<T> = PropConstructor<T> | PropConstructor<T>[];
+   type PropConstructor<T> = {
+      new(...args: any[]): T & object;
+  } | {
+      (): T;
+  } | {
+      new(...args: string[]): Function;
+  };
+   type RequiredKeys<T> = {
+      [K in keyof T]: T[K] extends {
+          required: true;
+      } | {
+          default: any;
+      } | BooleanConstructor | {
+          type: BooleanConstructor;
+      } ? K : never;
+  }[keyof T];
+   type OptionalKeys<T> = Exclude<keyof T, RequiredKeys<T>>;
+   type ExtractFunctionPropType<T extends Function, TArgs extends Array<any> = any[], TResult = any> = T extends (...args: TArgs) => TResult ? T : never;
+   type ExtractCorrectPropType<T> = T extends Function ? ExtractFunctionPropType<T> : Exclude<T, Function>;
+   type InferPropType<T> = T extends null ? any : T extends {
+      type: null | true;
+  } ? any : T extends ObjectConstructor | {
+      type: ObjectConstructor;
+  } ? Record<string, any> : T extends BooleanConstructor | {
+      type: BooleanConstructor;
+  } ? boolean : T extends DateConstructor | {
+      type: DateConstructor;
+  } ? Date : T extends FunctionConstructor ? Function : T extends Prop<infer V, infer D> ? unknown extends V ? D : ExtractCorrectPropType<V> : T;
+   type ExtractPropTypes<O> = O extends object ? {
+      [K in RequiredKeys<O>]: InferPropType<O[K]>;
+  } & {
+          [K in OptionalKeys<O>]?: InferPropType<O[K]>;
+      } : {
+          [K in string]: any;
+      };
+   type DefaultKeys<T> = {
+      [K in keyof T]: T[K] extends {
+          default: any;
+      } ? K : never;
+  }[keyof T];
+   type ExtractDefaultPropTypes<O> = O extends object ? {
+      [K in DefaultKeys<O>]: InferPropType<O[K]>;
+  } : {};
+
+   type ComponentInstance = InstanceType<VueConstructor>;
+   type ComponentRenderProxy<P = {}, // props type extracted from props option
+      B = {}, // raw bindings returned from setup()
+      D = {}, // return from data()
+      C extends ComputedOptions = {}, M extends MethodOptions = {}, PublicProps = P, Defaults = {}, MakeDefaultsOptional extends boolean = false> = {
+          $data: D;
+          $props: Readonly<MakeDefaultsOptional extends true ? Partial<Defaults> & Omit<P & PublicProps, keyof Defaults> : P & PublicProps>;
+          $attrs: Data;
+      } & Readonly<P> & ShallowUnwrapRef<B> & D & M & ExtractComputedReturns<C> & Omit<Vue__default, '$data' | '$props' | '$attrs'>;
+   type VueConstructorProxy<PropsOptions, RawBindings, Data, Computed extends ComputedOptions, Methods extends MethodOptions> = VueConstructor & {
+      new(...args: any[]): ComponentRenderProxy<ExtractPropTypes<PropsOptions>, ShallowUnwrapRef<RawBindings>, Data, Computed, Methods, ExtractPropTypes<PropsOptions>, ExtractDefaultPropTypes<PropsOptions>, true>;
+  };
+   type DefaultData<V> = object | ((this: V) => object);
+   type DefaultMethods<V> = {
+      [key: string]: (this: V, ...args: any[]) => any;
+  };
+   type DefaultComputed = {
+      [key: string]: any;
+  };
+   type VueProxy<PropsOptions, RawBindings, Data = DefaultData<Vue__default>, Computed extends ComputedOptions = DefaultComputed, Methods extends MethodOptions = DefaultMethods<Vue__default>> = ComponentOptions$1<Vue__default, ShallowUnwrapRef<RawBindings> & Data, Methods, Computed, PropsOptions, ExtractPropTypes<PropsOptions>> & VueConstructorProxy<PropsOptions, RawBindings, Data, Computed, Methods>;
+
+  interface SetupContext {
+      readonly attrs: Data;
+      readonly slots: Readonly<{
+          [key in string]?: (...args: any[]) => VNode[];
+      }>;
+      /**
+       * @deprecated not available in Vue 3
+       */
+      readonly parent: ComponentInstance | null;
+      /**
+       * @deprecated not available in Vue 3
+       */
+      readonly root: ComponentInstance;
+      /**
+       * @deprecated not available in Vue 3
+       */
+      readonly listeners: {
+          [key in string]?: Function;
+      };
+      /**
+       * @deprecated not available in Vue 3
+       */
+      readonly refs: {
+          [key: string]: Vue__default | Element | Vue__default[] | Element[];
+      };
+      emit(event: string, ...args: any[]): void;
+  }
+   type ComputedGetter$1<T> = (ctx?: any) => T;
+   type ComputedSetter$1<T> = (v: T) => void;
+  interface WritableComputedOptions$1<T> {
+      get: ComputedGetter$1<T>;
+      set: ComputedSetter$1<T>;
+  }
+   type ComputedOptions = Record<string, ComputedGetter$1<any> | WritableComputedOptions$1<any>>;
+  interface MethodOptions {
+      [key: string]: Function;
+  }
+   type SetupFunction<Props, RawBindings = {}> = (this: void, props: Props, ctx: SetupContext) => RawBindings | (() => VNode | null) | void;
+  interface ComponentOptionsBase<Props, D = Data, C extends ComputedOptions = {}, M extends MethodOptions = {}> extends Omit<ComponentOptions$1<Vue__default, D, M, C, Props>, 'data' | 'computed' | 'method' | 'setup' | 'props'> {
+      [key: string]: any;
+      data?: (this: Props & Vue__default, vm: Props) => D;
+      computed?: C;
+      methods?: M;
+  }
+   type ExtractComputedReturns<T extends any> = {
+      [key in keyof T]: T[key] extends {
+          get: (...args: any[]) => infer TReturn;
+      } ? TReturn : T[key] extends (...args: any[]) => infer TReturn ? TReturn : never;
+  };
+   type ComponentOptionsWithProps<PropsOptions = ComponentPropsOptions, RawBindings = Data, D = Data, C extends ComputedOptions = {}, M extends MethodOptions = {}, Props = ExtractPropTypes<PropsOptions>> = ComponentOptionsBase<Props, D, C, M> & {
+      props?: PropsOptions;
+      emits?: string[] | Record<string, null | ((emitData: any) => boolean)>;
+      setup?: SetupFunction<Props, RawBindings>;
+  } & ThisType<ComponentRenderProxy<Props, RawBindings, D, C, M>>;
+   type ComponentOptionsWithArrayProps<PropNames extends string = string, RawBindings = Data, D = Data, C extends ComputedOptions = {}, M extends MethodOptions = {}, Props = Readonly<{
+      [key in PropNames]?: any;
+  }>> = ComponentOptionsBase<Props, D, C, M> & {
+      props?: PropNames[];
+      emits?: string[] | Record<string, null | ((emitData: any) => boolean)>;
+      setup?: SetupFunction<Props, RawBindings>;
+  } & ThisType<ComponentRenderProxy<Props, RawBindings, D, C, M>>;
+   type ComponentOptionsWithoutProps<Props = unknown, RawBindings = Data, D = Data, C extends ComputedOptions = {}, M extends MethodOptions = {}> = ComponentOptionsBase<Props, D, C, M> & {
+      props?: undefined;
+      emits?: string[] | Record<string, null | ((emitData: any) => boolean)>;
+      setup?: SetupFunction<Props, RawBindings>;
+  } & ThisType<ComponentRenderProxy<Props, RawBindings, D, C, M>>;
+
+   type AnyObject = Record<string | number | symbol, any>;
+   type Equal<Left, Right> = (<U>() => U extends Left ? 1 : 0) extends (<U>() => U extends Right ? 1 : 0) ? true : false;
+   type HasDefined<T> = Equal<T, unknown> extends true ? false : true;
+
+   function defineComponent<RawBindings, D = Data, C extends ComputedOptions = {}, M extends MethodOptions = {}>(options: ComponentOptionsWithoutProps<unknown, RawBindings, D, C, M>): VueProxy<unknown, RawBindings, D, C, M>;
+   function defineComponent<PropNames extends string, RawBindings = Data, D = Data, C extends ComputedOptions = {}, M extends MethodOptions = {}, PropsOptions extends ComponentPropsOptions = ComponentPropsOptions>(options: ComponentOptionsWithArrayProps<PropNames, RawBindings, D, C, M>): VueProxy<Readonly<{
+      [key in PropNames]?: any;
+  }>, RawBindings, D, C, M>;
+   function defineComponent<Props, RawBindings = Data, D = Data, C extends ComputedOptions = {}, M extends MethodOptions = {}, PropsOptions extends ComponentPropsOptions = ComponentPropsOptions>(options: HasDefined<Props> extends true ? ComponentOptionsWithProps<PropsOptions, RawBindings, D, C, M, Props> : ComponentOptionsWithProps<PropsOptions, RawBindings, D, C, M>): VueProxy<PropsOptions, RawBindings, D, C, M>;
+
+   type ComponentOptions = ComponentOptionsWithoutProps | ComponentOptionsWithArrayProps | ComponentOptionsWithProps;
+   type Component = VueProxy<any, any, any, any, any>;
+   type ComponentOrComponentOptions = ComponentOptions | Component;
+   type AsyncComponentResolveResult<T = ComponentOrComponentOptions> = T | {
+      default: T;
+  };
+   type AsyncComponentLoader = () => Promise<AsyncComponentResolveResult>;
+  interface AsyncComponentOptions {
+      loader: AsyncComponentLoader;
+      loadingComponent?: ComponentOrComponentOptions;
+      errorComponent?: ComponentOrComponentOptions;
+      delay?: number;
+      timeout?: number;
+      suspensible?: boolean;
+      onError?: (error: Error, retry: () => void, fail: () => void, attempts: number) => any;
+  }
+   function defineAsyncComponent(source: AsyncComponentLoader | AsyncComponentOptions): AsyncComponent;
+
+   const Plugin: {
+      install: (Vue: VueConstructor) => void;
+  };
+
+   const _refBrand: unique symbol;
+  interface Ref<T = any> {
+      readonly [_refBrand]: true;
+      value: T;
+  }
+   type ToRefs<T = any> = {
+      [K in keyof T]: Ref<T[K]>;
+  };
+   type CollectionTypes = IterableCollections | WeakCollections;
+   type IterableCollections = Map<any, any> | Set<any>;
+   type WeakCollections = WeakMap<any, any> | WeakSet<any>;
+   type BaseTypes = string | number | boolean | Node | Window;
+   type ShallowUnwrapRef<T> = {
+      [K in keyof T]: T[K] extends Ref<infer V> ? V : T[K];
+  };
+   type UnwrapRef<T> = T extends Ref<infer V> ? UnwrapRefSimple<V> : UnwrapRefSimple<T>;
+   type UnwrapRefSimple<T> = T extends Function | CollectionTypes | BaseTypes | Ref ? T : T extends Array<any> ? {
+      [K in keyof T]: UnwrapRefSimple<T[K]>;
+  } : T extends object ? UnwrappedObject<T> : T;
+   type SymbolExtract<T> = (T extends {
+      [Symbol.asyncIterator]: infer V;
+  } ? {
+      [Symbol.asyncIterator]: V;
+  } : {}) & (T extends {
+      [Symbol.hasInstance]: infer V;
+  } ? {
+      [Symbol.hasInstance]: V;
+  } : {}) & (T extends {
+      [Symbol.isConcatSpreadable]: infer V;
+  } ? {
+      [Symbol.isConcatSpreadable]: V;
+  } : {}) & (T extends {
+      [Symbol.iterator]: infer V;
+  } ? {
+      [Symbol.iterator]: V;
+  } : {}) & (T extends {
+      [Symbol.match]: infer V;
+  } ? {
+      [Symbol.match]: V;
+  } : {}) & (T extends {
+      [Symbol.replace]: infer V;
+  } ? {
+      [Symbol.replace]: V;
+  } : {}) & (T extends {
+      [Symbol.search]: infer V;
+  } ? {
+      [Symbol.search]: V;
+  } : {}) & (T extends {
+      [Symbol.species]: infer V;
+  } ? {
+      [Symbol.species]: V;
+  } : {}) & (T extends {
+      [Symbol.split]: infer V;
+  } ? {
+      [Symbol.split]: V;
+  } : {}) & (T extends {
+      [Symbol.toPrimitive]: infer V;
+  } ? {
+      [Symbol.toPrimitive]: V;
+  } : {}) & (T extends {
+      [Symbol.toStringTag]: infer V;
+  } ? {
+      [Symbol.toStringTag]: V;
+  } : {}) & (T extends {
+      [Symbol.unscopables]: infer V;
+  } ? {
+      [Symbol.unscopables]: V;
+  } : {});
+   type UnwrappedObject<T> = {
+      [P in keyof T]: UnwrapRef<T[P]>;
+  } & SymbolExtract<T>;
+  interface RefOption<T> {
+      get(): T;
+      set?(x: T): void;
+  }
+   class RefImpl<T> implements Ref<T> {
+      readonly [_refBrand]: true;
+      value: T;
+      constructor({ get, set }: RefOption<T>);
+  }
+   function createRef<T>(options: RefOption<T>, readonly?: boolean): RefImpl<T>;
+   function ref<T extends object>(raw: T): T extends Ref ? T : Ref<UnwrapRef<T>>;
+   function ref<T>(raw: T): Ref<UnwrapRef<T>>;
+   function ref<T = any>(): Ref<T | undefined>;
+   function isRef<T>(value: any): value is Ref<T>;
+   function unref<T>(ref: T): T extends Ref<infer V> ? V : T;
+   function toRefs<T extends object>(obj: T): ToRefs<T>;
+   type CustomRefFactory<T> = (track: () => void, trigger: () => void) => {
+      get: () => T;
+      set: (value: T) => void;
+  };
+   function customRef<T>(factory: CustomRefFactory<T>): Ref<T>;
+   function toRef<T extends object, K extends keyof T>(object: T, key: K): Ref<T[K]>;
+   function shallowRef<T extends object>(value: T): T extends Ref ? T : Ref<T>;
+   function shallowRef<T>(value: T): Ref<T>;
+   function shallowRef<T = any>(): Ref<T | undefined>;
+   function triggerRef(value: any): void;
+   function proxyRefs<T extends object>(objectWithRefs: T): ShallowUnwrapRef<T>;
+
+   function isRaw(obj: any): boolean;
+   function isReactive(obj: any): boolean;
+   function shallowReactive<T extends object = any>(obj: T): T;
+  /**
+   * Make obj reactivity
+   */
+   function reactive<T extends object>(obj: T): UnwrapRef<T>;
+  /**
+   * Make sure obj can't be a reactive
+   */
+   function markRaw<T extends object>(obj: T): T;
+   function toRaw<T>(observed: T): T;
+
+   function isReadonly(obj: any): boolean;
+   type Primitive = string | number | boolean | bigint | symbol | undefined | null;
+   type Builtin = Primitive | Function | Date | Error | RegExp;
+   type DeepReadonly<T> = T extends Builtin ? T : T extends Map<infer K, infer V> ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> : T extends ReadonlyMap<infer K, infer V> ? ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> : T extends WeakMap<infer K, infer V> ? WeakMap<DeepReadonly<K>, DeepReadonly<V>> : T extends Set<infer U> ? ReadonlySet<DeepReadonly<U>> : T extends ReadonlySet<infer U> ? ReadonlySet<DeepReadonly<U>> : T extends WeakSet<infer U> ? WeakSet<DeepReadonly<U>> : T extends Promise<infer U> ? Promise<DeepReadonly<U>> : T extends {} ? {
+      readonly [K in keyof T]: DeepReadonly<T[K]>;
+  } : Readonly<T>;
+   type UnwrapNestedRefs<T> = T extends Ref ? T : UnwrapRef<T>;
+  /**
+   * **In @vue/composition-api, \`reactive\` only provides type-level readonly check**
+   *
+   * Creates a readonly copy of the original object. Note the returned copy is not
+   * made reactive, but \`readonly\` can be called on an already reactive object.
+   */
+   function readonly<T extends object>(target: T): DeepReadonly<UnwrapNestedRefs<T>>;
+   function shallowReadonly<T extends object>(obj: T): Readonly<T>;
+
+  /**
+   * Set a property on an object. Adds the new property, triggers change
+   * notification and intercept it's subsequent access if the property doesn't
+   * already exist.
+   */
+   function set<T>(target: AnyObject, key: any, val: T): T;
+
+  /**
+   * Delete a property and trigger change if necessary.
+   */
+   function del(target: AnyObject, key: any): void;
+
+   const onBeforeMount: (callback: Function) => void;
+   const onMounted: (callback: Function) => void;
+   const onBeforeUpdate: (callback: Function) => void;
+   const onUpdated: (callback: Function) => void;
+   const onBeforeUnmount: (callback: Function) => void;
+   const onUnmounted: (callback: Function) => void;
+   const onErrorCaptured: (callback: Function) => void;
+   const onActivated: (callback: Function) => void;
+   const onDeactivated: (callback: Function) => void;
+   const onServerPrefetch: (callback: Function) => void;
+
+  interface ComputedRef<T = any> extends WritableComputedRef<T> {
+      readonly value: T;
+  }
+  interface WritableComputedRef<T> extends Ref<T> {
+  }
+   type ComputedGetter<T> = (ctx?: any) => T;
+   type ComputedSetter<T> = (v: T) => void;
+  interface WritableComputedOptions<T> {
+      get: ComputedGetter<T>;
+      set: ComputedSetter<T>;
+  }
+   function computed<T>(getter: ComputedGetter<T>): ComputedRef<T>;
+   function computed<T>(options: WritableComputedOptions<T>): WritableComputedRef<T>;
+
+   type WatchEffect = (onInvalidate: InvalidateCbRegistrator) => void;
+   type WatchSource<T = any> = Ref<T> | ComputedRef<T> | (() => T);
+   type WatchCallback<V = any, OV = any> = (value: V, oldValue: OV, onInvalidate: InvalidateCbRegistrator) => any;
+   type MapSources<T> = {
+      [K in keyof T]: T[K] extends WatchSource<infer V> ? V : never;
+  };
+   type MapOldSources<T, Immediate> = {
+      [K in keyof T]: T[K] extends WatchSource<infer V> ? Immediate extends true ? V | undefined : V : never;
+  };
+  interface WatchOptionsBase {
+      flush?: FlushMode;
+  }
+   type InvalidateCbRegistrator = (cb: () => void) => void;
+   type FlushMode = 'pre' | 'post' | 'sync';
+  interface WatchOptions<Immediate = boolean> extends WatchOptionsBase {
+      immediate?: Immediate;
+      deep?: boolean;
+  }
+  interface VueWatcher {
+      lazy: boolean;
+      get(): any;
+      teardown(): void;
+      run(): void;
+      value: any;
+  }
+   type WatchStopHandle = () => void;
+   function watchEffect(effect: WatchEffect, options?: WatchOptionsBase): WatchStopHandle;
+   function watch<T extends Readonly<WatchSource<unknown>[]>, Immediate extends Readonly<boolean> = false>(sources: T, cb: WatchCallback<MapSources<T>, MapOldSources<T, Immediate>>, options?: WatchOptions<Immediate>): WatchStopHandle;
+   function watch<T, Immediate extends Readonly<boolean> = false>(source: WatchSource<T>, cb: WatchCallback<T, Immediate extends true ? T | undefined : T>, options?: WatchOptions<Immediate>): WatchStopHandle;
+   function watch<T extends object, Immediate extends Readonly<boolean> = false>(source: T, cb: WatchCallback<T, Immediate extends true ? T | undefined : T>, options?: WatchOptions<Immediate>): WatchStopHandle;
+
+  interface InjectionKey<T> extends Symbol {
+  }
+   function provide<T>(key: InjectionKey<T> | string, value: T): void;
+   function inject<T>(key: InjectionKey<T> | string): T | undefined;
+   function inject<T>(key: InjectionKey<T> | string, defaultValue: T, treatDefaultAsFactory?: boolean): T;
+
+   const useCssModule: (name?: string) => Record<string, string>;
+  /**
+   * @deprecated use \`useCssModule\` instead.
+   */
+   const useCSSModule: (name?: string) => Record<string, string>;
+
+  interface App {
+      config: VueConstructor$1['config'];
+      use: VueConstructor$1['use'];
+      mixin: VueConstructor$1['mixin'];
+      component: VueConstructor$1['component'];
+      directive: VueConstructor$1['directive'];
+      mount: Vue__default['$mount'];
+      unmount: Vue__default['$destroy'];
+  }
+   function createApp(rootComponent: any, rootProps?: any): App;
+
+   type NextTick = Vue__default['$nextTick'];
+   const nextTick: NextTick;
+
+   const createElement: Vue.CreateElement;
+
+  /**
+   * Displays a warning message (using console.error) with a stack trace if the
+   * function is called inside of active component.
+   *
+   * @param message warning message to be displayed
+   */
+   function warn(message: string): void;
+
+   type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+
+   type Slot = (...args: any[]) => VNode[];
+   type InternalSlots = {
+      [name: string]: Slot | undefined;
+  };
+   type ObjectEmitsOptions = Record<string, ((...args: any[]) => any) | null>;
+   type EmitFn<Options = ObjectEmitsOptions, Event extends keyof Options = keyof Options> = Options extends Array<infer V> ? (event: V, ...args: any[]) => void : {} extends Options ? (event: string, ...args: any[]) => void : UnionToIntersection<{
+      [key in Event]: Options[key] extends (...args: infer Args) => any ? (event: key, ...args: Args) => void : (event: key, ...args: any[]) => void;
+  }[Event]>;
+  /**
+   * We expose a subset of properties on the internal instance as they are
+   * useful for advanced external libraries and tools.
+   */
+   interface ComponentInternalInstance {
+      uid: number;
+      parent: ComponentInternalInstance | null;
+      root: ComponentInternalInstance;
+      /**
+       * Vnode representing this component in its parent's vdom tree
+       */
+      vnode: VNode;
+      /**
+       * Root vnode of this component's own vdom tree
+       */
+      /**
+       * The reactive effect for rendering and patching the component. Callable.
+       */
+      update: Function;
+      data: Data;
+      props: Data;
+      attrs: Data;
+      refs: Data;
+      emit: EmitFn;
+      slots: InternalSlots;
+      emitted: Record<string, boolean> | null;
+      proxy: ComponentInstance;
+      isMounted: boolean;
+      isUnmounted: boolean;
+      isDeactivated: boolean;
+  }
+   function getCurrentInstance(): ComponentInternalInstance | null;
+
+   const version: string;
+
+  export { App, ComponentInstance, ComponentInternalInstance, ComponentPropsOptions, ComponentRenderProxy, ComputedGetter, ComputedOptions, ComputedRef, ComputedSetter, Data, DeepReadonly, ExtractDefaultPropTypes, ExtractPropTypes, FlushMode, InjectionKey, MethodOptions, PropOptions, PropType, Ref, SetupContext, SetupFunction, ShallowUnwrapRef, ToRefs, UnwrapRef, VueWatcher, WatchCallback, WatchEffect, WatchOptions, WatchOptionsBase, WatchSource, WatchStopHandle, WritableComputedOptions, WritableComputedRef, computed, createApp, createRef, customRef, defineAsyncComponent, defineComponent, del, getCurrentInstance, createElement as h, inject, isRaw, isReactive, isReadonly, isRef, markRaw, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onServerPrefetch, onUnmounted, onUpdated, provide, proxyRefs, reactive, readonly, ref, set, shallowReactive, shallowReadonly, shallowRef, toRaw, toRef, toRefs, triggerRef, unref, useCSSModule, useCssModule, version, warn, watch, watchEffect };
+}
+`;
+
 const _vueExtends = `
 declare type UEVueMixin<V extends Vue = Vue> = ComponentOptions<Vue> | typeof Vue;
 interface UEVueComponentOptions<V extends Vue> extends ComponentOptions<V> {
@@ -1724,7 +2189,10 @@ declare class UEService {
 
 const _other = `
 
-declare function UEEditorVueDef(def:UEVueMixin):UEVueMixin;
+declare function UEEditorVueDef(def:UEVueMixin & {
+  setup:VueCompositionApi.SetupFunction<VueCompositionApi.Props, VueCompositionApi.RawBindings>;
+}
+):UEVueMixin;
 
 declare function UEPreviewOptionDef(p:{
   /** 模拟 $query */
@@ -1740,6 +2208,7 @@ declare function UEPreviewOptionDef(p:{
 export const ExtraLib = `
 ${_vueDef}
 ${_routerDef}
+${_vueCompositionApi}
 ${_vueExtends}
 ${_ueDef}
 ${_other}

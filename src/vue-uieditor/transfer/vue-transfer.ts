@@ -13,7 +13,7 @@ export const VueTransfer: UETransfer = UERender.DefineTransfer({
       let content = extend.getPropValue('content', true);
       if (content) {
         const babelContent = UECompiler.babelTransform(`function __bg_vue_def_ctx(){ return ${content}; }`);
-        let contentDef = (new Function('__bg_vue_def_', `with(__bg_vue_def_) { return { mixins: [(function() { ${babelContent.code}; return __bg_vue_def_ctx(); })(), { data: function(){ __bg_vue_def_.$this = this; return {}; } }] } }`))({ $this: {}, ...extend.global });
+        let contentDef = (new Function('__bg_vue_def_', `with(__bg_vue_def_) { return { mixins: [{setup(){ const { getCurrentInstance } = VueCompositionApi;const {proxy} = getCurrentInstance(); __bg_vue_def_.$this = proxy;  },  data: function(){ __bg_vue_def_.$this = this; return {}; } }, (function() { ${babelContent.code}; return __bg_vue_def_ctx(); })()] } }`))({ $this: {}, ...extend.global });
         extend.extendMixin(contentDef)
       }
       // if (extend.editing) return render;

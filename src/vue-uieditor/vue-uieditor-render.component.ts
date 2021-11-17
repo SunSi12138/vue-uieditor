@@ -11,6 +11,8 @@ import { UEMergeMixin, UEVue, UEVueComponent, UEVueInject, UEVueLife, UEVueMixin
 import './transfer';
 
 import * as VueCompositionApi from '@vue/composition-api';
+import VueCompositionApiUse from '@vue/composition-api';
+Vue.use(VueCompositionApiUse as any);
 
 const _defaultGlobalExtend = {
   UEHelper,
@@ -164,9 +166,29 @@ export default class VueUieditorRender extends UEVue {
           opt = (new Function('__ue_vue_def_', `with(__ue_vue_def_) { return (function() { ${babelContent.code}; return _.assign(__ue_vue_def_ctx(),{$init_0326_:function($this){__ue_vue_def_.$this= $this;}});})(); }`))({ $this: {}, ...globalOpt });
         }
 
-        if (editing && opt?.vueDef) {
-          opt.vueDef = _makeEditMixin(opt.vueDef);
+        if (editing) {
+          if (opt?.vueDef) {
+            opt.vueDef = _makeEditMixin(opt.vueDef);
+          }
+          if (globalOpt.VueCompositionApi) {
+            const noop = function () { };
+            globalOpt.VueCompositionApi = _.assign({}, globalOpt.VueCompositionApi, {
+              onActivated: noop,
+              onBeforeMount: noop,
+              onBeforeUnmount: noop,
+              onBeforeUpdate: noop,
+              onDeactivated: noop,
+              onErrorCaptured: noop,
+              onMounted: noop,
+              onUnmounted: noop,
+              onUpdated: noop,
+              warn: noop,
+              watchEffect: noop,
+              nextTick: noop,
+            });
+          }
         }
+
         return opt;
       })();
 
