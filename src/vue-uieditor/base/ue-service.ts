@@ -379,7 +379,7 @@ export class UEService {
 
   getScript(): string {
     const render = this.getRenderByType('script');
-    return render ? render.children[0] as string : "{\n  data() {\n    return {};\n  },\n  computed: {\n\n  },\n  watch: {},\n  methods: {},\n  created() {\n    \n  }\n}";
+    return render ? render.children[0] as string : "{\n  setup(props, context) {\n    const { reactive, onBeforeMount } = VueCompositionApi;\n    const _data = reactive({\n      text: 'now: '\n    });\n\n    onBeforeMount(function () {\n      setTimeout(function () {\n        _data.text += new Date().valueOf();\n      }, 1000);\n    });\n\n    return {\n      data: _data\n    }\n  },\n  data() {\n    return {};\n  },\n  computed: {\n\n  },\n  watch: {},\n  methods: {},\n  created() {\n    \n  }\n}";
   }
 
   async setScript(script: string) {
