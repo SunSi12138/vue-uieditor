@@ -387,6 +387,7 @@ function _makeEditMixin(mixin) {
   _.forEach(mixin, function (value, key) {
     switch (key) {
       case 'data':
+      case 'setup':
       case 'methods':
       case 'computed':
       case 'mixins':

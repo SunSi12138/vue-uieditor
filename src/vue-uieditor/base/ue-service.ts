@@ -522,11 +522,14 @@ export class UEService {
             return unescape(s);
           }
         },
-        // data: function () {
-        //   return {
-        //     current: _this && _this.current || {}
-        //   };
-        // },
+        data: function () {
+          if (_this)
+            _this._lastcp = this;
+          return {};
+          // return {
+          //   current: _this && _this.current || {}
+          // };
+        },
         mounted() {
           if (_this) {
             _this._lastcp = this;
