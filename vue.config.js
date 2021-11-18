@@ -73,7 +73,7 @@ module.exports = {
         amd: 'lodash'
       };
       config.externals['vue-template-compiler'] = 'vue-template-compiler'
-      config.externals['composition-api'] = 'composition-api'
+      config.externals['@vue/composition-api'] = '@vue/composition-api'
       // console.log('config.output AA', { ...config.output });
     }
   },
